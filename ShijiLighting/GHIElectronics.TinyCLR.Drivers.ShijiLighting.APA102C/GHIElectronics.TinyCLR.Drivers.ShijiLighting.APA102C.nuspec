@@ -2,7 +2,7 @@
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735</id>
+    <id>GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C</id>
     <version>1.0.0-preview1</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
@@ -10,14 +10,14 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Sitronix ST7735 driver for TinyCLR OS.</description>
+    <description>ShijiLighting APA102C driver for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2018</copyright>
-    <tags>TinyCLR TinyCLROS ST7735</tags>
+    <tags>TinyCLR TinyCLROS APA102C</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="1.0.0-preview1" />
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C.dll" target="lib\net452" />
   </files>
 </package>
