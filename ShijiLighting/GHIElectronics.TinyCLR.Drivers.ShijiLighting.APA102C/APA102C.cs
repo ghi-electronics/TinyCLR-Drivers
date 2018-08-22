@@ -1,9 +1,74 @@
 ﻿using System;
-using System.Collections;
-using System.Text;
-using System.Threading;
+using GHIElectronics.TinyCLR.Devices.Spi;
 
-namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
-    public class APA102C {
+namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C
+{
+    public struct PixelColor
+    {
+        public byte Blue { get; set; }
+        public byte Green { get; set; }
+        public byte Red { get; set; }
+    }
+
+    public class APA102C
+    {
+        private readonly SpiController spiBusContoller;
+        private readonly SpiDevice spiBus;
+        private readonly byte[] startFrame;
+        private readonly byte[] stopFrame;
+        private readonly byte[] ledFrame;
+        private readonly int pixelCount;
+
+        public APA102C(int pixelCount, string spiId, int chipselect)
+        {
+            this.pixelCount = pixelCount;
+            this.startFrame = new byte[4];
+            this.stopFrame = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
+            this.ledFrame = new byte[this.pixelCount * 4];
+
+            for (var i = 0; i < this.ledFrame.Length; i += 4) { // Initializes frame buffer for active LED frame data
+                this.ledFrame[i] = 0xE0;
+            }
+
+            var spiSettings = new SpiConnectionSettings(chipselect) {
+                Mode = SpiMode.Mode0,
+                ClockFrequency = 1_200_000,
+                DataBitLength = 8,
+                UseControllerChipSelect = false
+            };
+
+            this.spiBusContoller = SpiController.FromName(spiId);
+            this.spiBus = this.spiBusContoller.GetDevice(spiSettings);
+        }
+
+        /// <param name="pixelIndex">The pixel in the chain to draw</param>
+        /// <param name="pixelColor">A struct that has an individual color field for Red, Green, and Blue with a range of 0-255 each.</param>
+        /// <param name="pixelIntensity">The level from 0 (off) to 31 (highest brightness)</param>
+        public void SetLed(int pixelIndex, PixelColor pixelColor, int pixelIntensity)
+        {
+            if (this.pixelCount < pixelIndex)
+                throw new ArgumentOutOfRangeException();
+
+            var ledFrameIndex = pixelIndex * 4; // Positions index to beginning of each LED frame
+
+            var Intensity = pixelIntensity;
+
+            Intensity |= 0x7 << 5;
+
+            this.ledFrame[ledFrameIndex] = (byte)Intensity;
+            this.ledFrame[ledFrameIndex + 1] = pixelColor.Blue;
+            this.ledFrame[ledFrameIndex + 2] = pixelColor.Green;
+            this.ledFrame[ledFrameIndex + 3] = pixelColor.Red;
+        }
+
+        public void RefreshLeds()
+        {
+            // The startFrame sends all zeros first in the chain to let the addressable LEDs know the next set of data is the LED Frame Data field.
+            this.spiBus.Write(this.startFrame);
+            // ledFrame is the entire pixel chain data.
+            this.spiBus.Write(this.ledFrame);
+
+            this.spiBus.Write(this.stopFrame);
+        }
     }
 }
