@@ -66,8 +66,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.spiBus = this.spiBusContoller.GetDevice(spiSettings);
 
             this.InitializeST7735();
-
-            //Clear();
         }
 
         private void InitializeST7735() {
