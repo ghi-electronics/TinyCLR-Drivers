@@ -149,11 +149,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             Thread.Sleep(50);
         }
 
-        private void WriteData(byte[] data) {
-            this.controlPin.Write(GpioPinValue.High);
-            this.spiBus.Write(data);
-        }
-
         private void WriteCommand(byte command) {
             this.singleByteBuffer[0] = command;
             this.controlPin.Write(GpioPinValue.Low);
@@ -162,8 +157,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         private void WriteData(byte data) {
             this.singleByteBuffer[0] = data;
+            this.WriteData(this.singleByteBuffer);
+        }
+
+        private void WriteData(byte[] data) {
             this.controlPin.Write(GpioPinValue.High);
-            this.spiBus.Write(this.singleByteBuffer);
+            this.spiBus.Write(data);
         }
 
         private void Reset() {
