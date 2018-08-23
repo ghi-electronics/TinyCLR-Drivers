@@ -181,18 +181,15 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }*/
 
         private void SetClip(int x, int y, int width, int height) {
-            this.WriteCommand(0x2A);
-
-            this.controlPin.Write(GpioPinValue.High);
             this.wordBuffer[1] = (byte)x;
             this.wordBuffer[3] = (byte)(x + width - 1);
-            this.spiBus.Write(this.wordBuffer);
+            this.WriteCommand(0x2A);
+            this.WriteData(this.wordBuffer);
 
-            this.WriteCommand(0x2B);
-            this.controlPin.Write(GpioPinValue.High);
             this.wordBuffer[1] = (byte)y;
             this.wordBuffer[3] = (byte)(y + height - 1);
-            this.spiBus.Write(this.wordBuffer);
+            this.WriteCommand(0x2B);
+            this.WriteData(this.wordBuffer);
         }
 
         public void SetColorFormat(ColorFormat colorFormat) {
