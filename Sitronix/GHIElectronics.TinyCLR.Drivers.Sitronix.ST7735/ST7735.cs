@@ -70,6 +70,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         private void InitializeST7735() {
+            this.WriteCommand(0x01); // Software Reset Command
+            Thread.Sleep(120);
+
             this.WriteCommand(0x11); //Sleep exit 
             Thread.Sleep(200);
 
