@@ -172,14 +172,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             Thread.Sleep(200);
         }
 
-        /*public void Clear() {
-            SetClip(0, 0, 160, 128);
-            WriteCommand(0x2C);
-
-            for (var i = 0; i < 128 / 16; i++)
-                WriteData(clearBuffer);
-        }*/
-
         private void SetClip(int x, int y, int width, int height) {
             this.wordBuffer[1] = (byte)x;
             this.wordBuffer[3] = (byte)(x + width - 1);
