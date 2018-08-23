@@ -65,6 +65,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.spiBusContoller = SpiController.FromName(spiId);
             this.spiBus = this.spiBusContoller.GetDevice(spiSettings);
 
+            this.Reset();
             this.InitializeST7735();
         }
 
@@ -167,9 +168,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         private void Reset() {
             this.resetPin.Write(GpioPinValue.Low);
-            Thread.Sleep(300);
+            Thread.Sleep(50);
             this.resetPin.Write(GpioPinValue.High);
-            Thread.Sleep(1000);
+            Thread.Sleep(200);
         }
 
         /*public void Clear() {
