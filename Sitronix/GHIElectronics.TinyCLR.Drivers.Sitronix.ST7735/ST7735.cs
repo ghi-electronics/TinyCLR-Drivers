@@ -164,10 +164,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.spiBus.Write(data);
         }
 
-        public void SendCommand(byte command) => this.WriteCommand(command);
-        public void SendCommandData(byte data) => this.WriteData(data);
-        public void SendCommandData(byte[] data) => this.WriteData(data);
-
         private void Reset() {
             this.resetPin.Write(GpioPinValue.Low);
             Thread.Sleep(50);
