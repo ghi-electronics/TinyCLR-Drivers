@@ -70,43 +70,43 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         private void InitializeST7735() {
-            this.WriteCommand(0x01); // Software Reset Command
+            this.SendCommand(0x01); // Software Reset Command
             Thread.Sleep(120);
 
-            this.WriteCommand(0x11); //Sleep exit 
+            this.SendCommand(0x11); //Sleep exit 
             Thread.Sleep(200);
 
             // ST7735R Frame Rate
-            this.WriteCommand(0xB1);
+            this.SendCommand(0xB1);
             this.WriteData(0x01); this.WriteData(0x2C); this.WriteData(0x2D);
-            this.WriteCommand(0xB2);
+            this.SendCommand(0xB2);
             this.WriteData(0x01); this.WriteData(0x2C); this.WriteData(0x2D);
-            this.WriteCommand(0xB3);
+            this.SendCommand(0xB3);
             this.WriteData(0x01); this.WriteData(0x2C); this.WriteData(0x2D);
             this.WriteData(0x01); this.WriteData(0x2C); this.WriteData(0x2D);
 
-            this.WriteCommand(0xB4); // Column inversion 
+            this.SendCommand(0xB4); // Column inversion 
             this.WriteData(0x07);
 
             // ST7735R Power Sequence
-            this.WriteCommand(0xC0);
+            this.SendCommand(0xC0);
             this.WriteData(0xA2); this.WriteData(0x02); this.WriteData(0x84);
-            this.WriteCommand(0xC1); this.WriteData(0xC5);
-            this.WriteCommand(0xC2);
+            this.SendCommand(0xC1); this.WriteData(0xC5);
+            this.SendCommand(0xC2);
             this.WriteData(0x0A); this.WriteData(0x00);
-            this.WriteCommand(0xC3);
+            this.SendCommand(0xC3);
             this.WriteData(0x8A); this.WriteData(0x2A);
-            this.WriteCommand(0xC4);
+            this.SendCommand(0xC4);
             this.WriteData(0x8A); this.WriteData(0xEE);
 
-            this.WriteCommand(0xC5); // VCOM 
+            this.SendCommand(0xC5); // VCOM 
             this.WriteData(0x0E);
 
-            this.WriteCommand(0x36); // MX, MY, RGB mode
+            this.SendCommand(0x36); // MX, MY, RGB mode
             this.WriteData(MADCTL_MX | MADCTL_MY | MADCTL_BGR);
 
             // ST7735R Gamma Sequence
-            this.WriteCommand(0xe0);
+            this.SendCommand(0xe0);
             this.WriteData(0x0f); this.WriteData(0x1a);
             this.WriteData(0x0f); this.WriteData(0x18);
             this.WriteData(0x2f); this.WriteData(0x28);
@@ -116,7 +116,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             this.WriteData(0x07);
             this.WriteData(0x02); this.WriteData(0x10);
-            this.WriteCommand(0xe1);
+            this.SendCommand(0xe1);
             this.WriteData(0x0f); this.WriteData(0x1b);
             this.WriteData(0x0f); this.WriteData(0x17);
             this.WriteData(0x33); this.WriteData(0x2c);
@@ -126,29 +126,29 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.WriteData(0x00); this.WriteData(0x07);
             this.WriteData(0x03); this.WriteData(0x10);
 
-            this.WriteCommand(0x2a);
+            this.SendCommand(0x2a);
             this.WriteData(0x00); this.WriteData(0x00);
             this.WriteData(0x00); this.WriteData(0x7f);
-            this.WriteCommand(0x2b);
+            this.SendCommand(0x2b);
             this.WriteData(0x00); this.WriteData(0x00);
             this.WriteData(0x00); this.WriteData(0x9f);
 
-            this.WriteCommand(0xF0); //Enable test command  
+            this.SendCommand(0xF0); //Enable test command  
             this.WriteData(0x01);
-            this.WriteCommand(0xF6); //Disable ram power save mode 
+            this.SendCommand(0xF6); //Disable ram power save mode 
             this.WriteData(0x00);
 
             this.SetColorFormat(ColorFormat.BGR16bit565); // Sets default color format to 65k color
 
             // Rotate
-            this.WriteCommand(ST7735_MADCTL);
+            this.SendCommand(ST7735_MADCTL);
             this.WriteData(MADCTL_MV | MADCTL_MY);
 
-            this.WriteCommand(0x29); //Display on
+            this.SendCommand(0x29); //Display on
             Thread.Sleep(50);
         }
 
-        private void WriteCommand(byte command) {
+        public void SendCommand(byte command) {
             this.singleByteBuffer[0] = command;
             this.controlPin.Write(GpioPinValue.Low);
             this.spiBus.Write(this.singleByteBuffer);
@@ -174,12 +174,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private void SetClip(int x, int y, int width, int height) {
             this.wordBuffer[1] = (byte)x;
             this.wordBuffer[3] = (byte)(x + width - 1);
-            this.WriteCommand(0x2A);
+            this.SendCommand(0x2A);
             this.WriteData(this.wordBuffer);
 
             this.wordBuffer[1] = (byte)y;
             this.wordBuffer[3] = (byte)(y + height - 1);
-            this.WriteCommand(0x2B);
+            this.SendCommand(0x2B);
             this.WriteData(this.wordBuffer);
         }
 
@@ -187,12 +187,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             switch (colorFormat) {
                 case ColorFormat.BGR12bit444: // 4k colors mode 
                     this.bitsPerPixel = 12;
-                    this.WriteCommand(0x3A);
+                    this.SendCommand(0x3A);
                     this.WriteData(0x03);
                     break;
                 case ColorFormat.BGR16bit565: // 65k colors mode
                     this.bitsPerPixel = 16;
-                    this.WriteCommand(0x3A); 
+                    this.SendCommand(0x3A); 
                     this.WriteData(0x05);
                     break;
             }
@@ -206,7 +206,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             
         public void PrepareToDraw() {
             this.SetClip(this.drawWindowX, this.drawWindowY, this.drawWindowWidth, this.drawWindowHeight);
-            this.WriteCommand(0x2C);
+            this.SendCommand(0x2C);
             this.controlPin.Write(GpioPinValue.High);
         }
 
