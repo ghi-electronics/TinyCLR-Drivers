@@ -156,10 +156,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         public void SendData(byte data) {
             this.singleByteBuffer[0] = data;
-            this.WriteData(this.singleByteBuffer);
+            this.SendData(this.singleByteBuffer);
         }
 
-        private void WriteData(byte[] data) {
+        public void SendData(byte[] data) {
             this.controlPin.Write(GpioPinValue.High);
             this.spiBus.Write(data);
         }
@@ -175,12 +175,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.wordBuffer[1] = (byte)x;
             this.wordBuffer[3] = (byte)(x + width - 1);
             this.SendCommand(0x2A);
-            this.WriteData(this.wordBuffer);
+            this.SendData(this.wordBuffer);
 
             this.wordBuffer[1] = (byte)y;
             this.wordBuffer[3] = (byte)(y + height - 1);
             this.SendCommand(0x2B);
-            this.WriteData(this.wordBuffer);
+            this.SendData(this.wordBuffer);
         }
 
         public void SetColorFormat(ColorFormat colorFormat) {
