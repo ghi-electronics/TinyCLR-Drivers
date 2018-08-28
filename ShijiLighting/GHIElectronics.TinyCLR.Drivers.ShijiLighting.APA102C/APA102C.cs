@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C
@@ -44,7 +45,7 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C
         /// <param name="pixelIndex">The pixel in the chain to draw</param>
         /// <param name="pixelColor">A struct that has an individual color field for Red, Green, and Blue with a range of 0-255 each.</param>
         /// <param name="pixelIntensity">The level from 0 (off) to 31 (highest brightness)</param>
-        public void SetLed(int pixelIndex, PixelColor pixelColor, int pixelIntensity)
+        public void SetLed(int pixelIndex, Pen pixelColor, int pixelIntensity)
         {
             if (this.pixelCount < pixelIndex)
                 throw new ArgumentOutOfRangeException();
@@ -56,9 +57,9 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C
             Intensity |= 0x7 << 5;
 
             this.ledFrame[ledFrameIndex] = (byte)Intensity;
-            this.ledFrame[ledFrameIndex + 1] = pixelColor.Blue;
-            this.ledFrame[ledFrameIndex + 2] = pixelColor.Green;
-            this.ledFrame[ledFrameIndex + 3] = pixelColor.Red;
+            this.ledFrame[ledFrameIndex + 1] = pixelColor.Color.B;
+            this.ledFrame[ledFrameIndex + 2] = pixelColor.Color.G;
+            this.ledFrame[ledFrameIndex + 3] = pixelColor.Color.R;
         }
 
         public void RefreshLeds()
