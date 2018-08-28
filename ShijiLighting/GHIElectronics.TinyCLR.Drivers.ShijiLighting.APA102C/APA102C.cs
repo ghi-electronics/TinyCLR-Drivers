@@ -4,15 +4,7 @@ using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C
 {
-    public struct PixelColor
-    {
-        public byte Blue { get; set; }
-        public byte Green { get; set; }
-        public byte Red { get; set; }
-    }
-
-    public class APA102C
-    {
+    public class APA102C {
         private readonly SpiController spiBusContoller;
         private readonly SpiDevice spiBus;
         private readonly byte[] startFrame;
@@ -20,8 +12,7 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C
         private readonly byte[] ledFrame;
         private readonly int pixelCount;
 
-        public APA102C(int pixelCount, string spiId, int chipselect)
-        {
+        public APA102C(int pixelCount, string spiId, int chipselect) {
             this.pixelCount = pixelCount;
             this.startFrame = new byte[4];
             this.stopFrame = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
@@ -45,8 +36,7 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C
         /// <param name="pixelIndex">The pixel in the chain to draw</param>
         /// <param name="pixelColor">A struct that has an individual color field for Red, Green, and Blue with a range of 0-255 each.</param>
         /// <param name="pixelIntensity">The level from 0 (off) to 31 (highest brightness)</param>
-        public void SetLed(int pixelIndex, Pen pixelColor, int pixelIntensity)
-        {
+        public void SetLed(int pixelIndex, Pen pixelColor, int pixelIntensity) {
             if (this.pixelCount < pixelIndex)
                 throw new ArgumentOutOfRangeException();
 
@@ -62,8 +52,7 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C
             this.ledFrame[ledFrameIndex + 3] = pixelColor.Color.R;
         }
 
-        public void RefreshLeds()
-        {
+        public void RefreshLeds() {
             // The startFrame sends all zeros first in the chain to let the addressable LEDs know the next set of data is the LED Frame Data field.
             this.spiBus.Write(this.startFrame);
             // ledFrame is the entire pixel chain data.
