@@ -5,8 +5,8 @@ using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
     public enum ColorFormat {
-        BGR12bit444,
-        BGR16bit565
+        Bgr12bit444,
+        Bgr16bit565
     }
 
     public class ST7735 {
@@ -138,7 +138,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendCommand(0xF6); //Disable ram power save mode 
             this.SendData(0x00);
 
-            this.SetColorFormat(ColorFormat.BGR16bit565); // Sets default color format to 65k color
+            this.SetColorFormat(ColorFormat.Bgr16bit565); // Sets default color format to 65k color
 
             // Rotate
             this.SendCommand(ST7735_MADCTL);
@@ -185,12 +185,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         public void SetColorFormat(ColorFormat colorFormat) {
             switch (colorFormat) {
-                case ColorFormat.BGR12bit444: // 4k colors mode 
+                case ColorFormat.Bgr12bit444: // 4k colors mode 
                     this.bitsPerPixel = 12;
                     this.SendCommand(0x3A);
                     this.SendData(0x03);
                     break;
-                case ColorFormat.BGR16bit565: // 65k colors mode
+                case ColorFormat.Bgr16bit565: // 65k colors mode
                     this.bitsPerPixel = 16;
                     this.SendCommand(0x3A); 
                     this.SendData(0x05);
