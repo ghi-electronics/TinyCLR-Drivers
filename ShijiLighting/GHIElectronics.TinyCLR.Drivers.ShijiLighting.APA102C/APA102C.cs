@@ -16,10 +16,10 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
             this.startFrame = new byte[4];
             this.stopFrame = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
             this.ledFrame = new byte[this.pixelCount * 4];
-
-            for (var i = 0; i < this.ledFrame.Length; i += 4) { // Initializes frame buffer for active LED frame data
+            
+            // Initializes frame buffer for active LED frame data
+            for (var i = 0; i < this.ledFrame.Length; i += 4) 
                 this.ledFrame[i] = 0xE0;
-            }
 
             var spiSettings = new SpiConnectionSettings(chipselect) {
                 Mode = SpiMode.Mode0,
