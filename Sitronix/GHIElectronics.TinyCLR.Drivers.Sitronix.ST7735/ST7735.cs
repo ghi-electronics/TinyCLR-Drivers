@@ -54,13 +54,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.resetPin = GPIO.OpenPin(resetPin);
             this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
 
-            var spiSettings = new SpiConnectionSettings(chipSelect) {
-                Mode = SpiMode.Mode3,
-                ClockFrequency = 12000000,
-                DataBitLength = 8
-            };
-            
-            this.spiBus = SpiController.FromName(spiId).GetDevice(spiSettings);
+            this.spiBus = SpiController.FromName(spiId).GetDevice(new SpiConnectionSettings(chipSelect) { Mode = SpiMode.Mode3, ClockFrequency = 12000000, DataBitLength = 8 });
 
             this.Reset();
             this.InitializeST7735();
