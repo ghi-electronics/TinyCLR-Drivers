@@ -20,9 +20,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private readonly GpioPin resetPin;
         private readonly GpioPin controlPin;
 
-        private readonly byte[] singleByteBuffer;
-        private readonly byte[] twoByteBuffer;
-        private readonly byte[] wordBuffer;
+        private readonly byte[] buffer1;
+        private readonly byte[] buffer2;
+        private readonly byte[] buffer4;
 
         private int drawWindowX = 0;
         private int drawWindowY = 0;
@@ -42,9 +42,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public const int maxHeight = 128;
 
         public ST7735(int resetPin, int controlPin, int chipSelect, string spiId) {
-            this.singleByteBuffer = new byte[1];
-            this.twoByteBuffer = new byte[2];
-            this.wordBuffer = new byte[4];
+            this.buffer1 = new byte[1];
+            this.buffer2 = new byte[2];
+            this.buffer4 = new byte[4];
 
             var GPIO = GpioController.GetDefault();
 
@@ -146,14 +146,14 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         public void SendCommand(byte command) {
-            this.singleByteBuffer[0] = command;
+            this.buffer1[0] = command;
             this.controlPin.Write(GpioPinValue.Low);
-            this.spiBus.Write(this.singleByteBuffer);
+            this.spiBus.Write(this.buffer1);
         }
 
         public void SendData(byte data) {
-            this.singleByteBuffer[0] = data;
-            this.SendData(this.singleByteBuffer);
+            this.buffer1[0] = data;
+            this.SendData(this.buffer1);
         }
 
         public void SendData(byte[] data) {
@@ -169,15 +169,15 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         private void SetClip(int x, int y, int width, int height) {
-            this.wordBuffer[1] = (byte)x;
-            this.wordBuffer[3] = (byte)(x + width - 1);
+            this.buffer4[1] = (byte)x;
+            this.buffer4[3] = (byte)(x + width - 1);
             this.SendCommand(0x2A);
-            this.SendData(this.wordBuffer);
+            this.SendData(this.buffer4);
 
-            this.wordBuffer[1] = (byte)y;
-            this.wordBuffer[3] = (byte)(y + height - 1);
+            this.buffer4[1] = (byte)y;
+            this.buffer4[3] = (byte)(y + height - 1);
             this.SendCommand(0x2B);
-            this.SendData(this.wordBuffer);
+            this.SendData(this.buffer4);
         }
 
         public void SetColorFormat(ColorFormat colorFormat) {
