@@ -57,10 +57,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.spiBus = SpiController.FromName(spiId).GetDevice(new SpiConnectionSettings(chipSelect) { Mode = SpiMode.Mode3, ClockFrequency = 12000000, DataBitLength = 8 });
 
             this.Reset();
-            this.InitializeST7735();
+            this.Initialize();
         }
 
-        private void InitializeST7735() {
+        private void Initialize() {
             this.SendCommand(0x01); // Software Reset Command
             Thread.Sleep(120);
 
