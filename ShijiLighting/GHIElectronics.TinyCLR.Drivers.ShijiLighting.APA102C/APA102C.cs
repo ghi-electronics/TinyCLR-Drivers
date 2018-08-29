@@ -48,11 +48,9 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
         }
 
         public void RefreshLeds() {
-            // The startFrame sends all zeros first in the chain to let the addressable LEDs know the next set of data is the LED Frame Data field.
+            // The APA102C refresh process consists of three frames: Start (four bytes of 0x00), LED (four bytes: Intensity, Blue, Green, and Red times n LEDs), END (four bytes of 0x00). 
             this.spiBus.Write(this.startFrame);
-            // ledFrame is the entire pixel chain data.
             this.spiBus.Write(this.ledFrame);
-
             this.spiBus.Write(this.stopFrame);
         }
     }
