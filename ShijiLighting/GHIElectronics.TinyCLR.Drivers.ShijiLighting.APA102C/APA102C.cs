@@ -38,11 +38,10 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
                 throw new ArgumentOutOfRangeException();
 
             var ledFrameIndex = pixelIndex * 4; // Positions index to beginning of each LED frame
-            var Intensity = pixelIntensity;
 
-            Intensity |= 0x7 << 5;
+            pixelIntensity |= 0x7 << 5;
 
-            this.ledFrame[ledFrameIndex] = (byte)Intensity;
+            this.ledFrame[ledFrameIndex] = (byte)pixelIntensity;
             this.ledFrame[ledFrameIndex + 1] = pixelColor.Color.B;
             this.ledFrame[ledFrameIndex + 2] = pixelColor.Color.G;
             this.ledFrame[ledFrameIndex + 3] = pixelColor.Color.R;
