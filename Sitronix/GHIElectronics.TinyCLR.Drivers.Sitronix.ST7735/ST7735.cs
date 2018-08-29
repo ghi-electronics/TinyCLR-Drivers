@@ -188,6 +188,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
                     break;
             }
         }
+
         public void SetDrawWindow(int x, int y, int width, int height) {
             this.drawWindowX = x;
             this.drawWindowY = y;
