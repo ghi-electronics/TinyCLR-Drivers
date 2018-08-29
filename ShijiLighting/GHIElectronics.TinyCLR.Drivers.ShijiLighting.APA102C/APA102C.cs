@@ -2,8 +2,7 @@
 using System.Drawing;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
-namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C
-{
+namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
     public class APA102C {
         private readonly SpiController spiBusContoller;
         private readonly SpiDevice spiBus;
