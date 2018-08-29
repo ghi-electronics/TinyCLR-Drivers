@@ -29,7 +29,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private int drawWindowWidth;
         private int drawWindowHeight;
 
-        private int bitsPerPixel = 16;
+        private ColorFormat bitsPerPixel;
 
         /// <summary>
         /// The width of the display in pixels.
@@ -45,6 +45,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.buffer1 = new byte[1];
             this.buffer2 = new byte[2];
             this.buffer4 = new byte[4];
+
+            this.bitsPerPixel = ColorFormat.Bgr16bit565;
 
             var GPIO = GpioController.GetDefault();
 
@@ -178,12 +180,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void SetColorFormat(ColorFormat colorFormat) {
             switch (colorFormat) {
                 case ColorFormat.Bgr12bit444: // 4k colors mode 
-                    this.bitsPerPixel = 12;
+                    this.bitsPerPixel = ColorFormat.Bgr12bit444;
                     this.SendCommand(0x3A);
                     this.SendData(0x03);
                     break;
                 case ColorFormat.Bgr16bit565: // 65k colors mode
-                    this.bitsPerPixel = 16;
+                    this.bitsPerPixel = ColorFormat.Bgr16bit565;
                     this.SendCommand(0x3A); 
                     this.SendData(0x05);
                     break;
@@ -210,6 +212,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.WriteData(buffer, offset);
         }
 
-        protected virtual void WriteData(byte[] buffer, int offset) => this.spiBus.Write(buffer, offset, this.drawWindowHeight * this.drawWindowWidth * this.bitsPerPixel / 8);
+        protected virtual void WriteData(byte[] buffer, int offset) => this.spiBus.Write(buffer, offset, this.drawWindowHeight * this.drawWindowWidth * (int)this.bitsPerPixel / 8);
     }
 }
