@@ -26,20 +26,20 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         private int drawWindowX = 0;
         private int drawWindowY = 0;
-        private int drawWindowWidth = maxWidth;
-        private int drawWindowHeight = maxHeight;
+        private int drawWindowWidth = MaxWidth;
+        private int drawWindowHeight = MaxHeight;
 
         private int bitsPerPixel = 16;
 
         /// <summary>
         /// The width of the display in pixels.
         /// </summary>
-        public const int maxWidth = 160;
+        public const int MaxWidth = 160;
 
         /// <summary>
         /// The height of the display in pixels.
         /// </summary>
-        public const int maxHeight = 128;
+        public const int MaxHeight = 128;
 
         public ST7735(int resetPin, int controlPin, int chipSelect, string spiId) {
             this.buffer1 = new byte[1];
