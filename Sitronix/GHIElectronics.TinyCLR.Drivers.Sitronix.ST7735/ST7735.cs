@@ -24,10 +24,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private readonly byte[] buffer2;
         private readonly byte[] buffer4;
 
-        private int drawWindowX = 0;
-        private int drawWindowY = 0;
-        private int drawWindowWidth = MaxWidth;
-        private int drawWindowHeight = MaxHeight;
+        private int drawWindowX;
+        private int drawWindowY;
+        private int drawWindowWidth;
+        private int drawWindowHeight;
 
         private int bitsPerPixel = 16;
 
@@ -58,6 +58,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             this.Reset();
             this.Initialize();
+            this.SetDrawWindow(0, 0, MaxWidth, MaxHeight); // Initializing drawWindow variables.
         }
 
         private void Initialize() {
