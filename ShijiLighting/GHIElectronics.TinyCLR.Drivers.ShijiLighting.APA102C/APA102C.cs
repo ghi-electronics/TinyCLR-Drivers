@@ -4,7 +4,6 @@ using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
     public class APA102C {
-        private readonly SpiController spiBusContoller;
         private readonly SpiDevice spiBus;
         private readonly byte[] startFrame;
         private readonly byte[] stopFrame;
@@ -28,8 +27,7 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
                 UseControllerChipSelect = false
             };
 
-            this.spiBusContoller = SpiController.FromName(spiId);
-            this.spiBus = this.spiBusContoller.GetDevice(spiSettings);
+            this.spiBus = SpiController.FromName(spiId).GetDevice(new SpiConnectionSettings(chipselect) { Mode = SpiMode.Mode0, ClockFrequency = 1_200_000, DataBitLength = 8, UseControllerChipSelect = false });
         }
 
         /// <param name="pixelIndex">The pixel in the chain to draw</param>
