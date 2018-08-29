@@ -1,5 +1,4 @@
 ﻿using System.Threading;
-
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
@@ -16,7 +15,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private const byte MADCTL_MV = 0x20;
         private const byte MADCTL_BGR = 0x08;
 
-        private readonly SpiController spiBusContoller;
         private readonly SpiDevice spiBus;
 
         private readonly GpioPin resetPin;
@@ -61,9 +59,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
                 ClockFrequency = 12000000,
                 DataBitLength = 8
             };
-
-            this.spiBusContoller = SpiController.FromName(spiId);
-            this.spiBus = this.spiBusContoller.GetDevice(spiSettings);
+            
+            this.spiBus = SpiController.FromName(spiId).GetDevice(spiSettings);
 
             this.Reset();
             this.InitializeST7735();
