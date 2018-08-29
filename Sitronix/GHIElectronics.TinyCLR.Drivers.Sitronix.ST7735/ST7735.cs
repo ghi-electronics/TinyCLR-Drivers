@@ -4,8 +4,8 @@ using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
     public enum ColorFormat {
-        Bgr12bit444,
-        Bgr16bit565
+        Bgr12bit444 = 12,
+        Bgr16bit565 = 16
     }
 
     public class ST7735 {
