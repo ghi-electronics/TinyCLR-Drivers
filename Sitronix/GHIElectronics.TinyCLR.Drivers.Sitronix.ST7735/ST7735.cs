@@ -48,12 +48,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             this.bitsPerPixel = ColorFormat.Bgr16bit565;
 
-            var GPIO = GpioController.GetDefault();
+            var gpio = GpioController.GetDefault();
 
-            this.controlPin = GPIO.OpenPin(controlPin);
+            this.controlPin = gpio.OpenPin(controlPin);
             this.controlPin.SetDriveMode(GpioPinDriveMode.Output);
 
-            this.resetPin = GPIO.OpenPin(resetPin);
+            this.resetPin = gpio.OpenPin(resetPin);
             this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
 
             this.spiBus = SpiController.FromName(spiId).GetDevice(new SpiConnectionSettings(chipSelect) { Mode = SpiMode.Mode3, ClockFrequency = 12000000, DataBitLength = 8 });
