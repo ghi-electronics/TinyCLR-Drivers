@@ -20,9 +20,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private readonly GpioPin resetPin;
         private readonly GpioPin controlPin;
 
-        private readonly byte[] buffer1;
-        private readonly byte[] buffer2;
-        private readonly byte[] buffer4;
+        private readonly byte[] buffer1 = new byte[1];
+        private readonly byte[] buffer2 = new byte[2];
+        private readonly byte[] buffer4 = new byte[4];
 
         private int drawWindowX;
         private int drawWindowY;
@@ -42,10 +42,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public const int MaxHeight = 128;
 
         public ST7735(int resetPin, int controlPin, int chipSelect, string spiId) {
-            this.buffer1 = new byte[1];
-            this.buffer2 = new byte[2];
-            this.buffer4 = new byte[4];
-
             this.bitsPerPixel = ColorFormat.Bgr16bit565;
 
             var gpio = GpioController.GetDefault();
