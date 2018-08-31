@@ -10,7 +10,7 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
         private readonly byte[] ledFrame;
         private readonly int pixelCount;
 
-        public APA102C(int pixelCount, string spiId, int chipselect) {
+        public APA102C(int pixelCount, string spiId, int chipSelect) {
             this.pixelCount = pixelCount;
             this.startFrame = new byte[4];
             this.stopFrame = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
