@@ -84,6 +84,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.Initialize();
             this.SetDataFormat(DisplayDataFormat.Rgb565);
             this.SetDrawWindow(0, 0, ST7735.MaxWidth, ST7735.MaxHeight);
+            this.Enable();
         }
 
         private void Reset() {
@@ -139,9 +140,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendCommand(0xC5);
             this.SendData(0x0E);
 
-            this.SendCommand(ST7735CommandId.MADCTL);
-            this.SendData(MADCTL_MX | MADCTL_MY | MADCTL_BGR);
-
             //Gamma Sequence
             this.SendCommand(0xE0);
             this.SendData(0x0F); this.SendData(0x1A);
@@ -163,14 +161,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendData(0x00); this.SendData(0x07);
             this.SendData(0x03); this.SendData(0x10);
 
-            this.SendCommand(ST7735CommandId.CASET);
-            this.SendData(0x00); this.SendData(0x00);
-            this.SendData(0x00); this.SendData(0x7F);
-
-            this.SendCommand(ST7735CommandId.RASET);
-            this.SendData(0x00); this.SendData(0x00);
-            this.SendData(0x00); this.SendData(0x9F);
-
             //Enable test command
             this.SendCommand(0xF0);
             this.SendData(0x01);
@@ -181,10 +171,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             this.SendCommand(ST7735CommandId.MADCTL);
             this.SendData(MADCTL_MV | MADCTL_MY);
-
-            this.SendCommand(ST7735CommandId.DISPON);
-            Thread.Sleep(50);
         }
+
+        public void Enable() => this.SendCommand(ST7735CommandId.DISPON);
+        public void Disable() => this.SendCommand(ST7735CommandId.DISPOFF);
 
         public void SendCommand(ST7735CommandId command) => this.SendCommand((byte)command);
 
