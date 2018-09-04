@@ -103,7 +103,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             Thread.Sleep(120);
 
             this.SendCommand(ST7735CommandId.SLPOUT);
-            Thread.Sleep(200);
+            Thread.Sleep(120);
 
             //Frame Rate
             this.SendCommand(0xB1);
