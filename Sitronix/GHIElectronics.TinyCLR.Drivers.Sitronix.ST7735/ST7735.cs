@@ -41,11 +41,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
     }
 
     public class ST7735 {
-        private const byte MADCTL_MY = 0x80;
-        private const byte MADCTL_MX = 0x40;
-        private const byte MADCTL_MV = 0x20;
-        private const byte MADCTL_BGR = 0x08;
-
         private readonly byte[] buffer1 = new byte[1];
         private readonly byte[] buffer4 = new byte[4];
         private readonly SpiDevice spi;
@@ -53,13 +48,14 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private readonly GpioPin control;
 
         private int bpp;
+        private bool rowColumnSwapped;
 
         public DisplayDataFormat DataFormat { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public static int MaxWidth { get; } = 160;
-        public static int MaxHeight { get; } = 128;
+        public int MaxWidth => this.rowColumnSwapped ? 160 : 128;
+        public int MaxHeight => this.rowColumnSwapped ? 128 : 160;
 
         public static SpiConnectionSettings GetConnectionSettings(int chipSelectLine) => new SpiConnectionSettings(chipSelectLine) {
             Mode = SpiMode.Mode3,
@@ -83,7 +79,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.Reset();
             this.Initialize();
             this.SetDataFormat(DisplayDataFormat.Rgb565);
-            this.SetDrawWindow(0, 0, ST7735.MaxWidth, ST7735.MaxHeight);
+            this.SetDataOrder(false, false, false);
+            this.SetDrawWindow(0, 0, this.MaxWidth, this.MaxHeight);
             this.Enable();
         }
 
@@ -168,9 +165,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             //Disable ram power save mode
             this.SendCommand(0xF6);
             this.SendData(0x00);
-
-            this.SendCommand(ST7735CommandId.MADCTL);
-            this.SendData(MADCTL_MV | MADCTL_MY);
         }
 
         public void Enable() => this.SendCommand(ST7735CommandId.DISPON);
@@ -193,6 +187,19 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void SendData(byte[] data) {
             this.control.Write(GpioPinValue.High);
             this.spi.Write(data);
+        }
+
+        public void SetDataOrder(bool swapRowColumn, bool invertRow, bool invertColumn) {
+            var val = default(byte);
+
+            if (swapRowColumn) val |= 0b0010_0000;
+            if (invertColumn) val |= 0b0100_0000;
+            if (invertRow) val |= 0b1000_0000;
+
+            this.SendCommand(ST7735CommandId.MADCTL);
+            this.SendData(val);
+
+            this.rowColumnSwapped = swapRowColumn;
         }
 
         public void SetDataFormat(DisplayDataFormat colorFormat) {
