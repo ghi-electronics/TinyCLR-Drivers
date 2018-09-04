@@ -63,7 +63,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         GAMCTRN1 = 0xE1,
     }
 
-    public class ST7735 : IDisplayControllerProvider {
+    public class ST7735Controller : IDisplayControllerProvider {
         private readonly byte[] buffer1 = new byte[1];
         private readonly byte[] buffer4 = new byte[4];
         private readonly SpiDevice spi;
@@ -88,11 +88,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             DataBitLength = 8
         };
 
-        public ST7735(SpiDevice spi, GpioPin control) : this(spi, control, null) {
+        public ST7735Controller(SpiDevice spi, GpioPin control) : this(spi, control, null) {
 
         }
 
-        public ST7735(SpiDevice spi, GpioPin control, GpioPin reset) {
+        public ST7735Controller(SpiDevice spi, GpioPin control, GpioPin reset) {
             this.spi = spi;
 
             this.control = control;
