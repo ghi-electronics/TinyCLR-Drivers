@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Display;
+using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
@@ -62,7 +63,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         GAMCTRN1 = 0xE1,
     }
 
-    public class ST7735 : IDisposable {
+    public class ST7735 : IDisplayControllerProvider {
         private readonly byte[] buffer1 = new byte[1];
         private readonly byte[] buffer4 = new byte[4];
         private readonly SpiDevice spi;
@@ -71,6 +72,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         private int bpp;
         private bool rowColumnSwapped;
+        private int x;
+        private int y;
 
         public DisplayDataFormat DataFormat { get; private set; }
         public int Width { get; private set; }
@@ -270,6 +273,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         public void SetDrawWindow(int x, int y, int width, int height) {
+            this.x = x;
+            this.y = y;
+
             this.Width = width;
             this.Height = height;
 
@@ -295,6 +301,35 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendDrawCommand();
 
             this.spi.Write(buffer, offset, this.Height * this.Width * this.bpp / 8);
+        }
+
+        DisplayInterface IDisplayControllerProvider.Interface => DisplayInterface.Spi;
+        DisplayDataFormat[] IDisplayControllerProvider.SupportedDataFormats => new[] { DisplayDataFormat.Rgb444, DisplayDataFormat.Rgb565 };
+
+        void IDisplayControllerProvider.DrawString(string value) => throw new NotSupportedException();
+        void IDisplayControllerProvider.DrawPixel(int x, int y, long color) => throw new NotSupportedException();
+
+        void IDisplayControllerProvider.SetConfiguration(DisplayControllerSettings configuration) {
+            if (!(configuration is SpiDisplayControllerSettings config)) throw new InvalidOperationException();
+
+            this.SetDataFormat(config.DataFormat);
+            this.SetDrawWindow(0, 0, config.Width, config.Height);
+        }
+
+        void IDisplayControllerProvider.DrawBuffer(int x, int y, int width, int height, byte[] data, int offset) {
+            if (x == 0 && y == 0 && width == this.Width && height == this.Height) {
+                this.DrawBuffer(data, offset);
+            }
+            else {
+                var cX = this.x;
+                var cY = this.y;
+                var cW = this.Width;
+                var cH = this.Height;
+
+                this.SetDrawWindow(x, y, width, height);
+                this.DrawBuffer(data, offset);
+                this.SetDrawWindow(cX, cY, cW, cH);
+            }
         }
     }
 }
