@@ -15,10 +15,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private const byte MADCTL_MV = 0x20;
         private const byte MADCTL_BGR = 0x08;
 
-        private readonly SpiDevice spiBus;
-
-        private readonly GpioPin resetPin;
-        private readonly GpioPin controlPin;
+        private readonly SpiDevice spi;
+        private readonly GpioPin reset;
+        private readonly GpioPin control;
 
         private readonly byte[] buffer1;
         private readonly byte[] buffer2;
@@ -31,43 +30,51 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         private ColorFormat bitsPerPixel;
 
-        /// <summary>
-        /// The width of the display in pixels.
-        /// </summary>
         public const int MaxWidth = 160;
-
-        /// <summary>
-        /// The height of the display in pixels.
-        /// </summary>
         public const int MaxHeight = 128;
 
-        public ST7735(int resetPin, int controlPin, int chipSelect, string spiId) {
+        public static SpiConnectionSettings GetConnectionSettings(int chipSelectLine) => new SpiConnectionSettings(chipSelectLine) { Mode = SpiMode.Mode3, ClockFrequency = 12_000_000, DataBitLength = 8 };
+
+        public ST7735(SpiDevice spi, GpioPin control) : this(spi, control, null) {
+
+        }
+
+        public ST7735(SpiDevice spi, GpioPin control, GpioPin reset) {
             this.buffer1 = new byte[1];
             this.buffer2 = new byte[2];
             this.buffer4 = new byte[4];
 
             this.bitsPerPixel = ColorFormat.Bgr16bit565;
 
-            var GPIO = GpioController.GetDefault();
+            this.spi = spi;
 
-            this.controlPin = GPIO.OpenPin(controlPin);
-            this.controlPin.SetDriveMode(GpioPinDriveMode.Output);
+            this.control = control;
+            this.control.SetDriveMode(GpioPinDriveMode.Output);
 
-            this.resetPin = GPIO.OpenPin(resetPin);
-            this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
-
-            this.spiBus = SpiController.FromName(spiId).GetDevice(new SpiConnectionSettings(chipSelect) { Mode = SpiMode.Mode3, ClockFrequency = 12000000, DataBitLength = 8 });
+            this.reset = reset;
+            this.reset?.SetDriveMode(GpioPinDriveMode.Output);
 
             this.Reset();
             this.Initialize();
-            this.SetDrawWindow(0, 0, MaxWidth, MaxHeight); // Initializing drawWindow variables.
+            this.SetDrawWindow(0, 0, ST7735.MaxWidth, ST7735.MaxHeight);
+        }
+
+        private void Reset() {
+            if (this.reset == null)
+                return;
+
+            this.reset.Write(GpioPinValue.Low);
+            Thread.Sleep(50);
+
+            this.reset.Write(GpioPinValue.High);
+            Thread.Sleep(200);
         }
 
         private void Initialize() {
             this.SendCommand(0x01); // Software Reset Command
             Thread.Sleep(120);
 
-            this.SendCommand(0x11); //Sleep exit 
+            this.SendCommand(0x11); //Sleep exit
             Thread.Sleep(200);
 
             // ST7735R Frame Rate
@@ -79,7 +86,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
             this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
 
-            this.SendCommand(0xB4); // Column inversion 
+            this.SendCommand(0xB4); // Column inversion
             this.SendData(0x07);
 
             // ST7735R Power Sequence
@@ -93,7 +100,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendCommand(0xC4);
             this.SendData(0x8A); this.SendData(0xEE);
 
-            this.SendCommand(0xC5); // VCOM 
+            this.SendCommand(0xC5); // VCOM
             this.SendData(0x0E);
 
             this.SendCommand(0x36); // MX, MY, RGB mode
@@ -127,9 +134,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendData(0x00); this.SendData(0x00);
             this.SendData(0x00); this.SendData(0x9f);
 
-            this.SendCommand(0xF0); //Enable test command  
+            this.SendCommand(0xF0); //Enable test command
             this.SendData(0x01);
-            this.SendCommand(0xF6); //Disable ram power save mode 
+            this.SendCommand(0xF6); //Disable ram power save mode
             this.SendData(0x00);
 
             this.SetColorFormat(ColorFormat.Bgr16bit565); // Sets default color format to 65k color
@@ -144,25 +151,19 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         public void SendCommand(byte command) {
             this.buffer1[0] = command;
-            this.controlPin.Write(GpioPinValue.Low);
-            this.spiBus.Write(this.buffer1);
+            this.control.Write(GpioPinValue.Low);
+            this.spi.Write(this.buffer1);
         }
 
         public void SendData(byte data) {
             this.buffer1[0] = data;
-            this.SendData(this.buffer1);
+            this.control.Write(GpioPinValue.High);
+            this.spi.Write(this.buffer1);
         }
 
         public void SendData(byte[] data) {
-            this.controlPin.Write(GpioPinValue.High);
-            this.spiBus.Write(data);
-        }
-
-        private void Reset() {
-            this.resetPin.Write(GpioPinValue.Low);
-            Thread.Sleep(50);
-            this.resetPin.Write(GpioPinValue.High);
-            Thread.Sleep(200);
+            this.control.Write(GpioPinValue.High);
+            this.spi.Write(data);
         }
 
         private void SetClip(int x, int y, int width, int height) {
@@ -179,14 +180,14 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         public void SetColorFormat(ColorFormat colorFormat) {
             switch (colorFormat) {
-                case ColorFormat.Bgr12bit444: // 4k colors mode 
+                case ColorFormat.Bgr12bit444: // 4k colors mode
                     this.bitsPerPixel = ColorFormat.Bgr12bit444;
                     this.SendCommand(0x3A);
                     this.SendData(0x03);
                     break;
                 case ColorFormat.Bgr16bit565: // 65k colors mode
                     this.bitsPerPixel = ColorFormat.Bgr16bit565;
-                    this.SendCommand(0x3A); 
+                    this.SendCommand(0x3A);
                     this.SendData(0x05);
                     break;
             }
@@ -198,20 +199,20 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.drawWindowWidth = width;
             this.drawWindowHeight = height;
         }
-            
+
         public void PrepareToDraw() {
             this.SetClip(this.drawWindowX, this.drawWindowY, this.drawWindowWidth, this.drawWindowHeight);
             this.SendCommand(0x2C);
-            this.controlPin.Write(GpioPinValue.High);
+            this.control.Write(GpioPinValue.High);
         }
 
         public void DrawBuffer(byte[] buffer) => this.DrawBuffer(buffer, 0);
-        
+
         public void DrawBuffer(byte[] buffer, int offset) {
             this.PrepareToDraw();
             this.WriteData(buffer, offset);
         }
 
-        protected virtual void WriteData(byte[] buffer, int offset) => this.spiBus.Write(buffer, offset, this.drawWindowHeight * this.drawWindowWidth * (int)this.bitsPerPixel / 8);
+        protected virtual void WriteData(byte[] buffer, int offset) => this.spi.Write(buffer, offset, this.drawWindowHeight * this.drawWindowWidth * (int)this.bitsPerPixel / 8);
     }
 }
