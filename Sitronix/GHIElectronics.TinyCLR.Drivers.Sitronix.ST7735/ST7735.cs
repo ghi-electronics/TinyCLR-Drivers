@@ -210,9 +210,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         public void DrawBuffer(byte[] buffer, int offset) {
             this.PrepareToDraw();
-            this.WriteData(buffer, offset);
-        }
 
-        protected virtual void WriteData(byte[] buffer, int offset) => this.spi.Write(buffer, offset, this.drawWindowHeight * this.drawWindowWidth * (int)this.bitsPerPixel / 8);
+            this.spi.Write(buffer, offset, this.drawWindowHeight * this.drawWindowWidth * (int)this.bitsPerPixel / 8);
+        }
     }
 }
