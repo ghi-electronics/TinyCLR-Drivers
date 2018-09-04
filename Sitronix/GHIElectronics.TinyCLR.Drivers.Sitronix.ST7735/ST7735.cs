@@ -62,12 +62,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         GAMCTRN1 = 0xE1,
     }
 
-    public class ST7735 {
+    public class ST7735 : IDisposable {
         private readonly byte[] buffer1 = new byte[1];
         private readonly byte[] buffer4 = new byte[4];
         private readonly SpiDevice spi;
-        private readonly GpioPin reset;
         private readonly GpioPin control;
+        private readonly GpioPin reset;
 
         private int bpp;
         private bool rowColumnSwapped;
@@ -203,6 +203,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendData(0x07);
             this.SendData(0x03);
             this.SendData(0x10);
+        }
+
+        public void Dispose() {
+            this.spi.Dispose();
+            this.control.Dispose();
+            this.reset?.Dispose();
         }
 
         public void Enable() => this.SendCommand(ST7735CommandId.DISPON);
