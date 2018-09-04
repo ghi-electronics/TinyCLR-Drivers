@@ -106,7 +106,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SetDataFormat(DisplayDataFormat.Rgb565);
             this.SetDataOrder(false, false, false);
             this.SetDrawWindow(0, 0, this.MaxWidth, this.MaxHeight);
-            this.Enable();
         }
 
         private void Reset() {
