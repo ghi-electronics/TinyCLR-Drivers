@@ -157,14 +157,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendData(0x39); this.SendData(0x3F);
             this.SendData(0x00); this.SendData(0x07);
             this.SendData(0x03); this.SendData(0x10);
-
-            //Enable test command
-            this.SendCommand(0xF0);
-            this.SendData(0x01);
-
-            //Disable ram power save mode
-            this.SendCommand(0xF6);
-            this.SendData(0x00);
         }
 
         public void Enable() => this.SendCommand(ST7735CommandId.DISPON);
