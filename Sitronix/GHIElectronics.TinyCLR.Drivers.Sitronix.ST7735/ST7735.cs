@@ -64,79 +64,96 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         private void Initialize() {
-            this.SendCommand(0x01); // Software Reset Command
+            //Software Reset Command
+            this.SendCommand(0x01);
             Thread.Sleep(120);
 
-            this.SendCommand(0x11); //Sleep exit
+            //Sleep exit
+            this.SendCommand(0x11);
             Thread.Sleep(200);
 
-            // ST7735R Frame Rate
+            //Frame Rate
             this.SendCommand(0xB1);
             this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
+
             this.SendCommand(0xB2);
             this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
+
             this.SendCommand(0xB3);
             this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
             this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
 
-            this.SendCommand(0xB4); // Column inversion
+            //Column inversion
+            this.SendCommand(0xB4);
             this.SendData(0x07);
 
-            // ST7735R Power Sequence
+            //Power Sequence
             this.SendCommand(0xC0);
             this.SendData(0xA2); this.SendData(0x02); this.SendData(0x84);
-            this.SendCommand(0xC1); this.SendData(0xC5);
+
+            this.SendCommand(0xC1);
+            this.SendData(0xC5);
+
             this.SendCommand(0xC2);
             this.SendData(0x0A); this.SendData(0x00);
+
             this.SendCommand(0xC3);
             this.SendData(0x8A); this.SendData(0x2A);
+
             this.SendCommand(0xC4);
             this.SendData(0x8A); this.SendData(0xEE);
 
-            this.SendCommand(0xC5); // VCOM
+            //VCOM
+            this.SendCommand(0xC5);
             this.SendData(0x0E);
 
-            this.SendCommand(0x36); // MX, MY, RGB mode
+            //MX, MY, RGB mode
+            this.SendCommand(0x36);
             this.SendData(MADCTL_MX | MADCTL_MY | MADCTL_BGR);
 
-            // ST7735R Gamma Sequence
-            this.SendCommand(0xe0);
-            this.SendData(0x0f); this.SendData(0x1a);
-            this.SendData(0x0f); this.SendData(0x18);
-            this.SendData(0x2f); this.SendData(0x28);
+            //Gamma Sequence
+            this.SendCommand(0xE0);
+            this.SendData(0x0F); this.SendData(0x1A);
+            this.SendData(0x0F); this.SendData(0x18);
+            this.SendData(0x2F); this.SendData(0x28);
             this.SendData(0x20); this.SendData(0x22);
-            this.SendData(0x1f); this.SendData(0x1b);
-            this.SendData(0x23); this.SendData(0x37); this.SendData(0x00);
-
-            this.SendData(0x07);
+            this.SendData(0x1F); this.SendData(0x1B);
+            this.SendData(0x23); this.SendData(0x37);
+            this.SendData(0x00); this.SendData(0x07);
             this.SendData(0x02); this.SendData(0x10);
-            this.SendCommand(0xe1);
-            this.SendData(0x0f); this.SendData(0x1b);
-            this.SendData(0x0f); this.SendData(0x17);
-            this.SendData(0x33); this.SendData(0x2c);
-            this.SendData(0x29); this.SendData(0x2e);
+
+            this.SendCommand(0xE1);
+            this.SendData(0x0F); this.SendData(0x1B);
+            this.SendData(0x0F); this.SendData(0x17);
+            this.SendData(0x33); this.SendData(0x2C);
+            this.SendData(0x29); this.SendData(0x2E);
             this.SendData(0x30); this.SendData(0x30);
-            this.SendData(0x39); this.SendData(0x3f);
+            this.SendData(0x39); this.SendData(0x3F);
             this.SendData(0x00); this.SendData(0x07);
             this.SendData(0x03); this.SendData(0x10);
 
-            this.SendCommand(0x2a);
+            this.SendCommand(0x2A);
             this.SendData(0x00); this.SendData(0x00);
-            this.SendData(0x00); this.SendData(0x7f);
-            this.SendCommand(0x2b);
-            this.SendData(0x00); this.SendData(0x00);
-            this.SendData(0x00); this.SendData(0x9f);
+            this.SendData(0x00); this.SendData(0x7F);
 
-            this.SendCommand(0xF0); //Enable test command
+            this.SendCommand(0x2B);
+            this.SendData(0x00); this.SendData(0x00);
+            this.SendData(0x00); this.SendData(0x9F);
+
+            //Enable test command
+            this.SendCommand(0xF0);
             this.SendData(0x01);
-            this.SendCommand(0xF6); //Disable ram power save mode
+
+            //Disable ram power save mode
+            this.SendCommand(0xF6);
             this.SendData(0x00);
 
-            // Rotate
+            //Rotate
             this.SendCommand(ST7735_MADCTL);
             this.SendData(MADCTL_MV | MADCTL_MY);
 
-            this.SendCommand(0x29); //Display on
+            //Display on
+            this.SendCommand(0x29);
             Thread.Sleep(50);
         }
 
