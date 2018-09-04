@@ -19,9 +19,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private readonly GpioPin reset;
         private readonly GpioPin control;
 
-        private readonly byte[] buffer1;
-        private readonly byte[] buffer2;
-        private readonly byte[] buffer4;
+        private readonly byte[] buffer1 = new byte[1];
+        private readonly byte[] buffer4 = new byte[4];
 
         private ColorFormat bitsPerPixel;
         private int drawWidth;
@@ -41,10 +40,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         public ST7735(SpiDevice spi, GpioPin control, GpioPin reset) {
-            this.buffer1 = new byte[1];
-            this.buffer2 = new byte[2];
-            this.buffer4 = new byte[4];
-
             this.bitsPerPixel = ColorFormat.Bgr16bit565;
 
             this.spi = spi;
