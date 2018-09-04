@@ -5,8 +5,42 @@ using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
+    public enum ST7735CommandId : byte {
+        NOP = 0x00,
+        SWRESET = 0x01,
+        RDDID = 0x04,
+        RDDST = 0x09,
+        RDDPM = 0x0A,
+        RDDMADCTL = 0x0B,
+        RDDCOLMOD = 0x0C,
+        RDDIM = 0x0D,
+        RDDSM = 0x0E,
+        SLPIN = 0x10,
+        SLPOUT = 0x11,
+        PTLON = 0x12,
+        NORON = 0x13,
+        INVOFF = 0x20,
+        INVON = 0x21,
+        GAMSET = 0x26,
+        DISPOFF = 0x28,
+        DISPON = 0x29,
+        CASET = 0x2A,
+        RASET = 0x2B,
+        RAMWR = 0x2C,
+        RAMRD = 0x2E,
+        PTLAR = 0x30,
+        TEOFF = 0x34,
+        TEON = 0x35,
+        MADCTL = 0x36,
+        IDMOFF = 0x38,
+        IDMON = 0x39,
+        COLMOD = 0x3A,
+        RDID1 = 0xDA,
+        RDID2 = 0xDB,
+        RDID3 = 0xDC,
+    }
+
     public class ST7735 {
-        private const byte ST7735_MADCTL = 0x36;
         private const byte MADCTL_MY = 0x80;
         private const byte MADCTL_MX = 0x40;
         private const byte MADCTL_MV = 0x20;
@@ -64,12 +98,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         private void Initialize() {
-            //Software Reset Command
-            this.SendCommand(0x01);
+            this.SendCommand(ST7735CommandId.SWRESET);
             Thread.Sleep(120);
 
-            //Sleep exit
-            this.SendCommand(0x11);
+            this.SendCommand(ST7735CommandId.SLPOUT);
             Thread.Sleep(200);
 
             //Frame Rate
@@ -107,8 +139,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendCommand(0xC5);
             this.SendData(0x0E);
 
-            //MX, MY, RGB mode
-            this.SendCommand(0x36);
+            this.SendCommand(ST7735CommandId.MADCTL);
             this.SendData(MADCTL_MX | MADCTL_MY | MADCTL_BGR);
 
             //Gamma Sequence
@@ -132,11 +163,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendData(0x00); this.SendData(0x07);
             this.SendData(0x03); this.SendData(0x10);
 
-            this.SendCommand(0x2A);
+            this.SendCommand(ST7735CommandId.CASET);
             this.SendData(0x00); this.SendData(0x00);
             this.SendData(0x00); this.SendData(0x7F);
 
-            this.SendCommand(0x2B);
+            this.SendCommand(ST7735CommandId.RASET);
             this.SendData(0x00); this.SendData(0x00);
             this.SendData(0x00); this.SendData(0x9F);
 
@@ -148,14 +179,14 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendCommand(0xF6);
             this.SendData(0x00);
 
-            //Rotate
-            this.SendCommand(ST7735_MADCTL);
+            this.SendCommand(ST7735CommandId.MADCTL);
             this.SendData(MADCTL_MV | MADCTL_MY);
 
-            //Display on
-            this.SendCommand(0x29);
+            this.SendCommand(ST7735CommandId.DISPON);
             Thread.Sleep(50);
         }
+
+        public void SendCommand(ST7735CommandId command) => this.SendCommand((byte)command);
 
         public void SendCommand(byte command) {
             this.buffer1[0] = command;
@@ -178,14 +209,14 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             switch (colorFormat) {
                 case DisplayDataFormat.Rgb444:
                     this.bpp = 12;
-                    this.SendCommand(0x3A);
+                    this.SendCommand(ST7735CommandId.COLMOD);
                     this.SendData(0x03);
 
                     break;
 
                 case DisplayDataFormat.Rgb565:
                     this.bpp = 16;
-                    this.SendCommand(0x3A);
+                    this.SendCommand(ST7735CommandId.COLMOD);
                     this.SendData(0x05);
 
                     break;
@@ -203,17 +234,17 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             this.buffer4[1] = (byte)x;
             this.buffer4[3] = (byte)(x + width - 1);
-            this.SendCommand(0x2A);
+            this.SendCommand(ST7735CommandId.CASET);
             this.SendData(this.buffer4);
 
             this.buffer4[1] = (byte)y;
             this.buffer4[3] = (byte)(y + height - 1);
-            this.SendCommand(0x2B);
+            this.SendCommand(ST7735CommandId.RASET);
             this.SendData(this.buffer4);
         }
 
         public void SendDrawCommand() {
-            this.SendCommand(0x2C);
+            this.SendCommand(ST7735CommandId.RAMWR);
             this.control.Write(GpioPinValue.High);
         }
 
