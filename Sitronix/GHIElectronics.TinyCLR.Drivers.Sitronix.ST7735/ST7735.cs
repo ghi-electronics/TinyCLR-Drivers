@@ -1,13 +1,10 @@
-﻿using GHIElectronics.TinyCLR.Devices.Gpio;
-using GHIElectronics.TinyCLR.Devices.Spi;
+﻿using System;
 using System.Threading;
+using GHIElectronics.TinyCLR.Devices.Display;
+using GHIElectronics.TinyCLR.Devices.Gpio;
+using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
-    public enum ColorFormat {
-        Bgr12bit444 = 12,
-        Bgr16bit565 = 16
-    }
-
     public class ST7735 {
         private const byte ST7735_MADCTL = 0x36;
         private const byte MADCTL_MY = 0x80;
@@ -15,19 +12,20 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private const byte MADCTL_MV = 0x20;
         private const byte MADCTL_BGR = 0x08;
 
+        private readonly byte[] buffer1 = new byte[1];
+        private readonly byte[] buffer4 = new byte[4];
         private readonly SpiDevice spi;
         private readonly GpioPin reset;
         private readonly GpioPin control;
 
-        private readonly byte[] buffer1 = new byte[1];
-        private readonly byte[] buffer4 = new byte[4];
+        private int bpp;
 
-        private ColorFormat bitsPerPixel;
-        private int drawWidth;
-        private int drawHeight;
+        public DisplayDataFormat DataFormat { get; private set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
-        public const int MaxWidth = 160;
-        public const int MaxHeight = 128;
+        public static int MaxWidth { get; } = 160;
+        public static int MaxHeight { get; } = 128;
 
         public static SpiConnectionSettings GetConnectionSettings(int chipSelectLine) => new SpiConnectionSettings(chipSelectLine) {
             Mode = SpiMode.Mode3,
@@ -40,8 +38,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         public ST7735(SpiDevice spi, GpioPin control, GpioPin reset) {
-            this.bitsPerPixel = ColorFormat.Bgr16bit565;
-
             this.spi = spi;
 
             this.control = control;
@@ -52,6 +48,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             this.Reset();
             this.Initialize();
+            this.SetDataFormat(DisplayDataFormat.Rgb565);
             this.SetDrawWindow(0, 0, ST7735.MaxWidth, ST7735.MaxHeight);
         }
 
@@ -135,8 +132,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendCommand(0xF6); //Disable ram power save mode
             this.SendData(0x00);
 
-            this.SetColorFormat(ColorFormat.Bgr16bit565); // Sets default color format to 65k color
-
             // Rotate
             this.SendCommand(ST7735_MADCTL);
             this.SendData(MADCTL_MV | MADCTL_MY);
@@ -162,24 +157,32 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.spi.Write(data);
         }
 
-        public void SetColorFormat(ColorFormat colorFormat) {
+        public void SetDataFormat(DisplayDataFormat colorFormat) {
             switch (colorFormat) {
-                case ColorFormat.Bgr12bit444: // 4k colors mode
-                    this.bitsPerPixel = ColorFormat.Bgr12bit444;
+                case DisplayDataFormat.Rgb444:
+                    this.bpp = 12;
                     this.SendCommand(0x3A);
                     this.SendData(0x03);
+
                     break;
-                case ColorFormat.Bgr16bit565: // 65k colors mode
-                    this.bitsPerPixel = ColorFormat.Bgr16bit565;
+
+                case DisplayDataFormat.Rgb565:
+                    this.bpp = 16;
                     this.SendCommand(0x3A);
                     this.SendData(0x05);
+
                     break;
+
+                default:
+                    throw new ArgumentException();
             }
+
+            this.DataFormat = DisplayDataFormat.Rgb444;
         }
 
         public void SetDrawWindow(int x, int y, int width, int height) {
-            this.drawWidth = width;
-            this.drawHeight = height;
+            this.Width = width;
+            this.Height = height;
 
             this.buffer4[1] = (byte)x;
             this.buffer4[3] = (byte)(x + width - 1);
@@ -202,7 +205,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void DrawBuffer(byte[] buffer, int offset) {
             this.SendDrawCommand();
 
-            this.spi.Write(buffer, offset, this.drawHeight * this.drawWidth * (int)this.bitsPerPixel / 8);
+            this.spi.Write(buffer, offset, this.Height * this.Width * this.bpp / 8);
         }
     }
 }
