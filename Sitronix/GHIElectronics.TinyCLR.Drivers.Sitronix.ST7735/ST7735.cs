@@ -6,6 +6,7 @@ using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
     public enum ST7735CommandId : byte {
+        //System
         NOP = 0x00,
         SWRESET = 0x01,
         RDDID = 0x04,
@@ -38,6 +39,27 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         RDID1 = 0xDA,
         RDID2 = 0xDB,
         RDID3 = 0xDC,
+
+        //Panel
+        FRMCTR1 = 0xB1,
+        FRMCTR2 = 0xB2,
+        FRMCTR3 = 0xB3,
+        INVCTR = 0xB4,
+        DISSET5 = 0xB6,
+        PWCTR1 = 0xC0,
+        PWCTR2 = 0xC1,
+        PWCTR3 = 0xC2,
+        PWCTR4 = 0xC3,
+        PWCTR5 = 0xC4,
+        VMCTR1 = 0xC5,
+        VMOFCTR = 0xC7,
+        WRID2 = 0xD1,
+        WRID3 = 0xD2,
+        NVCTR1 = 0xD9,
+        NVCTR2 = 0xDE,
+        NVCTR3 = 0xDF,
+        GAMCTRP1 = 0xE0,
+        GAMCTRN1 = 0xE1,
     }
 
     public class ST7735 {
@@ -102,61 +124,85 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendCommand(ST7735CommandId.SLPOUT);
             Thread.Sleep(120);
 
-            //Frame Rate
-            this.SendCommand(0xB1);
-            this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
+            this.SendCommand(ST7735CommandId.FRMCTR1);
+            this.SendData(0x01);
+            this.SendData(0x2C);
+            this.SendData(0x2D);
 
-            this.SendCommand(0xB2);
-            this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
+            this.SendCommand(ST7735CommandId.FRMCTR2);
+            this.SendData(0x01);
+            this.SendData(0x2C);
+            this.SendData(0x2D);
 
-            this.SendCommand(0xB3);
-            this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
-            this.SendData(0x01); this.SendData(0x2C); this.SendData(0x2D);
+            this.SendCommand(ST7735CommandId.FRMCTR3);
+            this.SendData(0x01);
+            this.SendData(0x2C);
+            this.SendData(0x2D);
+            this.SendData(0x01);
+            this.SendData(0x2C);
+            this.SendData(0x2D);
 
-            //Column inversion
-            this.SendCommand(0xB4);
+            this.SendCommand(ST7735CommandId.INVCTR);
             this.SendData(0x07);
 
-            //Power Sequence
-            this.SendCommand(0xC0);
-            this.SendData(0xA2); this.SendData(0x02); this.SendData(0x84);
+            this.SendCommand(ST7735CommandId.PWCTR1);
+            this.SendData(0xA2);
+            this.SendData(0x02);
+            this.SendData(0x84);
 
-            this.SendCommand(0xC1);
+            this.SendCommand(ST7735CommandId.PWCTR2);
             this.SendData(0xC5);
 
-            this.SendCommand(0xC2);
-            this.SendData(0x0A); this.SendData(0x00);
+            this.SendCommand(ST7735CommandId.PWCTR3);
+            this.SendData(0x0A);
+            this.SendData(0x00);
 
-            this.SendCommand(0xC3);
-            this.SendData(0x8A); this.SendData(0x2A);
+            this.SendCommand(ST7735CommandId.PWCTR4);
+            this.SendData(0x8A);
+            this.SendData(0x2A);
 
-            this.SendCommand(0xC4);
-            this.SendData(0x8A); this.SendData(0xEE);
+            this.SendCommand(ST7735CommandId.PWCTR5);
+            this.SendData(0x8A);
+            this.SendData(0xEE);
 
-            //VCOM
-            this.SendCommand(0xC5);
+            this.SendCommand(ST7735CommandId.VMCTR1);
             this.SendData(0x0E);
 
-            //Gamma Sequence
-            this.SendCommand(0xE0);
-            this.SendData(0x0F); this.SendData(0x1A);
-            this.SendData(0x0F); this.SendData(0x18);
-            this.SendData(0x2F); this.SendData(0x28);
-            this.SendData(0x20); this.SendData(0x22);
-            this.SendData(0x1F); this.SendData(0x1B);
-            this.SendData(0x23); this.SendData(0x37);
-            this.SendData(0x00); this.SendData(0x07);
-            this.SendData(0x02); this.SendData(0x10);
+            this.SendCommand(ST7735CommandId.GAMCTRP1);
+            this.SendData(0x0F);
+            this.SendData(0x1A);
+            this.SendData(0x0F);
+            this.SendData(0x18);
+            this.SendData(0x2F);
+            this.SendData(0x28);
+            this.SendData(0x20);
+            this.SendData(0x22);
+            this.SendData(0x1F);
+            this.SendData(0x1B);
+            this.SendData(0x23);
+            this.SendData(0x37);
+            this.SendData(0x00);
+            this.SendData(0x07);
+            this.SendData(0x02);
+            this.SendData(0x10);
 
-            this.SendCommand(0xE1);
-            this.SendData(0x0F); this.SendData(0x1B);
-            this.SendData(0x0F); this.SendData(0x17);
-            this.SendData(0x33); this.SendData(0x2C);
-            this.SendData(0x29); this.SendData(0x2E);
-            this.SendData(0x30); this.SendData(0x30);
-            this.SendData(0x39); this.SendData(0x3F);
-            this.SendData(0x00); this.SendData(0x07);
-            this.SendData(0x03); this.SendData(0x10);
+            this.SendCommand(ST7735CommandId.GAMCTRN1);
+            this.SendData(0x0F);
+            this.SendData(0x1B);
+            this.SendData(0x0F);
+            this.SendData(0x17);
+            this.SendData(0x33);
+            this.SendData(0x2C);
+            this.SendData(0x29);
+            this.SendData(0x2E);
+            this.SendData(0x30);
+            this.SendData(0x30);
+            this.SendData(0x39);
+            this.SendData(0x3F);
+            this.SendData(0x00);
+            this.SendData(0x07);
+            this.SendData(0x03);
+            this.SendData(0x10);
         }
 
         public void Enable() => this.SendCommand(ST7735CommandId.DISPON);
