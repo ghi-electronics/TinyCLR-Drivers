@@ -1,6 +1,6 @@
-﻿using System.Threading;
-using GHIElectronics.TinyCLR.Devices.Gpio;
+﻿using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
+using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
     public enum ColorFormat {
@@ -23,17 +23,18 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private readonly byte[] buffer2;
         private readonly byte[] buffer4;
 
-        private int drawWindowX;
-        private int drawWindowY;
-        private int drawWindowWidth;
-        private int drawWindowHeight;
-
         private ColorFormat bitsPerPixel;
+        private int drawWidth;
+        private int drawHeight;
 
         public const int MaxWidth = 160;
         public const int MaxHeight = 128;
 
-        public static SpiConnectionSettings GetConnectionSettings(int chipSelectLine) => new SpiConnectionSettings(chipSelectLine) { Mode = SpiMode.Mode3, ClockFrequency = 12_000_000, DataBitLength = 8 };
+        public static SpiConnectionSettings GetConnectionSettings(int chipSelectLine) => new SpiConnectionSettings(chipSelectLine) {
+            Mode = SpiMode.Mode3,
+            ClockFrequency = 12_000_000,
+            DataBitLength = 8
+        };
 
         public ST7735(SpiDevice spi, GpioPin control) : this(spi, control, null) {
 
@@ -166,18 +167,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.spi.Write(data);
         }
 
-        private void SetClip(int x, int y, int width, int height) {
-            this.buffer4[1] = (byte)x;
-            this.buffer4[3] = (byte)(x + width - 1);
-            this.SendCommand(0x2A);
-            this.SendData(this.buffer4);
-
-            this.buffer4[1] = (byte)y;
-            this.buffer4[3] = (byte)(y + height - 1);
-            this.SendCommand(0x2B);
-            this.SendData(this.buffer4);
-        }
-
         public void SetColorFormat(ColorFormat colorFormat) {
             switch (colorFormat) {
                 case ColorFormat.Bgr12bit444: // 4k colors mode
@@ -194,14 +183,21 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         public void SetDrawWindow(int x, int y, int width, int height) {
-            this.drawWindowX = x;
-            this.drawWindowY = y;
-            this.drawWindowWidth = width;
-            this.drawWindowHeight = height;
+            this.drawWidth = width;
+            this.drawHeight = height;
+
+            this.buffer4[1] = (byte)x;
+            this.buffer4[3] = (byte)(x + width - 1);
+            this.SendCommand(0x2A);
+            this.SendData(this.buffer4);
+
+            this.buffer4[1] = (byte)y;
+            this.buffer4[3] = (byte)(y + height - 1);
+            this.SendCommand(0x2B);
+            this.SendData(this.buffer4);
         }
 
-        public void PrepareToDraw() {
-            this.SetClip(this.drawWindowX, this.drawWindowY, this.drawWindowWidth, this.drawWindowHeight);
+        public void SendDrawCommand() {
             this.SendCommand(0x2C);
             this.control.Write(GpioPinValue.High);
         }
@@ -209,9 +205,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void DrawBuffer(byte[] buffer) => this.DrawBuffer(buffer, 0);
 
         public void DrawBuffer(byte[] buffer, int offset) {
-            this.PrepareToDraw();
+            this.SendDrawCommand();
 
-            this.spi.Write(buffer, offset, this.drawWindowHeight * this.drawWindowWidth * (int)this.bitsPerPixel / 8);
+            this.spi.Write(buffer, offset, this.drawHeight * this.drawWidth * (int)this.bitsPerPixel / 8);
         }
     }
 }
