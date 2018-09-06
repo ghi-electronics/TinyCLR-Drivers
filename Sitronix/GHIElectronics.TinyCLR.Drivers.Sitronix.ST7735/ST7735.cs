@@ -216,10 +216,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void Enable() => this.SendCommand(ST7735CommandId.DISPON);
         public void Disable() => this.SendCommand(ST7735CommandId.DISPOFF);
 
-        public void SendCommand(ST7735CommandId command) => this.SendCommand((byte)command);
-
-        public void SendCommand(byte command) {
-            this.buffer1[0] = command;
+        public void SendCommand(ST7735CommandId command) {
+            this.buffer1[0] = (byte)command;
             this.control.Write(GpioPinValue.Low);
             this.spi.Write(this.buffer1);
         }
@@ -248,8 +246,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.rowColumnSwapped = swapRowColumn;
         }
 
-        public void SetDataFormat(DisplayDataFormat colorFormat) {
-            switch (colorFormat) {
+        public void SetDataFormat(DisplayDataFormat dataFormat) {
+            switch (dataFormat) {
                 case DisplayDataFormat.Rgb444:
                     this.bpp = 12;
                     this.SendCommand(ST7735CommandId.COLMOD);
@@ -265,10 +263,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
                     break;
 
                 default:
-                    throw new ArgumentException();
+                    throw new NotSupportedException();
             }
 
-            this.DataFormat = DisplayDataFormat.Rgb444;
+            this.DataFormat = dataFormat;
         }
 
         public void SetDrawWindow(int x, int y, int width, int height) {
