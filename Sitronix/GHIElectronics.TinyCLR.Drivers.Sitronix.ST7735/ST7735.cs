@@ -104,7 +104,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.Reset();
             this.Initialize();
             this.SetDataFormat(DisplayDataFormat.Rgb565);
-            this.SetDataOrder(false, false, false);
+            this.SetDataAccessControl(false, false, false, false);
             this.SetDrawWindow(0, 0, this.MaxWidth, this.MaxHeight);
         }
 
@@ -233,9 +233,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.spi.Write(data);
         }
 
-        public void SetDataOrder(bool swapRowColumn, bool invertRow, bool invertColumn) {
+        public void SetDataAccessControl(bool swapRowColumn, bool invertRow, bool invertColumn, bool useBgrPanel) {
             var val = default(byte);
 
+            if (useBgrPanel) val |= 0b0000_1000;
             if (swapRowColumn) val |= 0b0010_0000;
             if (invertColumn) val |= 0b0100_0000;
             if (invertRow) val |= 0b1000_0000;
