@@ -270,6 +270,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.DataFormat = dataFormat;
         }
 
+        public void SetDrawWindow(int x, int y) => this.SetDrawWindow(x, y, this.Width, this.Height);
+
         public void SetDrawWindow(int x, int y, int width, int height) {
             this.x = x;
             this.y = y;
@@ -311,7 +313,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             if (!(configuration is SpiDisplayControllerSettings config)) throw new InvalidOperationException();
 
             this.SetDataFormat(config.DataFormat);
-            this.SetDrawWindow(0, 0, config.Width, config.Height);
+            this.SetDrawWindow(this.x, this.y, config.Width, config.Height);
         }
 
         void IDisplayControllerProvider.DrawBuffer(int x, int y, int width, int height, byte[] data, int offset) {
@@ -324,7 +326,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
                 var cW = this.Width;
                 var cH = this.Height;
 
-                this.SetDrawWindow(x, y, width, height);
+                this.SetDrawWindow(this.x + x, this.y + y, width, height);
                 this.DrawBuffer(data, offset);
                 this.SetDrawWindow(cX, cY, cW, cH);
             }
