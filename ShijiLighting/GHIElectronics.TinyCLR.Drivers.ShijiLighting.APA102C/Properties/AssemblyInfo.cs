@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C")]
-[assembly: AssemblyDescription("TinyCLR OS Shiji Lighting APA102C Addressable LED Driver")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2018")]
