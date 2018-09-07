@@ -3,55 +3,47 @@ using System.Drawing;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
-    public class APA102C {
-        private readonly SpiDevice spiBus;
-        private readonly byte[] startFrame;
-        private readonly byte[] stopFrame;
-        private readonly byte[] ledFrame;
-        private readonly int pixelCount;
+    public class APA102CController {
+        private readonly byte[] startFrame = { 0x00, 0x00, 0x00, 0x00 };
+        private readonly byte[] stopFrame = { 0xFF, 0xFF, 0xFF, 0xFF };
+        private readonly byte[] dataFrame;
+        private readonly int ledCount;
+        private readonly SpiDevice spi;
 
-        public APA102C(int pixelCount, string spiId, int chipSelect) {
-            this.pixelCount = pixelCount;
-            this.startFrame = new byte[4];
-            this.stopFrame = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
-            this.ledFrame = new byte[this.pixelCount * 4];
-            
-            // Initializes frame buffer for active LED frame data
-            for (var i = 0; i < this.ledFrame.Length; i += 4) 
-                this.ledFrame[i] = 0xE0;
+        public static SpiConnectionSettings GetConnectionSettings() => new SpiConnectionSettings(0) {
+            Mode = SpiMode.Mode0,
+            ClockFrequency = 1_200_000,
+            DataBitLength = 8,
+            UseControllerChipSelect = false
+        };
 
-            var spiSettings = new SpiConnectionSettings(chipselect) {
-                Mode = SpiMode.Mode0,
-                ClockFrequency = 1_200_000,
-                DataBitLength = 8,
-                UseControllerChipSelect = false
-            };
+        public APA102CController(SpiDevice spi, int ledCount) {
+            this.dataFrame = new byte[ledCount * 4];
+            this.ledCount = ledCount;
+            this.spi = spi;
 
-            this.spiBus = SpiController.FromName(spiId).GetDevice(new SpiConnectionSettings(chipselect) { Mode = SpiMode.Mode0, ClockFrequency = 1_200_000, DataBitLength = 8, UseControllerChipSelect = false });
+            for (var i = 0; i < this.dataFrame.Length; i += 4)
+                this.dataFrame[i] = 0b1110_0000;
         }
 
-        /// <param name="pixelIndex">The pixel in the chain to draw</param>
-        /// <param name="pixelColor">A struct that has an individual color field for Red, Green, and Blue with a range of 0-255 each.</param>
-        /// <param name="pixelIntensity">The level from 0 (off) to 31 (highest brightness)</param>
-        public void SetLed(int pixelIndex, Pen pixelColor, int pixelIntensity) {
-            if (this.pixelCount < pixelIndex)
-                throw new ArgumentOutOfRangeException();
+        public void Set(int led, Color color) => this.Set(led, color, 0b0001_1111);
 
-            var ledFrameIndex = pixelIndex * 4; // Positions index to beginning of each LED frame
+        public void Set(int led, Color color, int intensity) {
+            if (led >= this.ledCount) throw new ArgumentOutOfRangeException(nameof(led));
+            if (intensity > 0b0001_1111) throw new ArgumentOutOfRangeException(nameof(intensity));
 
-            pixelIntensity |= 0x7 << 5;
+            led *= 4;
 
-            this.ledFrame[ledFrameIndex] = (byte)pixelIntensity;
-            this.ledFrame[ledFrameIndex + 1] = pixelColor.Color.B;
-            this.ledFrame[ledFrameIndex + 2] = pixelColor.Color.G;
-            this.ledFrame[ledFrameIndex + 3] = pixelColor.Color.R;
+            this.dataFrame[led] = (byte)(0b1110_0000 | intensity);
+            this.dataFrame[led + 1] = color.B;
+            this.dataFrame[led + 2] = color.G;
+            this.dataFrame[led + 3] = color.R;
         }
 
-        public void RefreshLeds() {
-            // The APA102C refresh process consists of three frames: Start (four bytes of 0x00), LED (four bytes: Intensity, Blue, Green, and Red times n LEDs), END (four bytes of 0x00). 
-            this.spiBus.Write(this.startFrame);
-            this.spiBus.Write(this.ledFrame);
-            this.spiBus.Write(this.stopFrame);
+        public void Flush() {
+            this.spi.Write(this.startFrame);
+            this.spi.Write(this.dataFrame);
+            this.spi.Write(this.stopFrame);
         }
     }
 }
