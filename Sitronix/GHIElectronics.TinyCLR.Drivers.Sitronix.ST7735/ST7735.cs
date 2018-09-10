@@ -82,10 +82,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public int MaxWidth => this.rowColumnSwapped ? 160 : 128;
         public int MaxHeight => this.rowColumnSwapped ? 128 : 160;
 
-        public static SpiConnectionSettings GetConnectionSettings(int chipSelectLine) => new SpiConnectionSettings(chipSelectLine) {
+        public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, int chipSelectLine) => new SpiConnectionSettings {
             Mode = SpiMode.Mode3,
             ClockFrequency = 12_000_000,
-            DataBitLength = 8
+            DataBitLength = 8,
+            ChipSelectType = chipSelectType,
+            ChipSelectLine = chipSelectLine
         };
 
         public ST7735Controller(SpiDevice spi, GpioPin control) : this(spi, control, null) {

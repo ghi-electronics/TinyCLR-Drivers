@@ -10,11 +10,11 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
         private readonly int ledCount;
         private readonly SpiDevice spi;
 
-        public static SpiConnectionSettings GetConnectionSettings() => new SpiConnectionSettings(0) {
+        public static SpiConnectionSettings GetConnectionSettings() => new SpiConnectionSettings {
             Mode = SpiMode.Mode0,
             ClockFrequency = 1_200_000,
             DataBitLength = 8,
-            UseControllerChipSelect = false
+            ChipSelectType = SpiChipSelectType.None
         };
 
         public APA102CController(SpiDevice spi, int ledCount) {
