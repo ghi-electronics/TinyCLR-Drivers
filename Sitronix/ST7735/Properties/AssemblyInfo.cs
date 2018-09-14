@@ -6,6 +6,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2018")]
 [assembly: ComVisible(false)]
-[assembly: Guid("d945e7ed-82f5-4768-a41f-0ef0220e6ba6")]
+[assembly: Guid("D945E7ED-82F5-4768-A41F-0EF0220E6BA6")]
 [assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.10000")]
