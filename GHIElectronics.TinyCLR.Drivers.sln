@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735", "Sitronix\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.csproj", "{D945E7ED-82F5-4768-A41F-0EF0220E6BA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735", "Sitronix\ST7735\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.csproj", "{D945E7ED-82F5-4768-A41F-0EF0220E6BA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C", "ShijiLighting\GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C\GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C.csproj", "{99624F01-2024-4C7E-809E-3717CC41F760}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C", "ShijiLighting\APA102C\GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C.csproj", "{99624F01-2024-4C7E-809E-3717CC41F760}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306", "SolomonSystech\SSD1306\GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306.csproj", "{95DE8D49-631E-41EB-90F7-B53768803FE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{99624F01-2024-4C7E-809E-3717CC41F760}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99624F01-2024-4C7E-809E-3717CC41F760}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99624F01-2024-4C7E-809E-3717CC41F760}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95DE8D49-631E-41EB-90F7-B53768803FE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95DE8D49-631E-41EB-90F7-B53768803FE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95DE8D49-631E-41EB-90F7-B53768803FE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95DE8D49-631E-41EB-90F7-B53768803FE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
