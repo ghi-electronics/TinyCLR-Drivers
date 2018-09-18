@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Text;
-using GHIElectronics.TinyCLR.Networking.SPWF04Sx.Helpers;
+using GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx.Helpers;
 
-namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
+namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
     public sealed class SPWF04SxCommand {
         private readonly string[] parameters = new string[16];
         private readonly Queue pendingReads = new Queue();

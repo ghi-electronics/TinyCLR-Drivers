@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
+namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
     public class SPWF04SxException : Exception {
         public SPWF04SxException(string message) : base(message) { }
     }

@@ -10,9 +10,9 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 using GHIElectronics.TinyCLR.Net.NetworkInterface;
-using GHIElectronics.TinyCLR.Networking.SPWF04Sx.Helpers;
+using GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx.Helpers;
 
-namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
+namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
     public class SPWF04SxInterface : NetworkInterface, ISocketProvider, ISslStreamProvider, IDnsProvider, IDisposable {
         private readonly ObjectPool commandPool;
         private readonly Hashtable netifSockets;

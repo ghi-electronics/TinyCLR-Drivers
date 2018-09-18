@@ -1,4 +1,4 @@
-﻿namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
+﻿namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
     public enum SPWF04SxConnectionSecurityType {
         None,
         Tls,

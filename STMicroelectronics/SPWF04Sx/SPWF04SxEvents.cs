@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
+namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
     public delegate void SPWF04SxIndicationReceivedEventHandler(SPWF04SxInterface sender, SPWF04SxIndicationReceivedEventArgs e);
     public delegate void SPWF04SxErrorReceivedEventHandler(SPWF04SxInterface sender, SPWF04SxErrorReceivedEventArgs e);
 

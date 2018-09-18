@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx.Helpers {
+namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx.Helpers {
     internal delegate object PoolObjectCreator();
 
     internal class ObjectPool {
