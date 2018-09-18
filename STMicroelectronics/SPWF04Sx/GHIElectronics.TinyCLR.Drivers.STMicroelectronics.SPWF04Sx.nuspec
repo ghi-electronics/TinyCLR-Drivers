@@ -2,7 +2,7 @@
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>GHIElectronics.TinyCLR.Networking.SPWF04Sx</id>
+    <id>GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx</id>
     <version>1.0.0-preview1</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The SPWF04Sx networking library for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2018</copyright>
-    <tags>TinyCLR TinyCLROS</tags>
+    <tags>TinyCLR TinyCLROS SPWF04SC SPWF04SA SPWF04</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="1.0.0-preview1" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="1.0.0-preview1" />
@@ -21,6 +21,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.SPWF04Sx.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx.dll" target="lib\net452" />
   </files>
 </package>
