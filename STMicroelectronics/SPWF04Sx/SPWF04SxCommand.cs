@@ -119,6 +119,8 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                         Array.Copy(this.readPayload.Data, this.readPayload.ReadOffset, buffer, offset, count);
 
                         this.partialRead += count;
+
+                        this.pendingReadsSemaphore.Release();
                     }
                 }
                 else {
