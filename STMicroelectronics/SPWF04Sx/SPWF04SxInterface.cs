@@ -485,10 +485,13 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
                             pendingEvents.Enqueue(type == 0x01 ? new SPWF04SxIndicationReceivedEventArgs((SPWF04SxIndication)ind, str) : (object)new SPWF04SxErrorReceivedEventArgs(ind, str));
                         }
-                        else {
+                        else if (type == 0x03) {
                             if (this.activeCommand == null || !this.activeCommand.Sent) throw new InvalidOperationException("Unexpected payload.");
 
                             this.activeCommand.ReadPayload(this.spi.Read, payloadLength);
+                        }
+                        else {
+                            throw new InvalidOperationException("Unexpected header.");
                         }
                     }
                 }
