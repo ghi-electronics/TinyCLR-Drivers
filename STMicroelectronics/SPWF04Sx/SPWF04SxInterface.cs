@@ -214,7 +214,6 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
-        //TODO Need to test on an actual server
         public int SendHttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) {
             if (this.activeHttpCommand != null) throw new InvalidOperationException();
 
@@ -487,6 +486,16 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                         }
                         else if (type == 0x03) {
                             if (this.activeCommand == null || !this.activeCommand.Sent) throw new InvalidOperationException("Unexpected payload.");
+
+                            //See https://github.com/ghi-electronics/TinyCLR-Drivers/issues/10
+                            //switch (ind) {
+                            //    case 0x00://AT-S.OK without payload
+                            //    case 0x03://AT-S.OK with payload
+                            //    case 0xFF://AT-S.x not maskable
+                            //    case 0xFE://AT-S.x maskable
+                            //    default://AT-S.ERROR x
+                            //        break;
+                            //}
 
                             this.activeCommand.ReadPayload(this.spi.Read, payloadLength);
                         }
