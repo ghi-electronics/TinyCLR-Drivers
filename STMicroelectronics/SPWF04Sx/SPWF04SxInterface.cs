@@ -35,7 +35,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         public string ForceSocketsTlsCommonName { get; set; }
 
         public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, int chipSelectLine) => new SpiConnectionSettings {
-            ClockFrequency = 4000000,
+            ClockFrequency = 8000000,
             Mode = SpiMode.Mode0,
             DataBitLength = 8,
             ChipSelectType = chipSelectType,
