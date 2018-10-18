@@ -147,6 +147,14 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             }
         }
 
+        public void ResetConfiguration() {
+            var cmd = this.GetCommand()
+                .Finalize(SPWF04SxCommandIds.FCFG);
+            this.EnqueueCommand(cmd);
+            cmd.ReadBuffer();
+            this.FinishCommand(cmd);
+        }
+
         public void ClearTlsServerRootCertificate() {
             var cmd = this.GetCommand()
                 .AddParameter("content")
