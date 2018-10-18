@@ -39,7 +39,8 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             Mode = SpiMode.Mode0,
             DataBitLength = 8,
             ChipSelectType = chipSelectType,
-            ChipSelectLine = chipSelectLine
+            ChipSelectLine = chipSelectLine,
+            ChipSelectSetupTime = TimeSpan.FromTicks(10 * 100)
         };
 
         public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
