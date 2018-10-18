@@ -154,14 +154,14 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx.Helpers {
 
         public override bool WaitOne() {
             while (true) {
-                this.evt.WaitOne();
+                if (this.evt.WaitOne(10, false)) {
+                    lock (this.lck) {
+                        if (this.count > 0) {
+                            if (--this.count == 0)
+                                this.evt.Reset();
 
-                lock (this.lck) {
-                    if (this.count > 0) {
-                        if (--this.count == 0)
-                            this.evt.Reset();
-
-                        return true;
+                            return true;
+                        }
                     }
                 }
             }
