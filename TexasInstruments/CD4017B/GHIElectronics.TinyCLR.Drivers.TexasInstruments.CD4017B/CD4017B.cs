@@ -21,13 +21,13 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B {
         public void ResetCountToZero() {
             this.reset.Write(GpioPinValue.High);
             this.reset.Write(GpioPinValue.Low);
-            this.currentCount = 0;
+            this.CurrentCount = 0;
         }
 
         public void IncreaseCount() {
             this.clock.Write(GpioPinValue.High);
             this.clock.Write(GpioPinValue.Low);
-            this.currentCount++;
+            this.CurrentCount++;
         }
     }
 }
