@@ -4,7 +4,7 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B {
     public class CD4017B {
         private readonly GpioPin clock;
         private readonly GpioPin reset;
-        private int currentCount;
+        public int CurrentCount { get; private set; }
 
         public CD4017B(int clockPin, int resetPin) {
             var gpio = GpioController.GetDefault();
