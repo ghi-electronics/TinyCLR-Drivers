@@ -4,7 +4,7 @@
         Tls,
     }
 
-    public enum SPWF04SxConnectionyType {
+    public enum SPWF04SxConnectionType {
         Tcp,
         Udp,
     }
