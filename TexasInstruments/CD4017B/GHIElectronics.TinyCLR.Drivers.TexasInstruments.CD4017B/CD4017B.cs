@@ -9,10 +9,10 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B {
         public CD4017B(GpioPin clock, GpioPin reset) {
             this.clock.SetDriveMode(GpioPinDriveMode.Output);
             this.reset.SetDriveMode(GpioPinDriveMode.Output);
-            this.ResetCountToZero();
+            this.ResetCount();
         }
 
-        public void ResetCountToZero() {
+        public void ResetCount() {
             this.reset.Write(GpioPinValue.High);
             this.reset.Write(GpioPinValue.Low);
             this.CurrentCount = 0;
