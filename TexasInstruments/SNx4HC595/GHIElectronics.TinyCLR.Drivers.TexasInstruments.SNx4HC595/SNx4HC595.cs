@@ -1,4 +1,5 @@
-﻿using GHIElectronics.TinyCLR.Devices.Gpio;
+﻿using System;
+using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595 {
@@ -21,6 +22,8 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595 {
         }
 
         public void WriteBuffer(byte[] buffer) {
+            if (buffer == null)
+                throw new ArgumentNullException(nameof(buffer));
             this.latch.Write(GpioPinValue.Low);
             this.spiBus.Write(buffer);
             this.latch.Write(GpioPinValue.High);
