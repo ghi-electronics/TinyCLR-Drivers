@@ -15,7 +15,7 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595 {
             DataBitLength = 8
         };
 
-        public SNx4HC595(SpiDevice spiBus, int chipSelect, GpioPin latch) {
+        public SNx4HC595(SpiDevice spiBus, GpioPin latch) {
             this.spiBus = spiBus;
 
             this.latch = latch;
