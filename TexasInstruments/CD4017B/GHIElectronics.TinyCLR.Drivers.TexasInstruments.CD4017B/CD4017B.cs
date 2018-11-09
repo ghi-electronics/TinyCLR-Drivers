@@ -18,7 +18,7 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B {
             this.CurrentCount = 0;
         }
 
-        public void IncreaseCount() {
+        public void IncrementCount() {
             this.clock.Write(GpioPinValue.High);
             this.clock.Write(GpioPinValue.Low);
             this.CurrentCount++;
