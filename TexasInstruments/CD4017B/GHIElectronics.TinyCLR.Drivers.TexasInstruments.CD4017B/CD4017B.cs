@@ -6,15 +6,9 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B {
         private readonly GpioPin reset;
         public int CurrentCount { get; private set; }
 
-        public CD4017B(int clockPin, int resetPin) {
-            var gpio = GpioController.GetDefault();
-
-            this.clock = gpio.OpenPin(clockPin);
+        public CD4017B(GpioPin clock, GpioPin reset) {
             this.clock.SetDriveMode(GpioPinDriveMode.Output);
-
-            this.reset = gpio.OpenPin(resetPin);
             this.reset.SetDriveMode(GpioPinDriveMode.Output);
-
             this.ResetCountToZero();
         }
 
