@@ -15,10 +15,10 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595 {
             DataBitLength = 8
         };
 
-        public SNx4HC595(SpiDevice spiBus, int chipSelect, int latchPin) {
+        public SNx4HC595(SpiDevice spiBus, int chipSelect, GpioPin latch) {
             this.spiBus = spiBus;
 
-            this.latch = GpioController.GetDefault().OpenPin(latchPin);
+            this.latch = latch;
             this.latch.SetDriveMode(GpioPinDriveMode.Output);
         }
 
