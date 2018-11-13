@@ -23,8 +23,8 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595 {
         }
 
         public void WriteBuffer(byte[] buffer) {
-            if (buffer == null)
-                throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+
             this.latch.Write(GpioPinValue.Low);
             this.spiBus.Write(buffer);
             this.latch.Write(GpioPinValue.High);
