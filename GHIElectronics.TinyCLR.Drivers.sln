@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B", "TexasInstruments\CD4017B\GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B\GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B.csproj", "{620771FC-4F70-42E5-BEB4-B69C8FCD6617}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595", "TexasInstruments\SNx4HC595\GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595\GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595.csproj", "{5657EA06-0A3C-4F9A-AA96-7808D471FE27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{620771FC-4F70-42E5-BEB4-B69C8FCD6617}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{620771FC-4F70-42E5-BEB4-B69C8FCD6617}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{620771FC-4F70-42E5-BEB4-B69C8FCD6617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5657EA06-0A3C-4F9A-AA96-7808D471FE27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5657EA06-0A3C-4F9A-AA96-7808D471FE27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5657EA06-0A3C-4F9A-AA96-7808D471FE27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5657EA06-0A3C-4F9A-AA96-7808D471FE27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

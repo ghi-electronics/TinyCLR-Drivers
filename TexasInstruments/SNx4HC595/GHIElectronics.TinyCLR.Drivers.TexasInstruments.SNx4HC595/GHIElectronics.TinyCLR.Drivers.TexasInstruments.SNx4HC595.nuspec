@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595</id>
+    <version>1.0.0-preview2</version>
+    <authors>GHI Electronics, LLC</authors>
+    <owners>GHI Electronics, LLC</owners>
+    <projectUrl>https://ghielectronics.com/</projectUrl>
+    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
+    <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Texas Instruments 8-Bit Shift Registers With 3-State Output Registers driver for TinyCLR OS.</description>
+    <copyright>Copyright GHI Electronics, LLC 2018</copyright>
+    <tags>TinyCLR TinyCLROS SNx4HC595 SN54HC595 SN74HC595</tags>
+    <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="1.0.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="1.0.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="1.0.0-preview2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595.dll" target="lib\net452" />
+  </files>
+</package>
