@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
-[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2018")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2019")]
 [assembly: ComVisible(false)]
 [assembly: Guid("365C4668-89FB-429C-B90B-D80AF6CF9B9D")]
 [assembly: AssemblyVersion("1.0.0.0")]
