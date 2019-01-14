@@ -3,7 +3,7 @@ using System.Drawing;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
-    public class APA102CController {
+    public class APA102CController : IDisposable {
         private readonly byte[] startFrame = { 0x00, 0x00, 0x00, 0x00 };
         private readonly byte[] stopFrame = { 0xFF, 0xFF, 0xFF, 0xFF };
         private readonly byte[] dataFrame;
@@ -25,6 +25,8 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
             for (var i = 0; i < this.dataFrame.Length; i += 4)
                 this.dataFrame[i] = 0b1110_0000;
         }
+
+        public void Dispose() => this.spi.Dispose();
 
         public void Set(int led, Color color) => this.Set(led, color, 0b0001_1111);
 

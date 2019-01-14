@@ -15,7 +15,7 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
 
     public delegate void TouchEventHandler(FT5xx6Controller sender, TouchEventArgs e);
 
-    public class FT5xx6Controller {
+    public class FT5xx6Controller : IDisposable {
         private readonly byte[] addressBuffer = new byte[1];
         private readonly byte[] read4 = new byte[4];
         private readonly byte[] read1 = new byte[1];
@@ -39,6 +39,11 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
             this.interrupt.DebounceTimeout = TimeSpan.FromMilliseconds(1);
             this.interrupt.ValueChangedEdge = GpioPinEdge.FallingEdge;
             this.interrupt.ValueChanged += this.OnInterrupt;
+        }
+
+        public void Dispose() {
+            this.i2c.Dispose();
+            this.interrupt.Dispose();
         }
 
         private void OnInterrupt(GpioPin sender, GpioPinValueChangedEventArgs e) {

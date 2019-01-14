@@ -1,7 +1,8 @@
+using System;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 
 namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B {
-    public class CD4017B {
+    public class CD4017B : IDisposable {
         private readonly GpioPin clock;
         private readonly GpioPin reset;
 
@@ -15,6 +16,11 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B {
             this.reset.SetDriveMode(GpioPinDriveMode.Output);
 
             this.ResetCount();
+        }
+
+        public void Dispose() {
+            this.clock.Dispose();
+            this.reset.Dispose();
         }
 
         public void ResetCount() {

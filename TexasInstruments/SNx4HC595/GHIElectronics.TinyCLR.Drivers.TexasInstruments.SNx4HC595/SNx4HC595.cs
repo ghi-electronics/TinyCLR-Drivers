@@ -3,7 +3,7 @@ using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595 {
-    public class SNx4HC595 {
+    public class SNx4HC595 : IDisposable {
         private readonly GpioPin latch;
         private readonly SpiDevice spiBus;
 
@@ -20,6 +20,11 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595 {
 
             this.latch = latch;
             this.latch.SetDriveMode(GpioPinDriveMode.Output);
+        }
+
+        public void Dispose() {
+            this.latch.Dispose();
+            this.spiBus.Dispose();
         }
 
         public void WriteBuffer(byte[] buffer) {
