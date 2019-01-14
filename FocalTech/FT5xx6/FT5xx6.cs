@@ -27,7 +27,7 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
         public event TouchEventHandler TouchMove;
 
         public static I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(0x38) {
-            BusSpeed = I2cBusSpeed.StandardMode,
+            BusSpeed = I2cBusSpeed.FastMode,
             AddressFormat = I2cAddressFormat.SevenBit,
         };
 
