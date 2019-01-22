@@ -19,8 +19,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
             if (this.Initialize(spiController, chipSelect, interrupt, enable, reset, clockRate))
                 NetworkInterface.RegisterNetworkInterface(this);
-
-
         }
 
         ~Winc15x0Interface() => this.Dispose(false);
@@ -32,8 +30,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
         protected virtual void Dispose(bool disposing) {
             if (disposing) {
-
-
                 NetworkInterface.DeregisterNetworkInterface(this);
             }
         }
@@ -46,13 +42,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
             for (var i = 0; i < numAp; i++) {
                 var ssid = new char[32];
-                //Array.Copy(response, i * 44 + 10, ssid, 0, ssid.Length);
 
                 var index = 0;
                 for (var index2 = i * 44 + 10; index < ssid.Length; index++) {
                     ssid[index] = (char)response[index2++];
                 }
-
 
                 ssids[i] = new string(ssid);
             }
@@ -62,7 +56,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
         int ISocketProvider.Accept(int socket) => throw new NotImplementedException();
 
-        int ISslStreamProvider.AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols) => throw new NotImplementedException();
+        int ISslStreamProvider.AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols) => socketHandle;
 
         int ISslStreamProvider.AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols) => throw new NotImplementedException();
 
@@ -70,41 +64,77 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
         void ISslStreamProvider.Close(int handle) => throw new NotImplementedException();
 
-        int ISocketProvider.Available(int socket) => throw new NotImplementedException();
+        int ISocketProvider.Available(int socket) => this.ISocketProviderNativeAvailable(socket);
 
         void ISocketProvider.Bind(int socket, SocketAddress address) => throw new NotImplementedException();
 
-        void ISocketProvider.Close(int socket) => throw new NotImplementedException();
+        void ISocketProvider.Close(int socket) {
+            this.ISocketProviderNativeClose(socket);
 
-        void ISocketProvider.Connect(int socket, SocketAddress address) => throw new NotImplementedException();
+            this.netifSockets.Remove(socket);
+        }
 
-        int ISocketProvider.Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) => throw new NotImplementedException();
+        void ISocketProvider.Connect(int socket, SocketAddress address) {
+            if (!this.netifSockets.Contains(socket)) throw new ArgumentException();
+            if (address.Family != AddressFamily.InterNetwork) throw new ArgumentException();
 
-        void ISocketProvider.GetLocalAddress(int socket, out SocketAddress address) => throw new NotImplementedException();
+            var addressInBytes = new byte[address.Size];
+            for (var i = 0; i < addressInBytes.Length; i++) {
+                addressInBytes[i] = address[i];
+            }
 
-        void ISocketProvider.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) => throw new NotImplementedException();
+            if (this.ISocketProviderNativeConnect(socket, addressInBytes) == true) {
+                this.netifSockets[socket] = socket;
+            }
+        }
 
-        void ISocketProvider.GetRemoteAddress(int socket, out SocketAddress address) => throw new NotImplementedException();
+        int ISocketProvider.Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
+            var id = this.ISocketProviderNativeCreate(addressFamily, socketType, protocolType);
+
+            if (id >= 0) {
+                this.netifSockets.Add(id, 0);
+
+                return id;
+            }
+
+            throw new SocketException(SocketError.TooManyOpenSockets);
+        }
+
+        void ISocketProvider.GetLocalAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
+
+        void ISocketProvider.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+            if (optionLevel == SocketOptionLevel.Socket && optionName == SocketOptionName.Type)
+                Array.Copy(BitConverter.GetBytes((int)SocketType.Stream), optionValue, 4);
+        }
+
+        void ISocketProvider.GetRemoteAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
 
         void ISocketProvider.Listen(int socket, int backlog) => throw new NotImplementedException();
 
-        bool ISocketProvider.Poll(int socket, int microSeconds, SelectMode mode) => throw new NotImplementedException();
+        bool ISocketProvider.Poll(int socket, int microSeconds, SelectMode mode) => this.ISocketProviderNativePoll(socket, microSeconds, mode);
 
         int ISslStreamProvider.Read(int handle, byte[] buffer, int offset, int count, int timeout) => throw new NotImplementedException();
 
-        int ISocketProvider.Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) => throw new NotImplementedException();
+        int ISocketProvider.Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) => this.ISocketProviderNativeReceive(socket, buffer, offset, count, flags, timeout);
 
         int ISocketProvider.ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address) => throw new NotImplementedException();
 
-        int ISocketProvider.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) => throw new NotImplementedException();
+        int ISocketProvider.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) => this.ISocketProviderNativeSend(socket, buffer, offset, count, flags, timeout);
 
         int ISocketProvider.SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address) => throw new NotImplementedException();
 
-        void ISocketProvider.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) => throw new NotImplementedException();
+        void ISocketProvider.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) => this.ISocketProviderNativeSetOption(socket, optionLevel, optionName, optionValue);
 
         int ISslStreamProvider.Write(int handle, byte[] buffer, int offset, int count, int timeout) => throw new NotImplementedException();
 
-        void IDnsProvider.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) => throw new NotImplementedException();
+        void IDnsProvider.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) {
+
+            this.IDnsProviderNativeGetHostByName(name, out var ipAddress);
+
+            canonicalName = "";
+
+            addresses = new[] { new IPEndPoint(ipAddress, 80).Serialize() };
+        }
 
         // override
         public override PhysicalAddress GetPhysicalAddress() {
@@ -113,8 +143,17 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
             if (ip == null) ip = new byte[] { 0, 0, 0, 0 };
 
             return new PhysicalAddress(ip);
-
         }
+
+        public override string Id => nameof(Winc15x0);
+        public override string Name => this.Id;
+        public override string Description => string.Empty;
+        public override OperationalStatus OperationalStatus => throw new NotImplementedException();
+        public override bool IsReceiveOnly => false;
+        public override bool SupportsMulticast => false;
+        public override NetworkInterfaceType NetworkInterfaceType => NetworkInterfaceType.Wireless80211;
+
+        public override bool Supports(NetworkInterfaceComponent networkInterfaceComponent) => networkInterfaceComponent == NetworkInterfaceComponent.IPv4;
 
         //Native
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -157,7 +196,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
         private extern void ISocketProviderNativeClose(int socket);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void ISocketProviderNativeConnect(int socket, SocketAddress address);
+        private extern bool ISocketProviderNativeConnect(int socket, byte[] socketAddressInBytes);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern int ISocketProviderNativeCreate(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
@@ -199,7 +238,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
         private extern int ISslStreamProviderNativeWrite(int handle, byte[] buffer, int offset, int count, int timeout);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void IDnsProviderNativeGetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
+        private extern void IDnsProviderNativeGetHostByName(string name, out long address);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeGetPhysicalAddress(out byte[] ip);
