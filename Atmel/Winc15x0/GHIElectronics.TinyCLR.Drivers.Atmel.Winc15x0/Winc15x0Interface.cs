@@ -254,5 +254,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void SetPowerSave(PowerSave powerSave, int sleepDuration, int listenInterval, bool receiveBroadcast);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern bool FirmwareUpdatebyOta(string url, int timeout);
+
     }
 }
