@@ -13,6 +13,14 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
     public class Winc15x0Interface : NetworkInterface, ISocketProvider, ISslStreamProvider, IDnsProvider, IDisposable {
         private readonly Hashtable netifSockets;
 
+        public enum PowerSave {
+            PowerSave_None = 0,
+            PowerSave_Automatic = 1,
+            PowerSave_H_Automatic = 2,
+            PowerSave_Deep_Automatic = 3,
+            PowerSave_Manual = 4,
+        }
+
         public Winc15x0Interface(SpiController spiController, int chipSelect, int interrupt, int enable, int reset, int clockRate) {
 
             this.netifSockets = new Hashtable();
@@ -242,5 +250,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeGetPhysicalAddress(out byte[] ip);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern void SetPowerSave(PowerSave powerSave, int sleepDuration, int listenInterval, bool receiveBroadcast);
+
     }
 }
