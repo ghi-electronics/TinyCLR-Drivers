@@ -21,6 +21,23 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
             PowerSave_Manual = 4,
         }
 
+        public enum CertificateType {
+            Root = 1,
+            Tls_rsa = 2,
+            Tls_ecc = 3,
+        }
+        public class Certificate {
+            byte[] Data;
+            CertificateType Type;
+            uint NumOfChain;
+
+            public Certificate(byte[] data, CertificateType type, uint numOfChain) {
+                this.Data = data;
+                this.Type = type;
+                this.NumOfChain = numOfChain;
+            }
+        }
+
         public Winc15x0Interface(SpiController spiController, int chipSelect, int interrupt, int enable, int reset, int clockRate) {
 
             this.netifSockets = new Hashtable();
@@ -256,6 +273,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern bool FirmwareUpdatebyOta(string url, int timeout);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern bool WriteCertificates(Certificate[] certificates, int offset, int count);
 
     }
 }
