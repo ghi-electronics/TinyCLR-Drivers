@@ -26,17 +26,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
             Tls_rsa = 2,
             Tls_ecc = 3,
         }
-        public class Certificate {
-            byte[] Data;
-            CertificateType Type;
-            uint NumOfChain;
-
-            public Certificate(byte[] data, CertificateType type, uint numOfChain) {
-                this.Data = data;
-                this.Type = type;
-                this.NumOfChain = numOfChain;
-            }
-        }
 
         public Winc15x0Interface(SpiController spiController, int chipSelect, int interrupt, int enable, int reset, int clockRate) {
 
@@ -79,15 +68,25 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
         }
 
+        public string GetFirmwareVersion() {
+            this.ReadFirmwareVersion(out var ver1, out var ver2);
+
+            var major = (ver1 >> 16) & 0xFF;
+            var monor = (ver1 >> 8) & 0xFF;
+            var path = (ver1 >> 0) & 0xFF;
+
+            return major.ToString() + "." + monor.ToString() + "." + path.ToString() + " Svnrev " + ver2.ToString();
+        }
+
         int ISocketProvider.Accept(int socket) => throw new NotImplementedException();
 
         int ISslStreamProvider.AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols) => socketHandle;
 
         int ISslStreamProvider.AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols) => throw new NotImplementedException();
 
-        int ISslStreamProvider.Available(int handle) => throw new NotImplementedException();
+        int ISslStreamProvider.Available(int handle) => ((ISocketProvider)this).Available(handle);
 
-        void ISslStreamProvider.Close(int handle) => throw new NotImplementedException();
+        void ISslStreamProvider.Close(int handle) => ((ISocketProvider)this).Close(handle);
 
         int ISocketProvider.Available(int socket) => this.ISocketProviderNativeAvailable(socket);
 
@@ -138,7 +137,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
         bool ISocketProvider.Poll(int socket, int microSeconds, SelectMode mode) => this.ISocketProviderNativePoll(socket, microSeconds, mode);
 
-        int ISslStreamProvider.Read(int handle, byte[] buffer, int offset, int count, int timeout) => throw new NotImplementedException();
+        int ISslStreamProvider.Read(int handle, byte[] buffer, int offset, int count, int timeout) => ((ISocketProvider)this).Receive(handle, buffer, offset, count, SocketFlags.None, timeout);
 
         int ISocketProvider.Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) => this.ISocketProviderNativeReceive(socket, buffer, offset, count, flags, timeout);
 
@@ -150,7 +149,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
         void ISocketProvider.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) => this.ISocketProviderNativeSetOption(socket, optionLevel, optionName, optionValue);
 
-        int ISslStreamProvider.Write(int handle, byte[] buffer, int offset, int count, int timeout) => throw new NotImplementedException();
+        int ISslStreamProvider.Write(int handle, byte[] buffer, int offset, int count, int timeout) => ((ISocketProvider)this).Send(handle, buffer, offset, count, SocketFlags.None, timeout);
 
         void IDnsProvider.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) {
 
@@ -158,7 +157,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
 
             canonicalName = "";
 
-            addresses = new[] { new IPEndPoint(ipAddress, 80).Serialize() };
+            addresses = new[] { new IPEndPoint(ipAddress, 443).Serialize() };
         }
 
         // override
@@ -275,7 +274,25 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
         public extern bool FirmwareUpdatebyOta(string url, int timeout);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern bool WriteCertificates(Certificate[] certificates, int offset, int count);
+        public extern bool UpdateCertificates(byte[] rawData, CertificateType type, int numOfChain);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern bool FlashWrite(uint address, byte[] rawData, int offset, int count);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern bool FlashRead(uint address, byte[] rawData, int offset, int count);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern bool FlashErase(uint address, int count);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern uint GetFlashSize();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern uint ReadFlashId();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void ReadFirmwareVersion(out uint ver1, out uint ver2);
 
     }
 }
