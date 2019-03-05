@@ -12,28 +12,37 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
             this.Y = y;
         }
     }
+
+    public class GestureEventArgs : EventArgs {
+        public Gesture Gesture { get; }
+
+        public GestureEventArgs(Gesture gesture) => this.Gesture = gesture;
+    }
+
     public enum Gesture {
-        MoveUp = 0x1C,
-        MoveDown = 0x14,
-        MoveLeft = 0x10,
-        MoveRight = 0x18,
+        MoveUp = 0x10,
+        MoveLeft = 0x14,
+        MoveDown = 0x18,
+        MoveRight = 0x1C,
         ZoomIn = 0x48,
         ZoomOut = 0x49,
     }
 
     public delegate void TouchEventHandler(FT5xx6Controller sender, TouchEventArgs e);
-    public delegate void GestureHandler(FT5xx6Controller sender, Gesture gesture);
+    public delegate void GestureEventHandler(FT5xx6Controller sender, GestureEventArgs e);
 
     public class FT5xx6Controller : IDisposable {
         private readonly byte[] addressBuffer = new byte[1];
-        private readonly byte[] read7 = new byte[7];
+        private readonly byte[] read32 = new byte[32];
         private readonly I2cDevice i2c;
         private readonly GpioPin interrupt;
 
         public event TouchEventHandler TouchDown;
         public event TouchEventHandler TouchUp;
         public event TouchEventHandler TouchMove;
-        public event GestureHandler OnGesture;
+        public event GestureEventHandler GestureReceived;
+
+        public int SampleCount { get; set; } = 5;
 
         public static I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(0x38) {
             BusSpeed = I2cBusSpeed.FastMode,
@@ -56,24 +65,23 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
         }
 
         private void OnInterrupt(GpioPin sender, GpioPinValueChangedEventArgs e) {
-            this.addressBuffer[0] = (byte)0;
+            this.i2c.WriteRead(this.addressBuffer, 0, 1, this.read32, 0, this.SampleCount * 6 + 2);
 
-            this.i2c.WriteRead(this.addressBuffer, read7);
+            if (this.read32[1] != 0 && this.GestureReceived != null)
+                this.GestureReceived(this, new GestureEventArgs((Gesture)this.read32[1]));
 
-            if (read7[1] != 0) this.OnGesture?.Invoke(this, (Gesture)read7[1]);
+            //We do not read the TD_STATUS register because it returns a touch count _excluding_ touch up events, even though the touch registers contain the proper touch up data.
+            for (var i = 0; i < this.SampleCount; i++) {
+                var idx = i * 6 + 3;
+                var flag = (this.read32[0 + idx] & 0xC0) >> 6;
+                var x = ((this.read32[0 + idx] & 0x0F) << 8) | this.read32[1 + idx];
+                var y = ((this.read32[2 + idx] & 0x0F) << 8) | this.read32[3 + idx];
 
-            var x = ((read7[3] & 0x0F) << 8) | read7[4];
-            var y = ((read7[5] & 0x0F) << 8) | read7[6];
-                var flag = (read7[3] & 0xC0) >> 6;
-            (flag == 0 ? this.TouchDown : flag == 1 ? this.TouchUp : flag == 2 ? this.TouchMove : null)?.Invoke(this, new TouchEventArgs(x, y));
-        }
+                (flag == 0 ? this.TouchDown : flag == 1 ? this.TouchUp : flag == 2 ? this.TouchMove : null)?.Invoke(this, new TouchEventArgs(x, y));
 
-        private byte[] ReadData(int address, byte[] buffer) {
-            this.addressBuffer[0] = (byte)address;
-
-            this.i2c.WriteRead(this.addressBuffer, buffer);
-
-            return buffer;
+                if (flag == 3)
+                    break;
+            }
         }
     }
 }
