@@ -34,13 +34,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FileEntity.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SPWF04SxCommand.cs" />
     <Compile Include="SPWF04SxEnums.cs" />
     <Compile Include="SPWF04SxEvents.cs" />
     <Compile Include="SPWF04SxExceptions.cs" />
     <Compile Include="SPWF04SxInterface.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx.nuspec" />
