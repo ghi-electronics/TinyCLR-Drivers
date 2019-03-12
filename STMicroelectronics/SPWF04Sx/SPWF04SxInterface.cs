@@ -186,13 +186,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             return result.Substring(result.IndexOf(':') + 1);
         }
-
-        /// <summary>
-        /// Computes a hash
-        /// 0:SHA1, 1:SHA224, 2:SHA256, 3:MD5
-        /// </summary>
-        /// <param name="hashType">The methode to use. SHA1, SHA224, SHA256, MD5</param>
-        /// <param name="filename">The name of the file that holds the data
+        
         public byte[] ComputeHash(SPWF04SxHashType hashType, string filename) {
             var cmd = this.GetCommand()
                 .AddParameter(hashType == SPWF04SxHashType.MD5 ? "3" : hashType == SPWF04SxHashType.SHA256 ? "2" : hashType == SPWF04SxHashType.SHA224 ? "1" : "0")
@@ -207,10 +201,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             return result;
         }
-
-        /// <summary>
-        /// Resets SPWF04Sx
-        /// </summary>
+       
         public void Reset() {
             var cmd = this.GetCommand()
                .Finalize(SPWF04SxCommandIds.RESET);
@@ -221,11 +212,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             this.FinishCommand(cmd);
         }
-
-        /// <summary>
-        /// Mounts a memory volume            
-        /// </summary>
-        /// <param name="volume">The volume to be mounted. 0 = External Flash, 1 = User Flash, 2 = Ram, 3 = Application Flash</param>
+       
         public void MountMemoryVolume(SPWF04SxMemVolumeType volume) {
             var cmd = this.GetCommand()
                 .AddParameter(volume == SPWF04SxMemVolumeType.ApplFlash ? "3" : volume == SPWF04SxMemVolumeType.Ram ? "2" : volume == SPWF04SxMemVolumeType.UserFlash ? "1" : "0")
@@ -237,12 +224,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             this.FinishCommand(cmd);
         }
-
-        /// <summary>
-        /// Sets the configuration of the SPWF04 module.
-        /// Make sure that only valid parameters are used.
-        /// No control mechanisms are implemented to control that things worked properly.
-        /// </summary>
+      
         public void SetConfiguration(string confParameter, string value) {
             var cmd = this.GetCommand()
             .AddParameter(confParameter)
@@ -255,10 +237,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             this.FinishCommand(cmd);
         }
-
-        /// <summary>
-        /// Save the configuration of the SPWF04 module to the Flash.        
-        /// </summary>
+       
         public void SaveConfiguration() {
             var cmd = this.GetCommand()
             .Finalize(SPWF04SxCommandIds.WCFG);
@@ -269,11 +248,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             this.FinishCommand(cmd);
         }
-
-        /// <summary>
-        /// Get the configuration of the SPWF04 module.        
-        /// </summary>
-        /// <param name="configVariable">The configuration variable to retrieve. Leaving empty means all.</param>
+        
         public string GetConfiguration(string configVariable) {
             var cmd = this.GetCommand()
              .AddParameter(configVariable)
@@ -295,10 +270,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             return stringBuilder.ToString();
         }
-
-        /// <summary>
-        /// Gets time and date of SPWF04Sx module
-        /// </summary>
+        
         public string GetTime() {
             var cmd = this.GetCommand()
                .Finalize(SPWF04SxCommandIds.TIME);
@@ -320,10 +292,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             return stringBuilder.ToString();
         }
-
-        /// <summary>
-        /// Gets the amount of free Ram and the list of files in the SPWF04Sx memory as a string
-        /// </summary>       
+              
         public string GetDiskContent() {
             var cmd = this.GetCommand()
                .Finalize(SPWF04SxCommandIds.FSL);
@@ -344,12 +313,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             return stringBuilder.ToString();
         }
-
-        /// <summary>
-        /// Returns the properties 'Length', 'Volume' and 'Name' of the specified file
-        /// If the file doesn't exist null is returned (so can be used as kind of FileExists command
-        /// </summary>
-        /// <param name="filename">The file from where to retrieve the data.</param>
+        
         public FileEntity GetFileProperties(string filename) {
             if (filename == null) throw new ArgumentNullException();
 
@@ -376,13 +340,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             }
             return selectedFile;
         }
-
-        /// <summary>
-        /// Returns the content of a file as byte array.        
-        /// </summary>
-        /// <param name="filename">The file from where to retrieve the data.</param>
-        /// <param name="offset">The offset.</param>
-        /// <param name="length">The count of bytes.</param>
+       
         public byte[] GetFileDataBinary(string filename, int offset, int length) {
             if (filename == null) throw new ArgumentNullException();
 
@@ -409,11 +367,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                 return fileContent;
             }
         }
-
-        /// <summary>
-        /// Deletes a file in Ram
-        /// </summary>
-        /// <param name="filename">The file to be deleted.</param>
+       
         public void DeleteRamFile(string filename) {
             if (filename == null) throw new ArgumentNullException();
 
@@ -430,13 +384,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                 this.FinishCommand(cmd);
             }
         }
-
-        /// <summary>
-        /// Creates a file in Ram. If 'append' is false, an existing file with the same name is overwritten
-        /// </summary>
-        /// <param name="filename">The file to be created.</param>
-        /// <param name="rawData">The content of the file.</param>
-        /// <param name="append">When append is true, raw data are appended when a file with the same name already exists.</param>
+        
         public void CreateRamFile(string filename, byte[] rawData, bool append = false) {
             if (filename == null) throw new ArgumentNullException();
             if (rawData == null) throw new ArgumentNullException();
@@ -457,17 +405,6 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             cmd.ReadBuffer();
         }
-
-        /// <summary>
-        /// Sends Http GET request
-        /// </summary>
-        /// <param name="host">DNS resolvable Name or IP address</param>
-        /// <param name="path">Document path & optional query arguments, Default:/index.html.</param>
-        /// <param name="port">Default 80 (if TLS=0) or 443 (if TLS>0)</param>
-        /// <param name="connectionSecurity">Default: None. Alterantive: TLS</param>
-        /// <param name="in_filename">Name of the file which holds reponse body after request finished</param>
-        /// <param name="out_filename">Name of the file which holds the body to be sent</param>
-        /// <param name="body">Content of the body to be sent</param>
 
         public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string in_filename, string out_filename = null, byte[] body = null) {
             if (this.activeHttpCommand != null) throw new InvalidOperationException();
@@ -503,17 +440,6 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
-        /// <summary>
-        /// Sends Http POST request
-        /// </summary>
-        /// <param name="host">DNS resolvable Name or IP address</param>
-        /// <param name="path">Document path & optional query arguments, Default:/index.html.</param>
-        /// <param name="port">Default 80 (if TLS=0) or 443 (if TLS>0)</param>
-        /// <param name="connectionSecurity">Default: None. Alterantive: TLS</param>
-        /// <param name="in_filename">Name of the file which holds reponse body after request finished</param>
-        /// <param name="out_filename">Name of the file which holds the body to be sent</param>
-        /// <param name="body">Content of the body to be sent</param>
-
         public int SendHttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string in_filename, string out_filename, byte[] body) {
             if (this.activeHttpCommand != null) throw new InvalidOperationException();
             if (((out_filename != null) && (body == null)) || (body != null) && (out_filename == null)) throw new InvalidOperationException();
@@ -547,11 +473,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
-
-        /// <summary>
-        /// Sends Ping
-        /// </summary>
-        /// <param name="host">DNS resolvable Name or IP address</param>
+        
         public string SendPing(string host, string counter = "1", string size = "56") {
             var cmd = this.GetCommand()
                 .AddParameter(counter)
