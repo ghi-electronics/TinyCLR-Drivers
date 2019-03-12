@@ -5,11 +5,11 @@ using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx
 {
-    public class FileEntity
-    {
+    public class FileEntity {
+
         public string Name { get; private set; }
         public string Volume { get; private set; }
-        public string Length { get; private set; }
+        public int Length { get; private set; }
 
         public FileEntity()
         { }
@@ -17,7 +17,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx
         {
             this.Name = name;
             this.Volume = volume;
-            this.Length = length;
+            this.Length = int.Parse(length);
         }
     }
 }

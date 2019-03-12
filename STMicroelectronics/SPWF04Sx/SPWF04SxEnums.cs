@@ -1,4 +1,19 @@
 ﻿namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
+   
+    public enum SPWF04SxHashType {
+        SHA1,
+        SHA224,
+        SHA256,
+        MD5,
+    }
+
+    public enum SPWF04SxMemVolumeType {
+        ExtFlash,
+        UserFlash,
+        Ram,
+        ApplFlash,
+    }
+
     public enum SPWF04SxConnectionSecurityType {
         None,
         Tls,

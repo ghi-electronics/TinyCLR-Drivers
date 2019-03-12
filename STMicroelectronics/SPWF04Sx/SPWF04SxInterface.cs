@@ -187,74 +187,54 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return result.Substring(result.IndexOf(':') + 1);
         }
 
-        //*************************************** Begin Commands added by RoSchmi  ***************************************************
-
-
         /// <summary>
         /// Computes a hash
         /// 0:SHA1, 1:SHA224, 2:SHA256, 3:MD5
         /// </summary>
-        /// <param name="function">The methode to use. 0:SHA1, 1:SHA224, 2:SHA256, 3:MD5</param>
+        /// <param name="hashType">The methode to use. SHA1, SHA224, SHA256, MD5</param>
         /// <param name="filename">The name of the file that holds the data
-        public byte[] ComputeHash(string function, string filename)   // 0:SHA1, 1:SHA224, 2:SHA256, 3:MD5
-        {
+        public byte[] ComputeHash(SPWF04SxHashType hashType, string filename) {
             var cmd = this.GetCommand()
-                .AddParameter(function)
+                .AddParameter(hashType == SPWF04SxHashType.MD5 ? "3" : hashType == SPWF04SxHashType.SHA256 ? "2" : hashType == SPWF04SxHashType.SHA224 ? "1" : "0")
                 .AddParameter(filename)
                 .Finalize(SPWF04SxCommandIds.HASH);
+
             this.EnqueueCommand(cmd);
-            byte[] totalBuf = new byte[0];
-            byte[] lastBuf = new byte[0];
-            int offset = 0;
-            byte[] readBuf = new byte[50];
-            int len = readBuf.Length;
-            while (len > 0)
-            {
-                len = cmd.ReadBuffer(readBuf, 0, len);
-                lastBuf = totalBuf;
-                offset = lastBuf.Length;
-                totalBuf = new byte[offset + len];
-                Array.Copy(lastBuf, 0, totalBuf, 0, offset);
-                Array.Copy(readBuf, 0, totalBuf, offset, len);
-                readBuf = new byte[len];
-            }
+
+            var result = GetContent(cmd);
+
             this.FinishCommand(cmd);
-            return totalBuf;
+
+            return result;
         }
 
-        public void Reset()
-        {
+        /// <summary>
+        /// Resets SPWF04Sx
+        /// </summary>
+        public void Reset() {
             var cmd = this.GetCommand()
                .Finalize(SPWF04SxCommandIds.RESET);
-            this.EnqueueCommand(cmd);
-            cmd.ReadBuffer();
-            this.FinishCommand(cmd);
-        }
 
-        public void SendAT()
-        {
-            var cmd = this.GetCommand()
-               .Finalize(SPWF04SxCommandIds.AT);
             this.EnqueueCommand(cmd);
+
             cmd.ReadBuffer();
+
             this.FinishCommand(cmd);
         }
 
         /// <summary>
-        /// Mounts a memory volume
-        /// 0 = External Flash, 1 = User Flash, 2 = Ram, 3 = Application Flash
+        /// Mounts a memory volume            
         /// </summary>
-        /// /// <param name="volume">The volume to be mounted. 0 = External Flash, 1 = User Flash, 2 = Ram, 3 = Application Flash</param>
-        public void MountMemoryVolume(string volume)
-        {
-            if (!((volume == "0") || (volume == "1") || (volume == "2") || (volume == "3")))
-            { throw new NotSupportedException("Invalid volume. For volume only 0, 1, 2 or 3 are allowed"); }
+        /// <param name="volume">The volume to be mounted. 0 = External Flash, 1 = User Flash, 2 = Ram, 3 = Application Flash</param>
+        public void MountMemoryVolume(SPWF04SxMemVolumeType volume) {
             var cmd = this.GetCommand()
-                .AddParameter(volume)
+                .AddParameter(volume == SPWF04SxMemVolumeType.ApplFlash ? "3" : volume == SPWF04SxMemVolumeType.Ram ? "2" : volume == SPWF04SxMemVolumeType.UserFlash ? "1" : "0")
                 .Finalize(SPWF04SxCommandIds.FSM);
+
             this.EnqueueCommand(cmd);
-            byte[] readBuf = new byte[50];
-            int len = cmd.ReadBuffer(readBuf, 0, 50);
+
+            cmd.ReadBuffer();
+
             this.FinishCommand(cmd);
         }
 
@@ -263,27 +243,30 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         /// Make sure that only valid parameters are used.
         /// No control mechanisms are implemented to control that things worked properly.
         /// </summary>
-        public void SetConfiguration(string confParameter, string value)
-        {
+        public void SetConfiguration(string confParameter, string value) {
             var cmd = this.GetCommand()
             .AddParameter(confParameter)
             .AddParameter(value)
             .Finalize(SPWF04SxCommandIds.SCFG);
+
             this.EnqueueCommand(cmd);
-            byte[] readBuf = new byte[50];
-            int len = cmd.ReadBuffer(readBuf, 0, 50);
+
+            cmd.ReadBuffer();
+
             this.FinishCommand(cmd);
         }
 
         /// <summary>
         /// Save the configuration of the SPWF04 module to the Flash.        
         /// </summary>
-        public void SaveConfiguration()
-        {
+        public void SaveConfiguration() {
             var cmd = this.GetCommand()
             .Finalize(SPWF04SxCommandIds.WCFG);
+
             this.EnqueueCommand(cmd);
+
             cmd.ReadBuffer();
+
             this.FinishCommand(cmd);
         }
 
@@ -291,14 +274,15 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         /// Get the configuration of the SPWF04 module.        
         /// </summary>
         /// <param name="configVariable">The configuration variable to retrieve. Leaving empty means all.</param>
-        public string GetConfiguration(string configVariable)
-        {
+        public string GetConfiguration(string configVariable) {
             var cmd = this.GetCommand()
              .AddParameter(configVariable)
              .Finalize(SPWF04SxCommandIds.GCFG);
+
             this.EnqueueCommand(cmd);
+
             StringBuilder stringBuilder = new StringBuilder("");
-            byte[] readBuf = new byte[50];
+            var readBuf = new byte[50];
             int len = readBuf.Length;
             while (len > 0)
             {
@@ -306,20 +290,23 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                 stringBuilder.Append(Encoding.UTF8.GetString(readBuf));
                 readBuf = new byte[len];
             }
+
             this.FinishCommand(cmd);
+
             return stringBuilder.ToString();
         }
 
         /// <summary>
         /// Gets time and date of SPWF04Sx module
         /// </summary>
-        public string GetTime()
-        {
+        public string GetTime() {
             var cmd = this.GetCommand()
                .Finalize(SPWF04SxCommandIds.TIME);
+
             this.EnqueueCommand(cmd);
+
             StringBuilder stringBuilder = new StringBuilder("");
-            byte[] readBuf = new byte[50];
+            var readBuf = new byte[50];
             int len = readBuf.Length;
 
             while (len > 0)
@@ -328,6 +315,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                 stringBuilder.Append(Encoding.UTF8.GetString(readBuf));
                 readBuf = new byte[len];
             }
+
             this.FinishCommand(cmd);
 
             return stringBuilder.ToString();
@@ -336,21 +324,24 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         /// <summary>
         /// Gets the amount of free Ram and the list of files in the SPWF04Sx memory as a string
         /// </summary>       
-        public string GetDiskContent()
-        {
+        public string GetDiskContent() {
             var cmd = this.GetCommand()
                .Finalize(SPWF04SxCommandIds.FSL);
+
             this.EnqueueCommand(cmd);
+
             StringBuilder stringBuilder = new StringBuilder("");
-            byte[] readBuf = new byte[50];
-            int len = readBuf.Length;
+            var readBuf = new byte[50];
+            var len = readBuf.Length;
             while (len > 0)
             {
                 len = cmd.ReadBuffer(readBuf, 0, len);
                 stringBuilder.Append(Encoding.UTF8.GetString(readBuf));
                 readBuf = new byte[len];
             }
+
             this.FinishCommand(cmd);
+
             return stringBuilder.ToString();
         }
 
@@ -359,14 +350,13 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         /// If the file doesn't exist null is returned (so can be used as kind of FileExists command
         /// </summary>
         /// <param name="filename">The file from where to retrieve the data.</param>
-        public FileEntity GetFileProperties(string filename)
-        {
+        public FileEntity GetFileProperties(string filename) {
             if (filename == null) throw new ArgumentNullException();
 
             FileEntity selectedFile = null;
-            string diskContent = this.GetDiskContent();
+            var diskContent = this.GetDiskContent();
 
-            string[] filesArray = diskContent.Split(':');
+            var filesArray = diskContent.Split(':');
 
             for (int i = 1; i < filesArray.Length - 1; i++)
             {
@@ -386,15 +376,18 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             }
             return selectedFile;
         }
+
         /// <summary>
-        /// Returns the content of a file as Byte Array. 
-        /// For UTF8 encoded data you can use the command 'PrintFile'
+        /// Returns the content of a file as byte array.        
         /// </summary>
         /// <param name="filename">The file from where to retrieve the data.</param>
-        public byte[] GetFileDataBinary(string filename)
-        {
+        /// <param name="offset">The offset.</param>
+        /// <param name="length">The count of bytes.</param>
+        public byte[] GetFileDataBinary(string filename, int offset, int length) {
             if (filename == null) throw new ArgumentNullException();
+
             FileEntity selectedFile = this.GetFileProperties(filename);
+
             if (selectedFile == null)
             {
                 return null;
@@ -403,49 +396,17 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             {
                 var cmd = this.GetCommand()
                     .AddParameter(filename)
-                    .AddParameter("0")
-                    .AddParameter(selectedFile.Length)
+                    .AddParameter(offset.ToString())
+                    .AddParameter(((offset + length > selectedFile.Length - 1) ? selectedFile.Length - offset : length).ToString())
                    .Finalize(SPWF04SxCommandIds.FSP);
+
                 this.EnqueueCommand(cmd);
-                byte[] totalBuf = new byte[0];
-                byte[] lastBuf = new byte[0];
-                int offset = 0;
-                byte[] readBuf = new byte[50];
-                int len = readBuf.Length;
-                while (len > 0)
-                {
-                    len = cmd.ReadBuffer(readBuf, 0, len);
-                    lastBuf = totalBuf;
-                    offset = lastBuf.Length;
-                    totalBuf = new byte[offset + len];
-                    Array.Copy(lastBuf, 0, totalBuf, 0, offset);
-                    Array.Copy(readBuf, 0, totalBuf, offset, len);
-                    readBuf = new byte[len];
-                }
+
+                var fileContent = GetContent(cmd);
+
                 this.FinishCommand(cmd);
-                return totalBuf;
-            }
-        }
 
-
-        /// <summary>
-        /// Returns the content of a file as UTF8 string. Be sure that the file contains UTF8 compatible data.
-        /// For binary data use the command 'GetFileDataBinary'
-        /// </summary>
-        /// <param name="filename">The file from where to retrieve the data.</param>
-        public string PrintFile(string filename)
-        {
-            if (filename == null) throw new ArgumentNullException();
-
-            FileEntity selectedFile = this.GetFileProperties(filename);
-
-            if (selectedFile == null)
-            {
-                return null;
-            }
-            else
-            {
-                return Encoding.UTF8.GetString(this.GetFileDataBinary(filename));
+                return fileContent;
             }
         }
 
@@ -453,16 +414,19 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         /// Deletes a file in Ram
         /// </summary>
         /// <param name="filename">The file to be deleted.</param>
-        public void DeleteRamFile(string filename)
-        {
+        public void DeleteRamFile(string filename) {
             if (filename == null) throw new ArgumentNullException();
+
             if (this.GetFileProperties(filename) != null)
             {
                 var cmd = this.GetCommand()
-                        .AddParameter(filename)
-                       .Finalize(SPWF04SxCommandIds.FSD);
+                    .AddParameter(filename)
+                    .Finalize(SPWF04SxCommandIds.FSD);
+
                 this.EnqueueCommand(cmd);
+
                 cmd.ReadBuffer();
+
                 this.FinishCommand(cmd);
             }
         }
@@ -473,8 +437,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         /// <param name="filename">The file to be created.</param>
         /// <param name="rawData">The content of the file.</param>
         /// <param name="append">When append is true, raw data are appended when a file with the same name already exists.</param>
-        public void CreateRamFile(string filename, byte[] rawData, bool append = false)
-        {
+        public void CreateRamFile(string filename, byte[] rawData, bool append = false) {
             if (filename == null) throw new ArgumentNullException();
             if (rawData == null) throw new ArgumentNullException();
 
@@ -485,22 +448,35 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                     this.DeleteRamFile(filename);
                 }
             }
-            var cmd = this.GetCommand()                     // Write rawData to file                
+            var cmd = this.GetCommand()
                 .AddParameter(filename)
                 .AddParameter((rawData.Length).ToString())
                 .Finalize(SPWF04SxCommandIds.FSC, rawData, 0, rawData.Length);
+
             this.EnqueueCommand(cmd);
+
             cmd.ReadBuffer();
         }
 
+        /// <summary>
+        /// Sends Http GET request
+        /// </summary>
+        /// <param name="host">DNS resolvable Name or IP address</param>
+        /// <param name="path">Document path & optional query arguments, Default:/index.html.</param>
+        /// <param name="port">Default 80 (if TLS=0) or 443 (if TLS>0)</param>
+        /// <param name="connectionSecurity">Default: None. Alterantive: TLS</param>
+        /// <param name="in_filename">Name of the file which holds reponse body after request finished</param>
+        /// <param name="out_filename">Name of the file which holds the body to be sent</param>
+        /// <param name="body">Content of the body to be sent</param>
 
-        public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string in_filename, string out_filename, byte[] request)
-        {
+        public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string in_filename, string out_filename = null, byte[] body = null) {
             if (this.activeHttpCommand != null) throw new InvalidOperationException();
+            if (((out_filename != null) && (body == null)) || (body != null) && (out_filename == null)) throw new InvalidOperationException();
 
-            DeleteRamFile(in_filename);              // Delete possibly existing in_filename
-            DeleteRamFile(out_filename);             // Delete possibly existing out_filename
-            CreateRamFile(out_filename, request);
+            if ((out_filename != null) && (body != null))
+            {
+                CreateRamFile(out_filename, body);
+            }
 
             this.activeHttpCommand = this.GetCommand()
                 .AddParameter(host)
@@ -516,39 +492,47 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.EnqueueCommand(this.activeHttpCommand);
 
             var result = this.activeHttpCommand.ReadString();
-            // Debug.WriteLine("1 " + result);
+
             if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && result == string.Empty)
             {
                 result = this.activeHttpCommand.ReadString();
                 if (result.IndexOf("Loading:") == 0)
                     result = this.activeHttpCommand.ReadString();
             }
-        
-            return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");          
+
+            return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
-        public int SendHttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string in_filename, string out_filename, byte[] request)
-        {
+        /// <summary>
+        /// Sends Http POST request
+        /// </summary>
+        /// <param name="host">DNS resolvable Name or IP address</param>
+        /// <param name="path">Document path & optional query arguments, Default:/index.html.</param>
+        /// <param name="port">Default 80 (if TLS=0) or 443 (if TLS>0)</param>
+        /// <param name="connectionSecurity">Default: None. Alterantive: TLS</param>
+        /// <param name="in_filename">Name of the file which holds reponse body after request finished</param>
+        /// <param name="out_filename">Name of the file which holds the body to be sent</param>
+        /// <param name="body">Content of the body to be sent</param>
+
+        public int SendHttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string in_filename, string out_filename, byte[] body) {
             if (this.activeHttpCommand != null) throw new InvalidOperationException();
+            if (((out_filename != null) && (body == null)) || (body != null) && (out_filename == null)) throw new InvalidOperationException();
 
-            DeleteRamFile(in_filename);             // Delete possibly existing in_filename
-
-            DeleteRamFile(out_filename);             // Delete possibly existing out_filename
-
-            CreateRamFile(out_filename, request);
-
-            request = null;
+            if ((out_filename != null) && (body != null))
+            {
+                CreateRamFile(out_filename, body);
+            }
 
             this.activeHttpCommand = this.GetCommand()
-            .AddParameter(host)
-            .AddParameter(path)
-            .AddParameter(port.ToString())
-            .AddParameter(connectionSecurity == SPWF04SxConnectionSecurityType.None ? "0" : "2")
-            .AddParameter(null)
-            .AddParameter(null)
-            .AddParameter(in_filename)
-            .AddParameter(out_filename)
-            .Finalize(SPWF04SxCommandIds.HTTPPOST);
+                .AddParameter(host)
+                .AddParameter(path)
+                .AddParameter(port.ToString())
+                .AddParameter(connectionSecurity == SPWF04SxConnectionSecurityType.None ? "0" : "2")
+                .AddParameter(null)
+                .AddParameter(null)
+                .AddParameter(in_filename)
+                .AddParameter(out_filename)
+                .Finalize(SPWF04SxCommandIds.HTTPPOST);
 
             this.EnqueueCommand(this.activeHttpCommand);
 
@@ -564,40 +548,25 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
-        public string SendPing(string hostname, string counter = "1", string size = "56")
-        {
+        /// <summary>
+        /// Sends Ping
+        /// </summary>
+        /// <param name="host">DNS resolvable Name or IP address</param>
+        public string SendPing(string host, string counter = "1", string size = "56") {
             var cmd = this.GetCommand()
-            .AddParameter(counter)
-            .AddParameter(size)
-            .AddParameter(hostname)
-            .Finalize(SPWF04SxCommandIds.PING);
+                .AddParameter(counter)
+                .AddParameter(size)
+                .AddParameter(host)
+                .Finalize(SPWF04SxCommandIds.PING);
 
             this.EnqueueCommand(cmd);
 
-            byte[] totalBuf = new byte[0];
-            byte[] lastBuf = new byte[0];
-            int offset = 0;
-            byte[] readBuf = new byte[50];
-            int len = readBuf.Length;
-            while (len > 0)
-            {
-                len = cmd.ReadBuffer(readBuf, 0, len);
-                lastBuf = totalBuf;
-                offset = lastBuf.Length;
-                totalBuf = new byte[offset + len];
-                Array.Copy(lastBuf, 0, totalBuf, 0, offset);
-                Array.Copy(readBuf, 0, totalBuf, offset, len);
-                readBuf = new byte[len];
-                Thread.Sleep(1000);
-            }
+            var resp = GetContent(cmd);
+
             this.FinishCommand(cmd);
-            return Encoding.UTF8.GetString(totalBuf);
+
+            return Encoding.UTF8.GetString(resp);
         }
-
-
-        //*************************************** End Commands added by RoSchmi  ***************************************************
-
-
 
         public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) {
             if (this.activeHttpCommand != null) throw new InvalidOperationException();
@@ -843,7 +812,27 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             cmd.ReadBuffer();
             this.FinishCommand(cmd);
         }
+     
+        private byte[] GetContent(SPWF04SxCommand cmd) {
+            byte[] totalBuf = new byte[0];
+            byte[] lastBuf = new byte[0];
+            int offset = 0;
+            byte[] readBuf = new byte[50];
+            int len = readBuf.Length;
 
+            while (len > 0)
+            {
+                len = cmd.ReadBuffer(readBuf, 0, len);
+                lastBuf = totalBuf;
+                offset = lastBuf.Length;
+                totalBuf = new byte[offset + len];
+                Array.Copy(lastBuf, 0, totalBuf, 0, offset);
+                Array.Copy(readBuf, 0, totalBuf, offset, len);
+                readBuf = new byte[len];
+            }
+            return totalBuf;
+        }
+     
         private void Process() {
             var pendingEvents = new Queue();
             var windPayloadBuffer = new GrowableBuffer(32, 1500 + 512);
