@@ -256,19 +256,12 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             this.EnqueueCommand(cmd);
 
-            StringBuilder stringBuilder = new StringBuilder("");
-            var readBuf = new byte[50];
-            int len = readBuf.Length;
-            while (len > 0)
-            {
-                len = cmd.ReadBuffer(readBuf, 0, len);
-                stringBuilder.Append(Encoding.UTF8.GetString(readBuf));
-                readBuf = new byte[len];
-            }
+            var result = cmd.ReadString();
+            cmd.ReadBuffer();
 
             this.FinishCommand(cmd);
 
-            return stringBuilder.ToString();
+            return result;
         }
         
         public string GetTime() {
@@ -277,20 +270,13 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             this.EnqueueCommand(cmd);
 
-            StringBuilder stringBuilder = new StringBuilder("");
-            var readBuf = new byte[50];
-            int len = readBuf.Length;
-
-            while (len > 0)
-            {
-                len = cmd.ReadBuffer(readBuf, 0, len);
-                stringBuilder.Append(Encoding.UTF8.GetString(readBuf));
-                readBuf = new byte[len];
-            }
+            var a = cmd.ReadString();
+            var b = cmd.ReadStrinf();
+            cmd.ReadBuffer();
 
             this.FinishCommand(cmd);
 
-            return stringBuilder.ToString();
+            return a + b;
         }
               
         public string GetDiskContent() {
