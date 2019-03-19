@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0", "Atmel\Winc15x0\GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0\GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0.csproj", "{0A494884-352C-4849-9A59-22AA41E378DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Temp.Ethernet", "Temp\GHIElectronics.TinyCLR.Drivers.Temp.Ethernet\GHIElectronics.TinyCLR.Drivers.Temp.Ethernet.csproj", "{94A26F98-A712-46C7-BC33-8D2ED1DD66DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{0A494884-352C-4849-9A59-22AA41E378DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A494884-352C-4849-9A59-22AA41E378DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A494884-352C-4849-9A59-22AA41E378DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94A26F98-A712-46C7-BC33-8D2ED1DD66DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94A26F98-A712-46C7-BC33-8D2ED1DD66DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94A26F98-A712-46C7-BC33-8D2ED1DD66DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94A26F98-A712-46C7-BC33-8D2ED1DD66DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
