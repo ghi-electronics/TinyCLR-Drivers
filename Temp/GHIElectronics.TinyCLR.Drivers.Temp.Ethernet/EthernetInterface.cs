@@ -6,19 +6,25 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-
+using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Net.NetworkInterface;
 
 namespace GHIElectronics.TinyCLR.Drivers.Temp.Ethernet {
     public class EthernetInterface : NetworkInterface, ISocketProvider, ISslStreamProvider, IDnsProvider, IDisposable {
         private readonly Hashtable netifSockets;
 
-        public EthernetInterface(int enable, int reset) {
+        GpioPin ResetPin;
+
+        public EthernetInterface(int reset) {
 
             this.netifSockets = new Hashtable();
 
-            if (this.Initialize(enable, reset))
+            if (this.Initialize())
                 NetworkInterface.RegisterNetworkInterface(this);
+
+            this.ResetPin = GpioController.GetDefault().OpenPin(reset);
+
+            this.ResetPin.SetDriveMode(GpioPinDriveMode.Output);
         }
 
         ~EthernetInterface() => this.Dispose(false);
@@ -34,6 +40,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Temp.Ethernet {
             }
         }
 
+        public void Reset() {
+            this.ResetPin.Write(GpioPinValue.Low);
+            System.Threading.Thread.Sleep(250);
+            this.ResetPin.Write(GpioPinValue.High);
+            System.Threading.Thread.Sleep(100);
+        }
         int ISocketProvider.Accept(int socket) => throw new NotImplementedException();
 
         int ISslStreamProvider.AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols) => socketHandle;
@@ -58,12 +70,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Temp.Ethernet {
             if (!this.netifSockets.Contains(socket)) throw new ArgumentException();
             if (address.Family != AddressFamily.InterNetwork) throw new ArgumentException();
 
-            var addressInBytes = new byte[address.Size];
-            for (var i = 0; i < addressInBytes.Length; i++) {
-                addressInBytes[i] = address[i];
-            }
-
-            if (this.ISocketProviderNativeConnect(socket, addressInBytes) == true) {
+            if (this.ISocketProviderNativeConnect(socket, address) == true) {
                 this.netifSockets[socket] = socket;
             }
         }
@@ -137,10 +144,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Temp.Ethernet {
 
         //Native
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern bool Initialize(int enable, int reset);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern bool Reset();
+        private extern bool Initialize();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern bool Open();
@@ -170,7 +174,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Temp.Ethernet {
         private extern void ISocketProviderNativeClose(int socket);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern bool ISocketProviderNativeConnect(int socket, byte[] socketAddressInBytes);
+        private extern bool ISocketProviderNativeConnect(int socket, SocketAddress address);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern int ISocketProviderNativeCreate(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
