@@ -249,6 +249,219 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return $"{a} {b}";
         }
 
+        public string GetDiskContent() {
+            var cmd = this.GetCommand()
+               .Finalize(SPWF04SxCommandIds.FSL);
+
+            this.EnqueueCommand(cmd);
+
+            StringBuilder stringBuilder = new StringBuilder("");
+            var readBuf = new byte[50];
+            var len = readBuf.Length;
+            while (len > 0) {
+                len = cmd.ReadBuffer(readBuf, 0, len);
+                stringBuilder.Append(Encoding.UTF8.GetString(readBuf));
+                readBuf = new byte[len];
+            }
+
+            this.FinishCommand(cmd);
+
+            return stringBuilder.ToString();
+        }
+
+        public FileEntity GetFileProperties(string filename) {
+            if (filename == null) throw new ArgumentNullException();
+
+            FileEntity selectedFile = null;
+            var diskContent = this.GetDiskContent();
+
+            var filesArray = diskContent.Split(':');
+
+            for (int i = 1; i < filesArray.Length - 1; i++) {
+                if (filesArray[i].LastIndexOf("File") == filesArray[i].Length - 4) {
+                    filesArray[i] = filesArray[i].Substring(0, filesArray[i].Length - 4);
+                    string[] properties = filesArray[i].Split('\t');
+                    if (properties.Length == 3) {
+                        if (properties[2] == filename) {
+                            selectedFile = new FileEntity(properties[0], properties[1], properties[2]);
+                            break;
+                        }
+                    }
+                }
+            }
+            return selectedFile;
+        }
+
+        public int GetFileDataBinary(string filename, byte[] buffer, int offset, int length) {
+            if (filename == null) throw new ArgumentNullException();
+            if (length > buffer.Length) throw new ArgumentOutOfRangeException();
+
+            var cmd = this.GetCommand()
+                   .AddParameter(filename)
+                   .AddParameter(offset.ToString())
+                   .AddParameter(length.ToString())
+                  .Finalize(SPWF04SxCommandIds.FSP);
+
+            this.EnqueueCommand(cmd);
+
+            byte[] result = GetContent(cmd, length);
+
+            Array.Copy(result, 0, buffer, 0, result.Length);
+
+            this.FinishCommand(cmd);
+
+            return result.Length;
+        }
+
+        public void DeleteRamFile(string filename) {
+            if (filename == null) throw new ArgumentNullException();
+
+            if (this.GetFileProperties(filename) != null) {
+                var cmd = this.GetCommand()
+                    .AddParameter(filename)
+                    .Finalize(SPWF04SxCommandIds.FSD);
+
+                this.EnqueueCommand(cmd);
+
+                cmd.ReadBuffer();
+
+                this.FinishCommand(cmd);
+            }
+        }
+
+        public void CreateRamFile(string filename, byte[] rawData, bool append = false) {
+            if (filename == null) throw new ArgumentNullException();
+            if (rawData == null) throw new ArgumentNullException();
+
+            if (append == false) {
+                if (this.GetFileProperties(filename) != null) {
+                    this.DeleteRamFile(filename);
+                }
+            }
+            var cmd = this.GetCommand()
+                .AddParameter(filename)
+                .AddParameter((rawData.Length).ToString())
+                .Finalize(SPWF04SxCommandIds.FSC, rawData, 0, rawData.Length);
+
+            this.EnqueueCommand(cmd);
+
+            cmd.ReadBuffer();
+        }
+
+        public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string in_filename, string out_filename = null, byte[] body = null) {
+            if (this.activeHttpCommand != null) throw new InvalidOperationException();
+            if (((out_filename != null) && (body == null)) || (body != null) && (out_filename == null)) throw new InvalidOperationException();
+
+            if ((out_filename != null) && (body != null)) {
+                CreateRamFile(out_filename, body);
+            }
+
+            this.activeHttpCommand = this.GetCommand()
+                .AddParameter(host)
+                .AddParameter(path)
+                .AddParameter(port.ToString())
+                .AddParameter(connectionSecurity == SPWF04SxConnectionSecurityType.None ? "0" : "2")
+                .AddParameter(null)
+                .AddParameter(null)
+                .AddParameter(in_filename)
+                .AddParameter(out_filename)
+                .Finalize(SPWF04SxCommandIds.HTTPGET);
+
+            this.EnqueueCommand(this.activeHttpCommand);
+
+            var result = this.activeHttpCommand.ReadString();
+
+            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && result == string.Empty) {
+                result = this.activeHttpCommand.ReadString();
+                if (result.IndexOf("Loading:") == 0)
+                    result = this.activeHttpCommand.ReadString();
+            }
+
+            return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
+        }
+
+        public int SendHttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string in_filename, string out_filename, byte[] body) {
+            if (this.activeHttpCommand != null) throw new InvalidOperationException();
+            if (((out_filename != null) && (body == null)) || (body != null) && (out_filename == null)) throw new InvalidOperationException();
+
+            if ((out_filename != null) && (body != null)) {
+                CreateRamFile(out_filename, body);
+            }
+
+            this.activeHttpCommand = this.GetCommand()
+                .AddParameter(host)
+                .AddParameter(path)
+                .AddParameter(port.ToString())
+                .AddParameter(connectionSecurity == SPWF04SxConnectionSecurityType.None ? "0" : "2")
+                .AddParameter(null)
+                .AddParameter(null)
+                .AddParameter(in_filename)
+                .AddParameter(out_filename)
+                .Finalize(SPWF04SxCommandIds.HTTPPOST);
+
+            this.EnqueueCommand(this.activeHttpCommand);
+
+            var result = this.activeHttpCommand.ReadString();
+            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && result == string.Empty) {
+                result = this.activeHttpCommand.ReadString();
+
+                if (result.IndexOf("Loading:") == 0)
+                    result = this.activeHttpCommand.ReadString();
+            }
+
+            return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
+        }
+
+        public string SendPing(string host, string counter = "1", string size = "56") {
+            var cmd = this.GetCommand()
+                .AddParameter(counter)
+                .AddParameter(size)
+                .AddParameter(host)
+                .Finalize(SPWF04SxCommandIds.PING);
+
+            this.EnqueueCommand(cmd);
+
+            StringBuilder stringBuilder = new StringBuilder("");
+
+            while (cmd.ReadString() is var result && result != "") {
+                stringBuilder.Append(result);
+                Thread.Sleep(1000);
+            }
+
+            string returnString = stringBuilder.ToString();
+
+            if (returnString.IndexOf("Reply") == -1) {
+                while (cmd.ReadBuffer() is var cnt && cnt > 0) {
+                    Thread.Sleep(10);
+                }
+            }
+
+            this.FinishCommand(cmd);
+
+            return returnString;
+        }
+
+        private byte[] GetContent(SPWF04SxCommand cmd, int count) {
+            byte[] totalBuf = new byte[0];
+            byte[] lastBuf = new byte[0];
+            int offset = 0;
+            int total = 0;
+            byte[] readBuf = new byte[count];
+            int len = readBuf.Length;
+
+            while (len > 0) {
+                len = cmd.ReadBuffer(readBuf, 0, len);
+                total += len;
+                lastBuf = totalBuf;
+                offset = lastBuf.Length;
+                totalBuf = new byte[offset + len];
+                Array.Copy(lastBuf, 0, totalBuf, 0, offset);
+                Array.Copy(readBuf, 0, totalBuf, offset, len);
+                readBuf = new byte[len];
+            }
+            return totalBuf;
+        }
+
         public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) {
             var cmd = this.GetVariableLengthResponseCommand()
                 .AddParameter(host)
