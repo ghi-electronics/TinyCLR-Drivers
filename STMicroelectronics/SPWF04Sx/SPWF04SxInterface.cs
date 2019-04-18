@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Net;
 using System.Net.NetworkInterface;
@@ -9,8 +9,8 @@ using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
-using GHIElectronics.TinyCLR.Net.NetworkInterface;
 using GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx.Helpers;
+using GHIElectronics.TinyCLR.Net.NetworkInterface;
 
 namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
     public class SPWF04SxInterface : NetworkInterface, ISocketProvider, ISslStreamProvider, IDnsProvider, IDisposable {
@@ -147,14 +147,6 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             }
         }
 
-        public void ResetConfiguration() {
-            var cmd = this.GetCommand()
-                .Finalize(SPWF04SxCommandIds.FCFG);
-            this.EnqueueCommand(cmd);
-            cmd.ReadBuffer();
-            this.FinishCommand(cmd);
-        }
-
         public void ClearTlsServerRootCertificate() {
             var cmd = this.GetCommand()
                 .AddParameter("content")
@@ -185,6 +177,70 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.FinishCommand(cmd);
 
             return result.Substring(result.IndexOf(':') + 1);
+        }
+
+        public string GetConfigurationVariable(string variable) {
+            var cmd = this.GetCommand()
+                .AddParameter(variable)
+                .Finalize(SPWF04SxCommandIds.GCFG);
+
+            this.EnqueueCommand(cmd);
+
+            var result = cmd.ReadString();
+
+            cmd.ReadBuffer();
+
+            this.FinishCommand(cmd);
+
+            return result;
+        }
+
+        public void SetConfigurationVariable(string variable, string value) {
+            var cmd = this.GetCommand()
+                .AddParameter(variable)
+                .AddParameter(value)
+                .Finalize(SPWF04SxCommandIds.SCFG);
+
+            this.EnqueueCommand(cmd);
+
+            cmd.ReadBuffer();
+
+            this.FinishCommand(cmd);
+        }
+
+        public void SaveConfiguration() {
+            var cmd = this.GetCommand()
+                .Finalize(SPWF04SxCommandIds.WCFG);
+
+            this.EnqueueCommand(cmd);
+
+            cmd.ReadBuffer();
+
+            this.FinishCommand(cmd);
+        }
+
+        public void ResetConfiguration() {
+            var cmd = this.GetCommand()
+                .Finalize(SPWF04SxCommandIds.FCFG);
+            this.EnqueueCommand(cmd);
+            cmd.ReadBuffer();
+            this.FinishCommand(cmd);
+        }
+
+        public string GetTime() {
+            var cmd = this.GetCommand()
+                .Finalize(SPWF04SxCommandIds.TIME);
+
+            this.EnqueueCommand(cmd);
+
+            var a = cmd.ReadString();
+            var b = cmd.ReadString();
+
+            cmd.ReadBuffer();
+
+            this.FinishCommand(cmd);
+
+            return $"{a} {b}";
         }
 
         public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) {
@@ -392,31 +448,11 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         public void JoinNetwork(string ssid, string password) {
             this.DisableRadio();
 
+            this.SetConfigurationVariable("wifi_mode", "1");
+            this.SetConfigurationVariable("wifi_priv_mode", "2");
+            this.SetConfigurationVariable("wifi_wpa_psk_text", password);
+
             var cmd = this.GetCommand()
-                .AddParameter("wifi_mode")
-                .AddParameter("1")
-                .Finalize(SPWF04SxCommandIds.SCFG);
-            this.EnqueueCommand(cmd);
-            cmd.ReadBuffer();
-            this.FinishCommand(cmd);
-
-            cmd = this.GetCommand()
-                .AddParameter("wifi_priv_mode")
-                .AddParameter("2")
-                .Finalize(SPWF04SxCommandIds.SCFG);
-            this.EnqueueCommand(cmd);
-            cmd.ReadBuffer();
-            this.FinishCommand(cmd);
-
-            cmd = this.GetCommand()
-                .AddParameter("wifi_wpa_psk_text")
-                .AddParameter(password)
-                .Finalize(SPWF04SxCommandIds.SCFG);
-            this.EnqueueCommand(cmd);
-            cmd.ReadBuffer();
-            this.FinishCommand(cmd);
-
-            cmd = this.GetCommand()
                 .AddParameter(ssid)
                 .Finalize(SPWF04SxCommandIds.SSIDTXT);
             this.EnqueueCommand(cmd);
@@ -425,10 +461,35 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             this.EnableRadio();
 
-            cmd = this.GetCommand()
-                .Finalize(SPWF04SxCommandIds.WCFG);
+            this.SaveConfiguration();
+        }
+
+        public string ComputeFileHash(SPWF04SxHashType hashType, string filename) {
+            var cmd = this.GetCommand()
+                .AddParameter(hashType == SPWF04SxHashType.Md5 ? "3" : hashType == SPWF04SxHashType.Sha256 ? "2" : hashType == SPWF04SxHashType.Sha224 ? "1" : "0")
+                .AddParameter(filename)
+                .Finalize(SPWF04SxCommandIds.HASH);
+
             this.EnqueueCommand(cmd);
+
+            var result = cmd.ReadString();
+
             cmd.ReadBuffer();
+
+            this.FinishCommand(cmd);
+
+            return result;
+        }
+
+        public void MountVolume(SPWF04SxVolume volume) {
+            var cmd = this.GetCommand()
+                .AddParameter(volume == SPWF04SxVolume.ApplicationFlash ? "3" : volume == SPWF04SxVolume.Ram ? "2" : volume == SPWF04SxVolume.UserFlash ? "1" : "0")
+                .Finalize(SPWF04SxCommandIds.FSM);
+
+            this.EnqueueCommand(cmd);
+
+            cmd.ReadBuffer();
+
             this.FinishCommand(cmd);
         }
 
