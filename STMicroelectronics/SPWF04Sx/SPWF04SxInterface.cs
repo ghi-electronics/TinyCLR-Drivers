@@ -22,7 +22,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         private readonly GpioPin irq;
         private readonly GpioPin reset;
         private SPWF04SxCommand activeCommand;
-        private SPWF04SxCommand activeHttpCommand;
+        private SPWF04SxCommand activeVariableLengthResponseCommand;
         private Thread worker;
         private bool running;
         private int nextSocketId;
@@ -107,12 +107,18 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.netifSockets.Clear();
             this.nextSocketId = 0;
             this.activeCommand = null;
-            this.activeHttpCommand = null;
+            this.activeVariableLengthResponseCommand = null;
 
             this.commandPool.ResetAll();
         }
 
         protected SPWF04SxCommand GetCommand() => (SPWF04SxCommand)this.commandPool.Acquire();
+
+        protected SPWF04SxCommand GetVariableLengthResponseCommand() {
+            if (this.activeVariableLengthResponseCommand != null) throw new InvalidOperationException("Variable length response command already outstanding.");
+
+            return this.activeVariableLengthResponseCommand = this.GetCommand();
+        }
 
         protected void EnqueueCommand(SPWF04SxCommand cmd) {
             lock (this.pendingCommands) {
@@ -244,9 +250,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         }
 
         public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) {
-            if (this.activeHttpCommand != null) throw new InvalidOperationException();
-
-            this.activeHttpCommand = this.GetCommand()
+            var cmd = this.GetVariableLengthResponseCommand()
                 .AddParameter(host)
                 .AddParameter(path)
                 .AddParameter(port.ToString())
@@ -257,23 +261,21 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                 .AddParameter(null)
                 .Finalize(SPWF04SxCommandIds.HTTPGET);
 
-            this.EnqueueCommand(this.activeHttpCommand);
+            this.EnqueueCommand(cmd);
 
-            var result = this.activeHttpCommand.ReadString();
+            var result = cmd.ReadString();
             if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && result == string.Empty) {
-                result = this.activeHttpCommand.ReadString();
+                result = cmd.ReadString();
 
                 if (result.IndexOf("Loading:") == 0)
-                    result = this.activeHttpCommand.ReadString();
+                    result = cmd.ReadString();
             }
 
             return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
         public int SendHttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) {
-            if (this.activeHttpCommand != null) throw new InvalidOperationException();
-
-            this.activeHttpCommand = this.GetCommand()
+            var cmd = this.GetVariableLengthResponseCommand()
                 .AddParameter(host)
                 .AddParameter(path)
                 .AddParameter(port.ToString())
@@ -284,28 +286,28 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                 .AddParameter(null)
                 .Finalize(SPWF04SxCommandIds.HTTPPOST);
 
-            this.EnqueueCommand(this.activeHttpCommand);
+            this.EnqueueCommand(cmd);
 
-            var result = this.activeHttpCommand.ReadString();
+            var result = cmd.ReadString();
             if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && result == string.Empty) {
-                result = this.activeHttpCommand.ReadString();
+                result = cmd.ReadString();
 
                 if (result.IndexOf("Loading:") == 0)
-                    result = this.activeHttpCommand.ReadString();
+                    result = cmd.ReadString();
             }
 
             return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
-        public int ReadHttpResponse(byte[] buffer, int offset, int count) {
-            if (this.activeHttpCommand == null) throw new InvalidOperationException();
+        public int ReadResponseBody(byte[] buffer, int offset, int count) {
+            if (this.activeVariableLengthResponseCommand == null) throw new InvalidOperationException();
 
-            var len = this.activeHttpCommand.ReadBuffer(buffer, offset, count);
+            var len = this.activeVariableLengthResponseCommand.ReadBuffer(buffer, offset, count);
 
             if (len == 0) {
-                this.FinishCommand(this.activeHttpCommand);
+                this.FinishCommand(this.activeVariableLengthResponseCommand);
 
-                this.activeHttpCommand = null;
+                this.activeVariableLengthResponseCommand = null;
             }
 
             return len;
