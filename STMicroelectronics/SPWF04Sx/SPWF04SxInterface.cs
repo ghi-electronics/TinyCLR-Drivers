@@ -317,7 +317,8 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             cmd.ReadBuffer();
         }
 
-        public int SendHttpGet(string host, string path) => this.SendHttpGet(host, path, 80, SPWF04SxConnectionSecurityType.None, null, null);
+        public int SendHttpGet(string host, string path) => this.SendHttpGet(host, path, 80, SPWF04SxConnectionSecurityType.None);
+        public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) => this.SendHttpGet(host, path, port, connectionSecurity, null, null);
         public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string inputFile, string outputFile) {
             var cmd = (outputFile == null ? this.GetCommand() : this.GetVariableLengthResponseCommand())
                 .AddParameter(host)
@@ -343,7 +344,8 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
-        public int SendHttpPost(string host, string path) => this.SendHttpPost(host, path, 80, SPWF04SxConnectionSecurityType.None, null, null);
+        public int SendHttpPost(string host, string path) => this.SendHttpPost(host, path, 80, SPWF04SxConnectionSecurityType.None);
+        public int SendHttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) => this.SendHttpPost(host, path, port, connectionSecurity, null, null);
         public int SendHttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, string inputFile, string outputFile) {
             var cmd = (inputFile == null ? this.GetCommand() : this.GetVariableLengthResponseCommand())
                 .AddParameter(host)
