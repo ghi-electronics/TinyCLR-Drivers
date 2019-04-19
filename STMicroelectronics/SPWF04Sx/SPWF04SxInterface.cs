@@ -296,12 +296,10 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                .Finalize(SPWF04SxCommandIds.FSL);
 
             this.EnqueueCommand(cmd);
-
-            cmd.ReadBuffer();
         }
 
-        public void CreateRamFile(string filename, byte[] data) => this.CreateRamFile(filename, data, 0, data != null ? data.Length : throw new ArgumentNullException(nameof(data)));
-        public void CreateRamFile(string filename, byte[] data, int offset, int count) {
+        public void CreateFile(string filename, byte[] data) => this.CreateFile(filename, data, 0, data != null ? data.Length : throw new ArgumentNullException(nameof(data)));
+        public void CreateFile(string filename, byte[] data, int offset, int count) {
             if (filename == null) throw new ArgumentNullException();
             if (data == null) throw new ArgumentNullException(nameof(data));
             if (offset < 0) throw new ArgumentOutOfRangeException();
@@ -341,8 +339,6 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             this.EnqueueCommand(cmd);
 
-            cmd.ReadBuffer();
-
             var total = SPWF04SxInterface.ReadBuffer(cmd, buffer, offset, count);
 
             this.FinishCommand(cmd);
@@ -350,8 +346,8 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return total;
         }
 
-        public void SendPing(string host) => this.SendPing(host, 1, 56);
-        public void SendPing(string host, int count, int packetSize) {
+        public string SendPing(string host) => this.SendPing(host, 1, 56);
+        public string SendPing(string host, int count, int packetSize) {
             var cmd = this.GetCommand()
                 .AddParameter(count.ToString())
                 .AddParameter(packetSize.ToString())
@@ -360,7 +356,13 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
             this.EnqueueCommand(cmd);
 
+            var str = cmd.ReadString();
+
             cmd.ReadBuffer();
+            cmd.ReadBuffer();
+            cmd.ReadBuffer();
+
+            return str.Split(':')[1];
         }
 
         public int SendHttpGet(string host, string path) => this.SendHttpGet(host, path, 80, SPWF04SxConnectionSecurityType.None);
@@ -519,21 +521,11 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return result[0] == "Query" ? int.Parse(result[1]) : throw new Exception("Request failed");
         }
 
-        public string ListSocket() {
-            var cmd = this.GetCommand()
+        public void ListSockets() {
+            var cmd = this.GetVariableLengthResponseCommand()
                 .Finalize(SPWF04SxCommandIds.SOCKL);
 
             this.EnqueueCommand(cmd);
-
-            var str = string.Empty;
-            while (cmd.ReadString() is var s && s != string.Empty)
-                str += s + Environment.NewLine;
-
-            cmd.ReadBuffer();
-
-            this.FinishCommand(cmd);
-
-            return str;
         }
 
         public void EnableRadio() {
