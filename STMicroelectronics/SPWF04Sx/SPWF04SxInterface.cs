@@ -278,6 +278,19 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.FinishCommand(cmd);
         }
 
+        public void UnmountVolume(SPWF04SxVolume volume) {
+            var cmd = this.GetCommand()
+                .AddParameter(volume == SPWF04SxVolume.ApplicationFlash ? "3" : volume == SPWF04SxVolume.Ram ? "2" : volume == SPWF04SxVolume.UserFlash ? "1" : "0")
+                .AddParameter("0")
+                .Finalize(SPWF04SxCommandIds.FSU);
+
+            this.EnqueueCommand(cmd);
+
+            cmd.ReadBuffer();
+
+            this.FinishCommand(cmd);
+        }
+
         public void GetFileListing() {
             var cmd = this.GetVariableLengthResponseCommand()
                .Finalize(SPWF04SxCommandIds.FSL);
@@ -285,6 +298,38 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.EnqueueCommand(cmd);
 
             cmd.ReadBuffer();
+        }
+
+        public void CreateRamFile(string filename, byte[] data) => this.CreateRamFile(filename, data, 0, data != null ? data.Length : throw new ArgumentNullException(nameof(data)));
+        public void CreateRamFile(string filename, byte[] data, int offset, int count) {
+            if (filename == null) throw new ArgumentNullException();
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (offset < 0) throw new ArgumentOutOfRangeException();
+            if (count < 0) throw new ArgumentOutOfRangeException();
+            if (offset + count > data.Length) throw new ArgumentOutOfRangeException();
+
+            var cmd = this.GetCommand()
+                .AddParameter(filename)
+                .AddParameter(count.ToString())
+                .Finalize(SPWF04SxCommandIds.FSC, data, offset, count);
+
+            this.EnqueueCommand(cmd);
+
+            cmd.ReadBuffer();
+        }
+
+        public void DeleteFile(string filename) {
+            if (filename == null) throw new ArgumentNullException();
+
+            var cmd = this.GetCommand()
+                .AddParameter(filename)
+                .Finalize(SPWF04SxCommandIds.FSD);
+
+            this.EnqueueCommand(cmd);
+
+            cmd.ReadBuffer();
+
+            this.FinishCommand(cmd);
         }
 
         public int ReadFile(string filename, byte[] buffer, int offset, int count) {
@@ -303,34 +348,6 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.FinishCommand(cmd);
 
             return total;
-        }
-
-        public void CreateRamFile(string filename, byte[] data) {
-            if (filename == null) throw new ArgumentNullException();
-            if (data == null) throw new ArgumentNullException();
-
-            var cmd = this.GetCommand()
-                .AddParameter(filename)
-                .AddParameter(data.Length.ToString())
-                .Finalize(SPWF04SxCommandIds.FSC, data, 0, data.Length);
-
-            this.EnqueueCommand(cmd);
-
-            cmd.ReadBuffer();
-        }
-
-        public void DeleteRamFile(string filename) {
-            if (filename == null) throw new ArgumentNullException();
-
-            var cmd = this.GetCommand()
-                .AddParameter(filename)
-                .Finalize(SPWF04SxCommandIds.FSD);
-
-            this.EnqueueCommand(cmd);
-
-            cmd.ReadBuffer();
-
-            this.FinishCommand(cmd);
         }
 
         public void SendPing(string host) => this.SendPing(host, 1, 56);
