@@ -249,6 +249,35 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return $"{a} {b}";
         }
 
+        public string ComputeFileHash(SPWF04SxHashType hashType, string filename) {
+            var cmd = this.GetCommand()
+                .AddParameter(hashType == SPWF04SxHashType.Md5 ? "3" : hashType == SPWF04SxHashType.Sha256 ? "2" : hashType == SPWF04SxHashType.Sha224 ? "1" : "0")
+                .AddParameter(filename)
+                .Finalize(SPWF04SxCommandIds.HASH);
+
+            this.EnqueueCommand(cmd);
+
+            var result = cmd.ReadString();
+
+            cmd.ReadBuffer();
+
+            this.FinishCommand(cmd);
+
+            return result;
+        }
+
+        public void MountVolume(SPWF04SxVolume volume) {
+            var cmd = this.GetCommand()
+                .AddParameter(volume == SPWF04SxVolume.ApplicationFlash ? "3" : volume == SPWF04SxVolume.Ram ? "2" : volume == SPWF04SxVolume.UserFlash ? "1" : "0")
+                .Finalize(SPWF04SxCommandIds.FSM);
+
+            this.EnqueueCommand(cmd);
+
+            cmd.ReadBuffer();
+
+            this.FinishCommand(cmd);
+        }
+
         public void GetFileListing() {
             var cmd = this.GetVariableLengthResponseCommand()
                .Finalize(SPWF04SxCommandIds.FSL);
@@ -531,35 +560,6 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.EnableRadio();
 
             this.SaveConfiguration();
-        }
-
-        public string ComputeFileHash(SPWF04SxHashType hashType, string filename) {
-            var cmd = this.GetCommand()
-                .AddParameter(hashType == SPWF04SxHashType.Md5 ? "3" : hashType == SPWF04SxHashType.Sha256 ? "2" : hashType == SPWF04SxHashType.Sha224 ? "1" : "0")
-                .AddParameter(filename)
-                .Finalize(SPWF04SxCommandIds.HASH);
-
-            this.EnqueueCommand(cmd);
-
-            var result = cmd.ReadString();
-
-            cmd.ReadBuffer();
-
-            this.FinishCommand(cmd);
-
-            return result;
-        }
-
-        public void MountVolume(SPWF04SxVolume volume) {
-            var cmd = this.GetCommand()
-                .AddParameter(volume == SPWF04SxVolume.ApplicationFlash ? "3" : volume == SPWF04SxVolume.Ram ? "2" : volume == SPWF04SxVolume.UserFlash ? "1" : "0")
-                .Finalize(SPWF04SxCommandIds.FSM);
-
-            this.EnqueueCommand(cmd);
-
-            cmd.ReadBuffer();
-
-            this.FinishCommand(cmd);
         }
 
         private static int ReadBuffer(SPWF04SxCommand cmd, byte[] buffer, int offset, int count) {
