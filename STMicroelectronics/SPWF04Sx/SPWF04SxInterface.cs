@@ -26,6 +26,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         private Thread worker;
         private bool running;
         private int nextSocketId;
+        private bool SocketErrorHappened;
 
         public event SPWF04SxIndicationReceivedEventHandler IndicationReceived;
         public event SPWF04SxErrorReceivedEventHandler ErrorReceived;
@@ -441,19 +442,38 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                 .AddParameter(commonName ?? (connectionType == SPWF04SxConnectionType.Tcp ? (connectionSecurity == SPWF04SxConnectionSecurityType.Tls ? "s" : "t") : "u"))
                 .Finalize(SPWF04SxCommandIds.SOCKON);
 
+            SocketErrorHappened = false;
             this.EnqueueCommand(cmd);
-
-            var a = cmd.ReadString();
-            var b = cmd.ReadString();
-
-            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && b.IndexOf("Loading:") == 0) {
-                a = cmd.ReadString();
-                b = cmd.ReadString();
+            Thread.Sleep(0);
+            string a = string.Empty;
+            string b = string.Empty;
+            if (!SocketErrorHappened)
+            {
+                a = cmd.ReadString();               
+                Thread.Sleep(0);
+                if (!SocketErrorHappened)
+                {
+                    b = cmd.ReadString();                    
+                }
+                Thread.Sleep(0);
+                if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && b.IndexOf("Loading:") == 0)
+                {
+                    if (!SocketErrorHappened)
+                    {
+                        a = cmd.ReadString();                       
+                    }
+                    Thread.Sleep(0);
+                    if (!SocketErrorHappened)
+                    {
+                        b = cmd.ReadString();                       
+                    }
+                }               
             }
-
             this.FinishCommand(cmd);
-
-            return a.Split(':') is var result && result[0] == "On" ? int.Parse(result[2]) : throw new Exception("Request failed");
+           
+            // return -1 as socket No. if an error happened while opening a socket, so you can handle the result (retry or abort)
+            // avoids occasional hangs
+            return a.Split(':') is var result && result[0] == "On" ? int.Parse(result[2]) : -1;            
         }
 
         public void CloseSocket(int socket) {
@@ -523,8 +543,8 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
         public void ListSockets() {
             var cmd = this.GetVariableLengthResponseCommand()
-                .Finalize(SPWF04SxCommandIds.SOCKL);
-
+            .Finalize(SPWF04SxCommandIds.SOCKL);
+        
             this.EnqueueCommand(cmd);
         }
 
@@ -648,6 +668,91 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                             //        break;
                             //}
 
+                            switch (ind)
+                            {
+
+                                case 0x00:
+                                case 0x03:
+                                case 0xFE:
+                                case 0xFF:
+                                    { }
+                                    break;
+
+
+                                case 0x2C:  // dec 44: wait for connection up
+                                case 0x41:  // dec 65: DNS Address Failure
+                                case 0x4A:  // dec 74: Failed to open socket
+                                case 0x4C:  // dec 79: Write failed
+                                    {
+                                        // SocketErrorHappened is used in Opensocket cmd to handle errors when trying to open socket
+                                        SocketErrorHappened = true;
+                                        // make errors available outside
+                                        pendingEvents.Enqueue(new SPWF04SxErrorReceivedEventArgs(ind, ""));
+                                    }
+                                    break;
+
+                                default:
+                                    {
+                                        // make errors available outside
+                                        pendingEvents.Enqueue(new SPWF04SxErrorReceivedEventArgs(ind, ""));
+                                    }
+                                    break;
+
+
+                                    // here is an explanation of some error messages I saw when working with the module
+                                    // should be deleted in final version
+                                    //    case 0x02:
+                                    //        {
+                                    //            // Seen, actually meaning not clear
+                                    //            Debug.WriteLine("Indication: " + ind.ToString("X2") + " PayLoad = " + payloadLength.ToString());
+                                    //        }
+                                    //        break;
+                                    //
+                                    //
+                                    //    case 0x04:
+                                    //       {
+                                    //            // Seen after bad formed configuration command
+                                    //            Debug.WriteLine("Indication: " + ind.ToString("X2") + " Wrong command format " + " Pld = " + payloadLength.ToString());                                       
+                                    //        }
+                                    //        break;
+                                    //
+                                    //    case 0x2C:  // dec 44: wait for connection up
+                                    //        {
+                                    //            SocketErrorHappened = true;
+                                    //            Debug.WriteLine("Indication: " + ind.ToString("X2") + " Wait for connection up " + " Pld = " + payloadLength.ToString());
+                                    //        }
+                                    //        break;
+                                    //    case 0x38:  // dec 56: Unable to delete file ?
+                                    //        {                                      
+                                    //            Debug.WriteLine("Ind: " + ind.ToString("X2") + " Unable to delete file" + " Pld = " + payloadLength.ToString());                                       
+                                    //        }
+                                    //        break;
+                                    //    case 0x41:  // dez 65: DNS Address Failure
+                                    //        {                                       
+                                    //            SocketErrorHappened = true;
+                                    //            Debug.WriteLine("Indication: " + ind.ToString("X2") + " DNS Address failed " + " Pld = " + payloadLength.ToString());
+                                    //        }
+                                    //        break;
+                                    //
+                                    //    case 0x4A:   // dec 74: Failed to open socket  
+                                    //        {
+                                    //            SocketErrorHappened = true;
+                                    //            Debug.WriteLine("Ind: " + ind.ToString("X2") + " Failed to open socket " + " Pld = " + payloadLength.ToString());                                       
+                                    //        }
+                                    //        break;
+                                    //    case 0x4C:   // dec 79: Write failed
+                                    //        {
+                                    //            SocketErrorHappened = true;
+                                    //            Debug.WriteLine("Ind: " + ind.ToString("X2") + " Write failed " + " Pld = " + payloadLength.ToString());                                       
+                                    //        }
+                                    //        break;
+                                    //    case 0x6F:   // dec 111 Request failed
+                                    //        {
+                                    //            Debug.WriteLine("Ind: " + ind.ToString("X2") + " Request failed " + " Pld = " + payloadLength.ToString());                                       
+                                    //        }
+                                    //        break;
+                            }
+                           
                             this.activeCommand.ReadPayload(this.spi.Read, payloadLength);
                         }
                         else {
