@@ -1,19 +1,20 @@
 using System;
 using System.Collections;
 using System.Net;
-using System.Net.NetworkInterface;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
+using GHIElectronics.TinyCLR.Devices.Network;
+using GHIElectronics.TinyCLR.Devices.Network.Provider;
 using GHIElectronics.TinyCLR.Devices.Spi;
 using GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx.Helpers;
-using GHIElectronics.TinyCLR.Net.NetworkInterface;
+using GHIElectronics.TinyCLR.Networking;
 
 namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
-    public class SPWF04SxInterface : NetworkInterface, ISocketProvider, ISslStreamProvider, IDnsProvider, IDisposable {
+    public class SPWF04SxInterface : INetworkControllerProvider {
         private readonly ObjectPool commandPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingCommands;
@@ -29,10 +30,16 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
         public event SPWF04SxIndicationReceivedEventHandler IndicationReceived;
         public event SPWF04SxErrorReceivedEventHandler ErrorReceived;
+        public event NetworkLinkConnectedChangedEventHandler NetworkLinkConnectedChanged;
+        public event NetworkAddressChangedEventHandler NetworkAddressChanged;
 
         public SPWF04SxWiFiState State { get; private set; }
         public bool ForceSocketsTls { get; set; }
         public string ForceSocketsTlsCommonName { get; set; }
+
+        public NetworkInterfaceType InterfaceType => throw new NotImplementedException();
+
+        public NetworkCommunicationInterface CommunicationInterface => throw new NotImplementedException();
 
         public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, int chipSelectLine) => new SpiConnectionSettings {
             ClockFrequency = 8000000,
@@ -58,8 +65,6 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.reset.Write(GpioPinValue.Low);
 
             this.irq.SetDriveMode(GpioPinDriveMode.Input);
-
-            NetworkInterface.RegisterNetworkInterface(this);
         }
 
         ~SPWF04SxInterface() => this.Dispose(false);
@@ -76,8 +81,6 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
                 this.spi.Dispose();
                 this.irq.Dispose();
                 this.reset.Dispose();
-
-                NetworkInterface.DeregisterNetworkInterface(this);
             }
         }
 
@@ -682,7 +685,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             host += address[7];
         }
 
-        int ISocketProvider.Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
+        int INetworkProvider.Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
             if (addressFamily != AddressFamily.InterNetwork || socketType != SocketType.Stream || protocolType != ProtocolType.Tcp) throw new ArgumentException();
 
             var id = this.nextSocketId++;
@@ -692,15 +695,15 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return id;
         }
 
-        int ISocketProvider.Available(int socket) => this.QuerySocket(this.GetInternalSocketId(socket));
+        int INetworkProvider.Available(int socket) => this.QuerySocket(this.GetInternalSocketId(socket));
 
-        void ISocketProvider.Close(int socket) {
+        void INetworkProvider.Close(int socket) {
             this.CloseSocket(this.GetInternalSocketId(socket));
 
             this.netifSockets.Remove(socket);
         }
 
-        void ISocketProvider.Connect(int socket, SocketAddress address) {
+        void INetworkProvider.Connect(int socket, SocketAddress address) {
             if (!this.netifSockets.Contains(socket)) throw new ArgumentException();
             if (address.Family != AddressFamily.InterNetwork) throw new ArgumentException();
 
@@ -709,7 +712,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.netifSockets[socket] = this.OpenSocket(host, port, SPWF04SxConnectionType.Tcp, this.ForceSocketsTls ? SPWF04SxConnectionSecurityType.Tls : SPWF04SxConnectionSecurityType.None, this.ForceSocketsTls ? this.ForceSocketsTlsCommonName : null);
         }
 
-        int ISocketProvider.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
+        int INetworkProvider.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags) {
             if (flags != SocketFlags.None) throw new ArgumentException();
 
             this.WriteSocket(this.GetInternalSocketId(socket), buffer, offset, count);
@@ -717,24 +720,15 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             return count;
         }
 
-        int ISocketProvider.Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
+        int INetworkProvider.Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags) {
             if (flags != SocketFlags.None) throw new ArgumentException();
-            if (timeout != Timeout.Infinite && timeout < 0) throw new ArgumentException();
-
-            var end = (timeout != Timeout.Infinite ? DateTime.UtcNow.AddMilliseconds(timeout) : DateTime.MaxValue).Ticks;
             var sock = this.GetInternalSocketId(socket);
-            var avail = 0;
-
-            do {
-                avail = this.QuerySocket(sock);
-
-                Thread.Sleep(1);
-            } while (avail == 0 && DateTime.UtcNow.Ticks < end);
+            var avail = this.QuerySocket(sock);
 
             return avail > 0 ? this.ReadSocket(sock, buffer, offset, Math.Min(avail, count)) : 0;
         }
 
-        bool ISocketProvider.Poll(int socket, int microSeconds, SelectMode mode) {
+        bool INetworkProvider.Poll(int socket, int microSeconds, SelectMode mode) {
             switch (mode) {
                 default: throw new ArgumentException();
                 case SelectMode.SelectError: return false;
@@ -743,32 +737,30 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             }
         }
 
-        void ISocketProvider.Bind(int socket, SocketAddress address) => throw new NotImplementedException();
-        void ISocketProvider.Listen(int socket, int backlog) => throw new NotImplementedException();
-        int ISocketProvider.Accept(int socket) => throw new NotImplementedException();
-        int ISocketProvider.SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address) => throw new NotImplementedException();
-        int ISocketProvider.ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address) => throw new NotImplementedException();
+        void INetworkProvider.Bind(int socket, SocketAddress address) => throw new NotImplementedException();
+        void INetworkProvider.Listen(int socket, int backlog) => throw new NotImplementedException();
+        int INetworkProvider.Accept(int socket) => throw new NotImplementedException();
+        int INetworkProvider.SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, SocketAddress address) => throw new NotImplementedException();
+        int INetworkProvider.ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, ref SocketAddress address) => throw new NotImplementedException();
 
-        void ISocketProvider.GetRemoteAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
-        void ISocketProvider.GetLocalAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
+        void INetworkProvider.GetRemoteAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
+        void INetworkProvider.GetLocalAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
 
-        void ISocketProvider.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+        void INetworkProvider.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
             if (optionLevel == SocketOptionLevel.Socket && optionName == SocketOptionName.Type)
                 Array.Copy(BitConverter.GetBytes((int)SocketType.Stream), optionValue, 4);
         }
 
-        void ISocketProvider.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+        void INetworkProvider.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
 
         }
 
-        int ISslStreamProvider.AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols) => socketHandle;
-        int ISslStreamProvider.AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols) => throw new NotImplementedException();
-        void ISslStreamProvider.Close(int handle) => ((ISocketProvider)this).Close(handle);
-        int ISslStreamProvider.Read(int handle, byte[] buffer, int offset, int count, int timeout) => ((ISocketProvider)this).Receive(handle, buffer, offset, count, SocketFlags.None, timeout);
-        int ISslStreamProvider.Write(int handle, byte[] buffer, int offset, int count, int timeout) => ((ISocketProvider)this).Send(handle, buffer, offset, count, SocketFlags.None, timeout);
-        int ISslStreamProvider.Available(int handle) => ((ISocketProvider)this).Available(handle);
+        int INetworkProvider.AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols sslProtocols) => socketHandle;
+        int INetworkProvider.AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols sslProtocols) => throw new NotImplementedException();
+        int INetworkProvider.SecureRead(int handle, byte[] buffer, int offset, int count) => ((INetworkProvider)this).Receive(handle, buffer, offset, count, SocketFlags.None);
+        int INetworkProvider.SecureWrite(int handle, byte[] buffer, int offset, int count) => ((INetworkProvider)this).Send(handle, buffer, offset, count, SocketFlags.None);
 
-        void IDnsProvider.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) {
+        void INetworkProvider.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) {
             var cmd = this.GetCommand()
                 .AddParameter(name)
                 .AddParameter("80")
@@ -792,14 +784,20 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             addresses = new[] { new IPEndPoint(IPAddress.Parse(result[1]), 80).Serialize() };
         }
 
-        public override string Id => nameof(SPWF04Sx);
-        public override string Name => this.Id;
-        public override string Description => string.Empty;
-        public override OperationalStatus OperationalStatus => this.State == SPWF04SxWiFiState.ReadyToTransmit ? OperationalStatus.Up : OperationalStatus.Down;
-        public override bool IsReceiveOnly => false;
-        public override bool SupportsMulticast => false;
-        public override NetworkInterfaceType NetworkInterfaceType => NetworkInterfaceType.Wireless80211;
+        public void Enable() => throw new NotImplementedException();
 
-        public override bool Supports(NetworkInterfaceComponent networkInterfaceComponent) => networkInterfaceComponent == NetworkInterfaceComponent.IPv4;
+        public void Disable() => throw new NotImplementedException();
+
+        public bool GetLinkConnected() => throw new NotImplementedException();
+
+        public NetworkIPProperties GetIPProperties() => throw new NotImplementedException();
+
+        public NetworkInterfaceProperties GetInterfaceProperties() => throw new NotImplementedException();
+
+        public void SetInterfaceSettings(NetworkInterfaceSettings settings) => throw new NotImplementedException();
+
+        public void SetCommunicationInterfaceSettings(NetworkCommunicationInterfaceSettings settings) => throw new NotImplementedException();
+
     }
+
 }
