@@ -47,17 +47,35 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TinyCLR-Libraries\mscorlib\mscorlib.csproj">
+      <Project>{AA751E21-9220-42CE-8180-516BB59E4555}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Gpio.1.0.0\lib\net452\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Devices.Gpio\bin\Debug\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
+    </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Network, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Devices.Network\bin\Debug\GHIElectronics.TinyCLR.Devices.Network.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Spi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Spi.1.0.0\lib\net452\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Devices.Spi\bin\Debug\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Native, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Native.1.0.0\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Native\bin\Debug\GHIElectronics.TinyCLR.Native.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Networking, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Networking.1.0.0\lib\net452\GHIElectronics.TinyCLR.Networking.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Networking\bin\Debug\GHIElectronics.TinyCLR.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Networking.Http, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Networking.Http\bin\Debug\GHIElectronics.TinyCLR.Networking.Http.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
