@@ -38,7 +38,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         public string ForceSocketsTlsCommonName { get; set; }
 
         public NetworkInterfaceType InterfaceType => NetworkInterfaceType.WiFi;
-        public NetworkCommunicationInterface CommunicationInterface => throw new NotImplementedException();
+        public NetworkCommunicationInterface CommunicationInterface => NetworkCommunicationInterface.Spi;
 
         public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, int chipSelectLine) => new SpiConnectionSettings {
             ClockFrequency = 8000000,
