@@ -47,12 +47,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\TinyCLR-Libraries\mscorlib\mscorlib.csproj">
-      <Project>{AA751E21-9220-42CE-8180-516BB59E4555}</Project>
-      <Name>mscorlib</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Devices.Gpio\bin\Debug\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
