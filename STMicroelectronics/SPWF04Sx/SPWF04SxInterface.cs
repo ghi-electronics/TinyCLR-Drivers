@@ -784,17 +784,11 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         }
 
         public void Enable() => throw new NotImplementedException();
-
         public void Disable() => throw new NotImplementedException();
-
         public bool GetLinkConnected() => throw new NotImplementedException();
-
         public NetworkIPProperties GetIPProperties() => throw new NotImplementedException();
-
         public NetworkInterfaceProperties GetInterfaceProperties() => throw new NotImplementedException();
-
         public void SetInterfaceSettings(NetworkInterfaceSettings settings) => throw new NotImplementedException();
-
         public void SetCommunicationInterfaceSettings(NetworkCommunicationInterfaceSettings settings) => throw new NotImplementedException();
 
     }
