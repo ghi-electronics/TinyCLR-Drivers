@@ -37,7 +37,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
         public bool ForceSocketsTls { get; set; }
         public string ForceSocketsTlsCommonName { get; set; }
 
-        public NetworkInterfaceType InterfaceType => throw new NotImplementedException();
+        public NetworkInterfaceType InterfaceType => NetworkInterfaceType.WiFi;
 
         public NetworkCommunicationInterface CommunicationInterface => throw new NotImplementedException();
 
