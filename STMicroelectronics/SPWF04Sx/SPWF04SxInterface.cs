@@ -75,7 +75,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
         protected virtual void Dispose(bool disposing) {
             if (disposing) {
-                this.TurnOff();
+                this.Disable();
 
                 this.spi.Dispose();
                 this.irq.Dispose();
@@ -83,7 +83,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             }
         }
 
-        public void TurnOn() {
+        public void Enable() {
             if (this.running) return;
 
             this.running = true;
@@ -93,7 +93,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             this.reset.SetDriveMode(GpioPinDriveMode.Input);
         }
 
-        public void TurnOff() {
+        public void Disable() {
             if (!this.running) return;
 
             this.reset.SetDriveMode(GpioPinDriveMode.Output);
@@ -783,14 +783,10 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
             addresses = new[] { new IPEndPoint(IPAddress.Parse(result[1]), 80).Serialize() };
         }
 
-        public void Enable() => throw new NotImplementedException();
-        public void Disable() => throw new NotImplementedException();
         public bool GetLinkConnected() => throw new NotImplementedException();
         public NetworkIPProperties GetIPProperties() => throw new NotImplementedException();
         public NetworkInterfaceProperties GetInterfaceProperties() => throw new NotImplementedException();
         public void SetInterfaceSettings(NetworkInterfaceSettings settings) => throw new NotImplementedException();
         public void SetCommunicationInterfaceSettings(NetworkCommunicationInterfaceSettings settings) => throw new NotImplementedException();
-
     }
-
 }
