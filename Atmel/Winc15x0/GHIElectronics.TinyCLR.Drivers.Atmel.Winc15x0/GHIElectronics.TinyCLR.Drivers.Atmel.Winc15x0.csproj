@@ -38,11 +38,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\GHIElectronics.TinyCLR.Devices.Gpio.2.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
+    </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.I2c, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\GHIElectronics.TinyCLR.Devices.I2c.2.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Devices.I2c.dll</HintPath>
+    </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Network, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\GHIElectronics.TinyCLR.Devices.Network.2.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Devices.Network.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Spi, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\GHIElectronics.TinyCLR.Devices.Spi.2.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
