@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Atmel Winc15x0 driver for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2019</copyright>
-    <tags>TinyCLR TinyCLROS Winc15x0 FT5316 FT5206</tags>
+    <tags>TinyCLR TinyCLROS Winc15x0</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.0.0-preview1" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="2.0.0-preview1" />
