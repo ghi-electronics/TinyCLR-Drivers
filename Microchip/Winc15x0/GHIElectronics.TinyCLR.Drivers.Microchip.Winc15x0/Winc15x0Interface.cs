@@ -4,14 +4,14 @@ using GHIElectronics.TinyCLR.Devices.Network;
 
 namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
     public class Winc15x0Interface {
-        public NetworkController Controller { get; }
+        public NetworkController NetworkController { get; }
 
-        public Winc15x0Interface() => this.Controller = NetworkController.FromName("GHIElectronics.TinyCLR.NativeApis.ATWINC15xx.NetworkController");
+        public Winc15x0Interface() => this.NetworkController = NetworkController.FromName("GHIElectronics.TinyCLR.NativeApis.ATWINC15xx.NetworkController");
 
         ~Winc15x0Interface() => this.Dispose();
 
         public void Dispose() {
-            this.Controller.Dispose();
+            this.NetworkController.Dispose();
             GC.SuppressFinalize(this);
         }
 
