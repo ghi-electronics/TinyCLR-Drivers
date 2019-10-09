@@ -19,10 +19,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             this.NativeReadFirmwareVersion(out var ver1, out var ver2);
 
             var major = (ver1 >> 16) & 0xFF;
-            var monor = (ver1 >> 8) & 0xFF;
-            var path = (ver1 >> 0) & 0xFF;
+            var minor = (ver1 >> 8) & 0xFF;
+            var patch = (ver1 >> 0) & 0xFF;
 
-            return major.ToString() + "." + monor.ToString() + "." + path.ToString() + " Svnrev " + ver2.ToString();
+            return $"{major}.{minor}.{patch}.{ver2}";
         }
 
         public bool TurnOn() => this.NativeTurnOn();
