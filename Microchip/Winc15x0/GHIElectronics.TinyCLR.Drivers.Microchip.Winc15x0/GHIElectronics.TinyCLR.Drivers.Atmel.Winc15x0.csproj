@@ -8,8 +8,8 @@
     <ProjectGuid>{0A494884-352C-4849-9A59-22AA41E378DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -38,7 +38,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

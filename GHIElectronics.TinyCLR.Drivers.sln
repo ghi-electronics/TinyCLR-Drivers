@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6", "FocalTech\FT5xx6\GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6.csproj", "{82A2F5B0-4073-4B98-845D-AE7C5A925BE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0", "Atmel\Winc15x0\GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0\GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0.csproj", "{0A494884-352C-4849-9A59-22AA41E378DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0", "Microchip\Winc15x0\GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0\GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.csproj", "{0A494884-352C-4849-9A59-22AA41E378DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

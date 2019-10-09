@@ -2,7 +2,7 @@
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0</id>
+    <id>GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0</id>
     <version>2.0.0-preview1</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
@@ -10,7 +10,7 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Atmel Winc15x0 driver for TinyCLR OS.</description>
+    <description>Microchip Winc15x0 driver for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2019</copyright>
     <tags>TinyCLR TinyCLROS Winc15x0</tags>
     <dependencies>
@@ -22,6 +22,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.dll" target="lib\net452" />
   </files>
 </package>

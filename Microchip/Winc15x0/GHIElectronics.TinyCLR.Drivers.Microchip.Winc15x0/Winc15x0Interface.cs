@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Network;
 
-namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
+namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
     public class Winc15x0Interface {
         public NetworkController Controller { get; }
 
