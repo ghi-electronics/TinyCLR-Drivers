@@ -18,11 +18,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
         }
 
         public string GetFirmwareVersion() {
-            if (!this.initialized) {
-                this.NativeTurnOn();
-
-                this.initialized = true;
-            }
+            this.TurnOn();
 
             this.NativeReadFirmwareVersion(out var ver1, out var ver2);
 
@@ -33,17 +29,13 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             return $"{major}.{minor}.{patch}.{ver2}";
         }
 
-        public bool FirmwareUpdatebyOta(string url, int timeout) {
-            if (!this.initialized) {
-                this.NativeTurnOn();
-
-                this.initialized = true;
-            }
+        public bool FirmwareUpdate(string url, int timeout) {
+            this.TurnOn();
 
             return this.NativeFirmwareUpdatebyOta(url, timeout);
         }
 
-        public bool FirmwareUpdatefirmwareupdate(byte[] buffer) => this.FirmwareUpdate(buffer, 0, buffer.Length);
+        public bool FirmwareUpdate(byte[] buffer) => this.FirmwareUpdate(buffer, 0, buffer.Length);
 
         public bool FirmwareUpdate(byte[] buffer, int offset, int count) {
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
@@ -51,13 +43,17 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
             if (offset + count > buffer.Length) throw new ArgumentOutOfRangeException(nameof(buffer));
 
-            if (!this.initialized) {
-                this.NativeTurnOn();
-
-                this.initialized = true;
-            }
+            this.TurnOn();
 
             return this.NativeFirmwareUpdate(buffer, offset, count);
+        }
+
+        private void TurnOn() {
+            if (!this.initialized) {
+                if (this.NativeTurnOn()) {
+                    this.initialized = true;
+                }
+            }
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
