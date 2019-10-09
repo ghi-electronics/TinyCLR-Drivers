@@ -6,6 +6,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
     public class Winc15x0Interface {
         public NetworkController NetworkController { get; }
 
+        private bool initialized = false;
+
         public Winc15x0Interface() => this.NetworkController = NetworkController.FromName("GHIElectronics.TinyCLR.NativeApis.ATWINC15xx.NetworkController");
 
         ~Winc15x0Interface() => this.Dispose();
@@ -16,6 +18,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
         }
 
         public string GetFirmwareVersion() {
+            if (!this.initialized) {
+                this.NativeTurnOn();
+
+                this.initialized = true;
+            }
+
             this.NativeReadFirmwareVersion(out var ver1, out var ver2);
 
             var major = (ver1 >> 16) & 0xFF;
@@ -25,18 +33,31 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             return $"{major}.{minor}.{patch}.{ver2}";
         }
 
-        public bool TurnOn() => this.NativeTurnOn();
-        public uint GetFlashSize() => this.NativeGetFlashSize();
-        public uint ReadChipId() => this.NativeReadChipId();
-        public void ReadFirmwareVersion(out uint ver1, out uint ver2) => this.ReadFirmwareVersion(out ver1, out ver2);
-        public bool FirmwareUpdatebyOta(string url, int timeout) => this.NativeFirmwareUpdatebyOta(url, timeout);
-        public bool FirmwareUpdate(byte[] data, int offset, int count) {
-            if (data == null) throw new ArgumentNullException(nameof(data));
+        public bool FirmwareUpdatebyOta(string url, int timeout) {
+            if (!this.initialized) {
+                this.NativeTurnOn();
+
+                this.initialized = true;
+            }
+
+            return this.NativeFirmwareUpdatebyOta(url, timeout);
+        }
+
+        public bool FirmwareUpdatefirmwareupdate(byte[] buffer) => this.FirmwareUpdate(buffer, 0, buffer.Length);
+
+        public bool FirmwareUpdate(byte[] buffer, int offset, int count) {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
             if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data));
+            if (offset + count > buffer.Length) throw new ArgumentOutOfRangeException(nameof(buffer));
 
-            return this.NativeFirmwareUpdate(data, offset, count);
+            if (!this.initialized) {
+                this.NativeTurnOn();
+
+                this.initialized = true;
+            }
+
+            return this.NativeFirmwareUpdate(buffer, offset, count);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -47,12 +68,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern bool NativeFirmwareUpdate(byte[] data, int offset, int count);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern uint NativeGetFlashSize();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern uint NativeReadChipId();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeReadFirmwareVersion(out uint ver1, out uint ver2);
