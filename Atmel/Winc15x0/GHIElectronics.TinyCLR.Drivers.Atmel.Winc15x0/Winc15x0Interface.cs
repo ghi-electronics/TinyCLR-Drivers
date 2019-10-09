@@ -134,31 +134,31 @@ namespace GHIElectronics.TinyCLR.Drivers.Atmel.Winc15x0 {
         public void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) => this.networkController.Provider.GetHostByName(name, out canonicalName, out addresses);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern bool TurnOn();
+        private extern bool TurnOn();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern byte[] NativeScan(out int numAp);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetPowerSave(PowerSave powerSave, int sleepDuration, int listenInterval, bool receiveBroadcast);
+        private extern void SetPowerSave(PowerSave powerSave, int sleepDuration, int listenInterval, bool receiveBroadcast);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern bool FirmwareUpdatebyOta(string url, int timeout);
+        private extern bool FirmwareUpdatebyOta(string url, int timeout);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern bool FlashWrite(uint address, byte[] rawData, int offset, int count);
+        private extern bool FlashWrite(uint address, byte[] rawData, int offset, int count);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern bool FlashRead(uint address, byte[] rawData, int offset, int count);
+        private extern bool FlashRead(uint address, byte[] rawData, int offset, int count);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern bool FlashErase(uint address, int count);
+        private extern bool FlashErase(uint address, int count);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern uint GetFlashSize();
+        private extern uint GetFlashSize();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern uint ReadChipId();
+        private extern uint ReadChipId();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void ReadFirmwareVersion(out uint ver1, out uint ver2);
