@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Display;
 using GHIElectronics.TinyCLR.Devices.Display.Provider;
@@ -318,7 +318,13 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SetDrawWindow(this.x, this.y, config.Width, config.Height);
         }
 
-        void IDisplayControllerProvider.DrawBuffer(int x, int y, int width, int height, byte[] data, int offset) {
+        void IDisplayControllerProvider.DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) {
+            var x = targetX;
+            var y = targetY;
+
+            if (sourceX != 0 || sourceY != 0)
+                throw new NotSupportedException();
+
             if (x == 0 && y == 0 && width == this.Width && height == this.Height) {
                 this.DrawBuffer(data, offset);
             }
