@@ -754,7 +754,7 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.SPWF04Sx {
 
         }
 
-        int INetworkProvider.AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols sslProtocols) => socketHandle;
+        int INetworkProvider.AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification) => socketHandle;
         int INetworkProvider.AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols sslProtocols) => throw new NotImplementedException();
         int INetworkProvider.SecureRead(int handle, byte[] buffer, int offset, int count) => ((INetworkProvider)this).Receive(handle, buffer, offset, count, SocketFlags.None);
         int INetworkProvider.SecureWrite(int handle, byte[] buffer, int offset, int count) => ((INetworkProvider)this).Send(handle, buffer, offset, count, SocketFlags.None);
