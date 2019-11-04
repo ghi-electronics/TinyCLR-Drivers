@@ -3,24 +3,16 @@ using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Network;
 
 namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
-    public class Winc15x0Interface {
-        public NetworkController NetworkController { get; }
+    public static class Winc15x0Interface {
 
-        private bool initialized = false;
+        private static bool initialized = false;
 
-        public Winc15x0Interface() => this.NetworkController = NetworkController.FromName("GHIElectronics.TinyCLR.NativeApis.ATWINC15xx.NetworkController");
+        public static readonly string[] FirmwareSupports = new string[] { "19.5.4.15567" };
 
-        ~Winc15x0Interface() => this.Dispose();
+        public static string GetFirmwareVersion() {
+            TurnOn();
 
-        public void Dispose() {
-            this.NetworkController.Dispose();
-            GC.SuppressFinalize(this);
-        }
-
-        public string GetFirmwareVersion() {
-            this.TurnOn();
-
-            this.NativeReadFirmwareVersion(out var ver1, out var ver2);
+            NativeReadFirmwareVersion(out var ver1, out var ver2);
 
             var major = (ver1 >> 16) & 0xFF;
             var minor = (ver1 >> 8) & 0xFF;
@@ -29,43 +21,43 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             return $"{major}.{minor}.{patch}.{ver2}";
         }
 
-        public bool FirmwareUpdate(string url, int timeout) {
-            this.TurnOn();
+        public static bool FirmwareUpdate(string url, int timeout) {
+            TurnOn();
 
-            return this.NativeFirmwareUpdatebyOta(url, timeout);
+            return NativeFirmwareUpdatebyOta(url, timeout);
         }
 
-        public bool FirmwareUpdate(byte[] buffer) => this.FirmwareUpdate(buffer, 0, buffer.Length);
+        public static bool FirmwareUpdate(byte[] buffer) => FirmwareUpdate(buffer, 0, buffer.Length);
 
-        public bool FirmwareUpdate(byte[] buffer, int offset, int count) {
+        public static bool FirmwareUpdate(byte[] buffer, int offset, int count) {
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
             if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
             if (offset + count > buffer.Length) throw new ArgumentOutOfRangeException(nameof(buffer));
 
-            this.TurnOn();
+            TurnOn();
 
-            return this.NativeFirmwareUpdate(buffer, offset, count);
+            return NativeFirmwareUpdate(buffer, offset, count);
         }
 
-        private void TurnOn() {
-            if (!this.initialized) {
-                if (this.NativeTurnOn()) {
-                    this.initialized = true;
+        private static void TurnOn() {
+            if (!initialized) {
+                if (NativeTurnOn()) {
+                    initialized = true;
                 }
             }
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern bool NativeTurnOn();
+        private static extern bool NativeTurnOn();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern bool NativeFirmwareUpdatebyOta(string url, int timeout);
+        private static extern bool NativeFirmwareUpdatebyOta(string url, int timeout);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern bool NativeFirmwareUpdate(byte[] data, int offset, int count);
+        private static extern bool NativeFirmwareUpdate(byte[] data, int offset, int count);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeReadFirmwareVersion(out uint ver1, out uint ver2);
+        private static extern void NativeReadFirmwareVersion(out uint ver1, out uint ver2);
     }
 }
