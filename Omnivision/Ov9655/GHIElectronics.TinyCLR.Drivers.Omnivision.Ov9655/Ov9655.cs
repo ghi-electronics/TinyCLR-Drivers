@@ -9,7 +9,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655
 {
     public class Ov9655
     {
-        private const byte I2C_ADDRESS = 0x60;
+        private const byte I2C_ADDRESS = 0x30;
 
         private I2cDevice i2cDevice;
         private DcmiController dcmiController;
