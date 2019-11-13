@@ -2,7 +2,8 @@ using System;
 using System.Collections;
 using System.Text;
 using System.Threading;
-using GHIElectronics.TinyCLR.Devices.Dcmi;
+using GHIElectronics.TinyCLR.Devices.Camera;
+
 using GHIElectronics.TinyCLR.Devices.I2c;
 
 namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655
@@ -12,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655
         private const byte I2C_ADDRESS = 0x30;
 
         private I2cDevice i2cDevice;
-        private DcmiController dcmiController;
+        private CameraController cameraController;
         public Ov9655(I2cController i2cController) {
 
             var settings = new I2cConnectionSettings(I2C_ADDRESS) {
@@ -24,9 +25,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655
 
             this.i2cDevice = i2cController.GetDevice(settings);            
 
-            this.dcmiController = GHIElectronics.TinyCLR.Devices.Dcmi.DcmiController.GetDefault();
-            this.dcmiController.SetActiveSettings(GHIElectronics.TinyCLR.Devices.Dcmi.CaptureRate.AllFrame, false, true, true, GHIElectronics.TinyCLR.Devices.Dcmi.SynchronizationMode.Hardware, GHIElectronics.TinyCLR.Devices.Dcmi.ExtendedDataMode.Extended8bit, 16000000);
-            this.dcmiController.Enable();
+            this.cameraController = CameraController.GetDefault();
+            this.cameraController.SetActiveSettings(CaptureRate.AllFrame, false, true, true,SynchronizationMode.Hardware,ExtendedDataMode.Extended8bit, 16000000);
+            this.cameraController.Enable();
 
             this.Reset();
 
@@ -45,7 +46,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655
 
         }
 
-        public void Capture(byte[] data, int timeoutMillisecond) => this.dcmiController.Capture(data, timeoutMillisecond);
+        public void Capture(byte[] data, int timeoutMillisecond) => this.cameraController.Capture(data, timeoutMillisecond);
 
         public void SetResolution(Resolution size) {
             switch (size) {
