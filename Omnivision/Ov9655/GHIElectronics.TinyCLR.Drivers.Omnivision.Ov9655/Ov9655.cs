@@ -18,7 +18,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655
 
             var settings = new I2cConnectionSettings(I2C_ADDRESS) {
 
-                BusSpeed = I2cBusSpeed.StandardMode,
+                BusSpeed = 100000,
                 AddressFormat = I2cAddressFormat.SevenBit,
 
             };
