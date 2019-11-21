@@ -45,7 +45,7 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
         public int SampleCount { get; set; } = 5;
 
         public static I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(0x38) {
-            BusSpeed = I2cBusSpeed.FastMode,
+            BusSpeed = 100000,
             AddressFormat = I2cAddressFormat.SevenBit,
         };
 

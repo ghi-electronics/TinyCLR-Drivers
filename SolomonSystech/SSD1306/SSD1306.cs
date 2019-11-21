@@ -18,7 +18,7 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {
 
         public static I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(0x3C) {
             AddressFormat = I2cAddressFormat.SevenBit,
-            BusSpeed = I2cBusSpeed.FastMode,
+            BusSpeed = 100000,
         };
 
         public SSD1306Controller(I2cDevice i2c) {
