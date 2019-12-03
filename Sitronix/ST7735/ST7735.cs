@@ -308,7 +308,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             }
 
             Array.Copy(buffer, 0, this.buffer, 0, buffer.Length);
-            BitConverter.SwapEndianess(this.buffer, 2);
+            BitConverter.SwapEndianness(this.buffer, 2);
 
 
             this.spi.Write(this.buffer, offset, this.Height * this.Width * this.bpp / 8);
