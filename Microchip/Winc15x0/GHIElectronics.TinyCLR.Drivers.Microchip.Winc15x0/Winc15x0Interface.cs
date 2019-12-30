@@ -5,6 +5,8 @@ using GHIElectronics.TinyCLR.Devices.Network;
 namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
     public static class Winc15x0Interface {
 
+        const int MAX_SSID_LENGTH = 33; //32 + "\0" ;
+
         private static bool initialized = false;
 
         public static readonly string[] FirmwareSupports = new string[] { "19.5.4.15567" };
@@ -20,6 +22,26 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
 
             return $"{major}.{minor}.{patch}.{ver2}";
         }
+
+        public static string[] Scan() {
+            var response = NativeScan(out var numAp);
+
+            var ssids = new string[numAp];
+
+            for (var i = 0; i < numAp; i++) {
+                var ssid = new char[MAX_SSID_LENGTH-1];
+
+                var index = 0;
+                for (var index2 = i * MAX_SSID_LENGTH; index < ssid.Length; index++) {
+                    ssid[index] = (char)response[index2++];
+                }
+
+                ssids[i] = new string(ssid);
+            }
+            return ssids;
+        }
+
+        public static int GetRssi() => NativeGetRssi();
 
         public static bool FirmwareUpdate(string url, int timeout) {
             TurnOn();
@@ -59,5 +81,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void NativeReadFirmwareVersion(out uint ver1, out uint ver2);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern byte[] NativeScan(out int numAp);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern int NativeGetRssi();
     }
 }
