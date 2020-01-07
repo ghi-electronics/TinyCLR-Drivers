@@ -11,7 +11,7 @@
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Texas Instruments 8-Bit Shift Registers With 3-State Output Registers driver for TinyCLR OS.</description>
-    <copyright>Copyright GHI Electronics, LLC 2019</copyright>
+    <copyright>Copyright GHI Electronics, LLC 2020</copyright>
     <tags>TinyCLR TinyCLROS SNx4HC595 SN54HC595 SN74HC595</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.0.0-preview2" />
