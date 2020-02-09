@@ -8,7 +8,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Drivers.Media {
-    public sealed class Mjpeg {
+    public sealed class Mjpeg : IDisposable{
         const int BLOCK_SIZE = 4 * 1024;
 
         public delegate void DataDecodedEventHandler(byte[] data);
@@ -79,16 +79,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Media {
 
             if (this.screen == null)
                 throw new NullReferenceException("");
-        }
-
-        ~Mjpeg() {
-            this.isDecoding = false;
-
-            if (this.fifo.unmanagedPtr != null) {
-                for (var c = 0; c < this.fifo.bufferCount; c++) {
-                    Memory.UnmanagedMemory.Free(this.fifo.unmanagedPtr[c]);
-                }
-            }
         }
 
         public void StartDecode(FileStream stream) {
@@ -322,6 +312,16 @@ namespace GHIElectronics.TinyCLR.Drivers.Media {
 
                 if (this.fifo.fifoOut == this.fifo.bufferCount)
                     this.fifo.fifoOut = 0;
+            }
+        }
+
+        public void Dispose() {
+            this.isDecoding = false;
+
+            if (this.fifo.unmanagedPtr != null) {
+                for (var c = 0; c < this.fifo.bufferCount; c++) {
+                    Memory.UnmanagedMemory.Free(this.fifo.unmanagedPtr[c]);
+                }
             }
         }
     }
