@@ -24,12 +24,14 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
         }
 
         public static string[] Scan() {
+            TurnOn();
+
             var response = NativeScan(out var numAp);
 
             var ssids = new string[numAp];
 
             for (var i = 0; i < numAp; i++) {
-                var ssid = new char[MAX_SSID_LENGTH-1];
+                var ssid = new char[MAX_SSID_LENGTH - 1];
 
                 var index = 0;
                 for (var index2 = i * MAX_SSID_LENGTH; index < ssid.Length; index++) {
@@ -41,7 +43,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             return ssids;
         }
 
-        public static int GetRssi() => NativeGetRssi();
+        public static int GetRssi() {
+            TurnOn();
+
+            return NativeGetRssi();
+        }
 
         public static bool FirmwareUpdate(string url, int timeout) {
             TurnOn();
@@ -60,6 +66,18 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             TurnOn();
 
             return NativeFirmwareUpdate(buffer, offset, count);
+        }
+
+        public static byte[] GetMacAddress() {
+            var macAddress = new byte[6];
+
+            Array.Clear(macAddress, 0, macAddress.Length);
+
+            TurnOn();
+
+            NativeGetMacAddress(ref macAddress);
+
+            return macAddress;
         }
 
         private static void TurnOn() {
@@ -87,5 +105,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern int NativeGetRssi();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void NativeGetMacAddress(ref byte[] macAddress);
     }
 }
