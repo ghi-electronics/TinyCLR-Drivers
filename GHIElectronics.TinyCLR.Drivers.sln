@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.VlsiSolution.VS1053B", "VlsiSolution\VS1053B\GHIElectronics.TinyCLR.Drivers.VlsiSolution.VS1053B.csproj", "{8A352D82-167C-4E06-9BD8-B1C054471806}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Media.Mjpeg", "Media\Mjpeg\GHIElectronics.TinyCLR.Drivers.Media.Mjpeg.csproj", "{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Media", "Media\GHIElectronics.TinyCLR.Drivers.Media.csproj", "{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

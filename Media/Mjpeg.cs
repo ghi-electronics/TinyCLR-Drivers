@@ -15,7 +15,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Media {
 
         //public event DataDecodedEventHandler Mp3DataDecodedEvent;
 
-        private FileStream streamToBuffer;
+        private Stream streamToBuffer;
         private byte[] dataToBuffer;
 
         private bool isDecoding;
@@ -81,7 +81,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Media {
                 throw new NullReferenceException("");
         }
 
-        public void StartDecode(FileStream stream) {
+        public void StartDecode(Stream stream) {
             this.streamToBuffer = stream;
 
             this.isDecoding = true;
