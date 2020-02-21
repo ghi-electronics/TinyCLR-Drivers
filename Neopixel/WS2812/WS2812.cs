@@ -26,13 +26,16 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
 
             this.bufferColor = new TimeSpan[this.numLeds * BYTE_PER_LED + 1];
             this.bufferColor[0] = TimeSpan.FromTicks(100 * 10); // Reset command, 100us
+
+            for (var i = 0; i < numLeds; i++)
+                this.SetColor(i, 0x00, 0x00, 0x00);
         }
 
         public void SetColor(int ledIndex, int red, int green, int blue) {
             var idx = 0;
 
             for (var i = 0; i < 8; i++) {
-                if ((red & 1) > 0) {
+                if ((green & 1) > 0) {
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.HighTick);
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.LowTick);
                 }
@@ -41,7 +44,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.HighTick); ;
                 }
 
-                if ((green & 1) > 0) {
+                if ((red & 1) > 0) {
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.HighTick); ;
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.LowTick);
                 }
