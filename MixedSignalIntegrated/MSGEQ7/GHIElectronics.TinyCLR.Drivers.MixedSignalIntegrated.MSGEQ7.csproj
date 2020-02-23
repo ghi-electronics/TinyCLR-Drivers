@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{599F63DF-033D-45B3-BBB4-E4F57C319DB8}</ProjectGuid>
+    <ProjectGuid>{6FE7815A-14AD-4D72-9C6A-496201A698DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,22 +34,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="WS2812.cs" />
+    <Compile Include="MSGEQ7.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Gpio.2.0.0-Preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Adc, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Adc.2.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Adc.dll</HintPath>
     </Reference>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Signals, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Signals.2.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Signals.dll</HintPath>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Gpio.2.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Native, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Native.2.0.0-Preview3\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Native.2.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
