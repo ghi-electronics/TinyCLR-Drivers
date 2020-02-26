@@ -8,10 +8,11 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Drivers.Media {
-    public sealed class Mjpeg : IDisposable{
+    public sealed class Mjpeg : IDisposable {
         const int BLOCK_SIZE = 4 * 1024;
 
         public delegate void DataDecodedEventHandler(byte[] data);
+        public event DataDecodedEventHandler FrameDecodedEvent;
 
         //public event DataDecodedEventHandler Mp3DataDecodedEvent;
 
@@ -20,12 +21,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Media {
 
         private bool isDecoding;
 
-        private Graphics screen;
-
         public class Setting {
             public int BufferSize { get; set; } = 2 * 1024 * 1024;
             public int BufferCount { get; set; } = 3;
-            public Graphics Screen { get; set; }
         }
 
         private class Fifo {
@@ -74,11 +72,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Media {
                 }
             }
 
-            this.screen = setting.Screen;
             this.headerInfo = new HeaderInfo();
-
-            if (this.screen == null)
-                throw new NullReferenceException("");
         }
 
         public void StartDecode(Stream stream) {
@@ -234,6 +228,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Media {
                         var riff = System.Text.Encoding.UTF8.GetString(this.fifo.buffer[id], 0, 4);
                         var type = System.Text.Encoding.UTF8.GetString(this.fifo.buffer[id], 8, 4);
 
+                        if (riff.CompareTo("RIFF") != 0 || type.CompareTo("AVI ") != 0)
+                            throw new NotSupportedException("Unknown media format");
+
                         i = 0x20; // fps
 
                         this.headerInfo.TimeBetweenFrames = (this.fifo.buffer[id][i] | (this.fifo.buffer[id][i + 1] << 8) | (this.fifo.buffer[id][i + 2] << 16) | (this.fifo.buffer[id][i + 3] << 24)) / 1000;
@@ -278,14 +275,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Media {
 
                             if (jpegLength > 0) {
 
-                                using (var image = new Bitmap(this.fifo.buffer[id], i, jpegLength, BitmapImageType.Jpeg)) {
+                                var dataJpeg = new byte[jpegLength];
 
-                                    this.screen.DrawImage(image, 0, 0, image.Width, image.Height);
+                                Array.Copy(this.fifo.buffer[id], i, dataJpeg, 0, jpegLength);
 
-                                    this.screen.Flush();
-                                }
-
-                                GC.WaitForPendingFinalizers();
+                                FrameDecodedEvent?.Invoke(dataJpeg);
 
                                 i += (jpegLength - 1);
 
@@ -294,13 +288,14 @@ namespace GHIElectronics.TinyCLR.Drivers.Media {
                             }
                         }
                     }
-                    
+
 
                     if (foundData) {
-                        var t2 = (int)(System.DateTime.Now.Ticks - t1) / 10000;
+                        var t2 = ((int)(System.DateTime.Now.Ticks - t1) / 10000) + 1;
 
                         if (t2 < this.headerInfo.TimeBetweenFrames)
                             Thread.Sleep(this.headerInfo.TimeBetweenFrames - t2);
+
                     }
                 }
 
