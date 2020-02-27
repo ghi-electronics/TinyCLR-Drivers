@@ -298,9 +298,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.control.Write(GpioPinValue.High);
         }
 
-        public void DrawBuffer(byte[] buffer) => this.DrawBuffer(buffer, 0);
-
-        public void DrawBuffer(byte[] buffer, int offset) {
+        public void DrawBuffer(byte[] buffer) {
             this.SendDrawCommand();
 
             if (this.buffer == null) {
@@ -311,7 +309,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             BitConverter.SwapEndianness(this.buffer, 2);
 
 
-            this.spi.Write(this.buffer, offset, this.Height * this.Width * this.bpp / 8);
+            this.spi.Write(this.buffer, 0, this.Height * this.Width * this.bpp / 8);
         }
 
         DisplayInterface IDisplayControllerProvider.Interface => DisplayInterface.Spi;
@@ -327,26 +325,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SetDrawWindow(this.x, this.y, config.Width, config.Height);
         }
 
-        void IDisplayControllerProvider.DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) {
-            var x = targetX;
-            var y = targetY;
-
-            if (sourceX != 0 || sourceY != 0)
-                throw new NotSupportedException();
-
-            if (x == 0 && y == 0 && width == this.Width && height == this.Height) {
-                this.DrawBuffer(data, offset);
-            }
-            else {
-                var cX = this.x;
-                var cY = this.y;
-                var cW = this.Width;
-                var cH = this.Height;
-
-                this.SetDrawWindow(this.x + x, this.y + y, width, height);
-                this.DrawBuffer(data, offset);
-                this.SetDrawWindow(cX, cY, cW, cH);
-            }
-        }
+        void IDisplayControllerProvider.DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) => throw new NotSupportedException();
     }
 }
