@@ -121,11 +121,6 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {
 
         }
 
-        void IDisplayControllerProvider.DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) {
-            if (targetX != 0 || targetY != 0 || width != this.Width || height != this.Height || sourceX != 0 || sourceY != 0)
-                throw new NotSupportedException();
-
-            this.DrawBuffer(data);
-        }
+        void IDisplayControllerProvider.DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) => throw new NotSupportedException();
     }
 }
