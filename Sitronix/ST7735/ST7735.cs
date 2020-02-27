@@ -304,7 +304,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void DrawBuffer(byte[] buffer, int offset, int size) {
             this.SendDrawCommand();
 
-            if (this.buffer == null || size != (this.Height * this.Width * this.bpp / 8)) {
+            if (this.buffer == null || (this.buffer != null && this.buffer.Length != size)) {
                 this.buffer = new byte[size];
             }
 
