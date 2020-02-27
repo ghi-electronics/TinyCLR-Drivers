@@ -18,7 +18,7 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {
 
         public static I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(0x3C) {
             AddressFormat = I2cAddressFormat.SevenBit,
-            BusSpeed = 100000,
+            BusSpeed = 400000,
         };
 
         public SSD1306Controller(I2cDevice i2c) {
@@ -74,10 +74,33 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {
 
         public void SetColorFormat(bool invert) => this.SendCommand((byte)(invert ? 0xA7 : 0xA6));
 
-        public void DrawBuffer(byte[] buffer) => this.DrawBuffer(buffer, 0);
+        public void SetPixel(int x, int y, bool color) {
+            if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return;
 
-        public void DrawBuffer(byte[] buffer, int offset) {
-            Array.Copy(buffer, offset, this.vram, 1, this.vram.Length - 1);
+            var index = (y / 8) * this.Width + x;
+
+            if (color) {
+                this.vram[1+ index] |= (byte)(1 << (y % 8));
+            }
+            else {
+                this.vram[1 + index] &= (byte)(~(1 << (y % 8)));
+            }
+        }
+
+        public void DrawBuffer(byte[] buffer) {
+            var x = 0;
+            var y = 0;
+
+            for (var i = 0; i < buffer.Length; i+=2) {
+                var color = (buffer[i] << 8) | (buffer[i] );
+               
+                this.SetPixel(x++, y, color != 0);
+                
+                if (x == this.Width) {
+                    x = 0;
+                    y++;
+                }
+            }
 
             this.i2c.Write(this.vram);
         }
@@ -98,11 +121,6 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {
 
         }
 
-        void IDisplayControllerProvider.DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) {
-            if (targetX != 0 || targetY != 0 || width != this.Width || height != this.Height || sourceX != 0 || sourceY != 0)
-                throw new NotSupportedException();
-
-            this.DrawBuffer(data, offset);
-        }
+        void IDisplayControllerProvider.DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) => throw new NotSupportedException();
     }
 }
