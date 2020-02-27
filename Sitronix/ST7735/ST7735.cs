@@ -298,20 +298,21 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.control.Write(GpioPinValue.High);
         }
 
-        public void DrawBuffer(byte[] buffer) => this.DrawBuffer(buffer, 0);
+        public void DrawBuffer(byte[] buffer) => this.DrawBuffer(buffer, 0, buffer.Length);
+        public void DrawBuffer(byte[] buffer, int offset) => this.DrawBuffer(buffer, offset, buffer.Length - offset);
 
-        public void DrawBuffer(byte[] buffer, int offset) {
+        public void DrawBuffer(byte[] buffer, int offset, int size) {
             this.SendDrawCommand();
 
-            if (this.buffer == null) {
-                this.buffer = new byte[this.Height * this.Width * this.bpp / 8];
+            if (this.buffer == null || size != (this.Height * this.Width * this.bpp / 8)) {
+                this.buffer = new byte[size];
             }
 
-            Array.Copy(buffer, 0, this.buffer, 0, buffer.Length);
+            Array.Copy(buffer, offset, this.buffer, 0, size);
             BitConverter.SwapEndianness(this.buffer, 2);
 
 
-            this.spi.Write(this.buffer, offset, this.Height * this.Width * this.bpp / 8);
+            this.spi.Write(this.buffer, 0, size);
         }
 
         DisplayInterface IDisplayControllerProvider.Interface => DisplayInterface.Spi;
