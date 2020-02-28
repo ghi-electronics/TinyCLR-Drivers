@@ -63,7 +63,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         GAMCTRN1 = 0xE1,
     }
 
-    public class ST7735Controller : IDisplayControllerProvider {
+    public class ST7735Controller {
         private readonly byte[] buffer1 = new byte[1];
         private readonly byte[] buffer4 = new byte[4];
         private byte[] buffer;
@@ -73,8 +73,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         private int bpp;
         private bool rowColumnSwapped;
-        private int x;
-        private int y;
 
         public DisplayDataFormat DataFormat { get; private set; }
         public int Width { get; private set; }
@@ -219,19 +217,19 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void Enable() => this.SendCommand(ST7735CommandId.DISPON);
         public void Disable() => this.SendCommand(ST7735CommandId.DISPOFF);
 
-        public void SendCommand(ST7735CommandId command) {
+        private void SendCommand(ST7735CommandId command) {
             this.buffer1[0] = (byte)command;
             this.control.Write(GpioPinValue.Low);
             this.spi.Write(this.buffer1);
         }
 
-        public void SendData(byte data) {
+        private void SendData(byte data) {
             this.buffer1[0] = data;
             this.control.Write(GpioPinValue.High);
             this.spi.Write(this.buffer1);
         }
 
-        public void SendData(byte[] data) {
+        private void SendData(byte[] data) {
             this.control.Write(GpioPinValue.High);
             this.spi.Write(data);
         }
@@ -273,12 +271,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.DataFormat = dataFormat;
         }
 
-        public void SetDrawWindow(int x, int y) => this.SetDrawWindow(x, y, this.Width, this.Height);
-
-        public void SetDrawWindow(int x, int y, int width, int height) {
-            this.x = x;
-            this.y = y;
-
+        private void SetDrawWindow(int x, int y, int width, int height) {
             this.Width = width;
             this.Height = height;
 
@@ -293,7 +286,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.SendData(this.buffer4);
         }
 
-        public void SendDrawCommand() {
+        private void SendDrawCommand() {
             this.SendCommand(ST7735CommandId.RAMWR);
             this.control.Write(GpioPinValue.High);
         }
@@ -311,20 +304,5 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             this.spi.Write(this.buffer, 0, this.Height * this.Width * this.bpp / 8);
         }
-
-        DisplayInterface IDisplayControllerProvider.Interface => DisplayInterface.Spi;
-        DisplayDataFormat[] IDisplayControllerProvider.SupportedDataFormats => new[] { DisplayDataFormat.Rgb444, DisplayDataFormat.Rgb565 };
-
-        void IDisplayControllerProvider.DrawString(string value) => throw new NotSupportedException();
-        void IDisplayControllerProvider.DrawPixel(int x, int y, long color) => throw new NotSupportedException();
-
-        void IDisplayControllerProvider.SetConfiguration(DisplayControllerSettings configuration) {
-            if (!(configuration is SpiDisplayControllerSettings config)) throw new InvalidOperationException();
-
-            this.SetDataFormat(config.DataFormat);
-            this.SetDrawWindow(this.x, this.y, config.Width, config.Height);
-        }
-
-        void IDisplayControllerProvider.DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) => throw new NotSupportedException();
     }
 }
