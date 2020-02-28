@@ -85,7 +85,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655
             Thread.Sleep(2); this.WriteRegister( 0x00, 0x11 );
             Thread.Sleep(2); this.WriteRegister( 0x10, 0x7b );
             Thread.Sleep(2); this.WriteRegister( 0xbb, 0xae );
-            Thread.Sleep(2); this.WriteRegister( 0x11, 0x03 );
+            Thread.Sleep(2); this.WriteRegister( 0x11, 0x01 );
             Thread.Sleep(2); this.WriteRegister( 0x72, 0x00 );
             Thread.Sleep(2); this.WriteRegister( 0x3e, 0x0c );
             Thread.Sleep(2); this.WriteRegister( 0x74, 0x3a );
