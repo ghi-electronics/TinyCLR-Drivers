@@ -92,7 +92,7 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {
             var y = 0;
 
             for (var i = 0; i < buffer.Length; i+=2) {
-                var color = (buffer[i] << 8) | (buffer[i] );
+                var color = (buffer[i+1] << 8) | (buffer[i] );
                
                 this.SetPixel(x++, y, color != 0);
                 
