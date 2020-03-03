@@ -1,6 +1,3 @@
-using System;
-using GHIElectronics.TinyCLR.Devices.Display;
-using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Devices.I2c;
 
 namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {

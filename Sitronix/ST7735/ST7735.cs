@@ -1,7 +1,5 @@
 using System;
 using System.Threading;
-using GHIElectronics.TinyCLR.Devices.Display;
-using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
@@ -63,6 +61,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         GAMCTRN1 = 0xE1,
     }
 
+    public enum DataFormat {
+        Rgb565 = 0,
+        Rgb444 = 1
+    }
+
     public class ST7735Controller {
         private readonly byte[] buffer1 = new byte[1];
         private readonly byte[] buffer4 = new byte[4];
@@ -74,7 +77,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         private int bpp;
         private bool rowColumnSwapped;
 
-        public DisplayDataFormat DataFormat { get; private set; }
+        public DataFormat DataFormat { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
 
@@ -104,7 +107,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             this.Reset();
             this.Initialize();
-            this.SetDataFormat(DisplayDataFormat.Rgb565);
+            this.SetDataFormat(DataFormat.Rgb565);
             this.SetDataAccessControl(false, false, false, false);
             this.SetDrawWindow(0, 0, this.MaxWidth, this.MaxHeight);
         }
@@ -248,16 +251,16 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.rowColumnSwapped = swapRowColumn;
         }
 
-        public void SetDataFormat(DisplayDataFormat dataFormat) {
+        public void SetDataFormat(DataFormat dataFormat) {
             switch (dataFormat) {
-                case DisplayDataFormat.Rgb444:
+                case DataFormat.Rgb444:
                     this.bpp = 12;
                     this.SendCommand(ST7735CommandId.COLMOD);
                     this.SendData(0x03);
 
                     break;
 
-                case DisplayDataFormat.Rgb565:
+                case DataFormat.Rgb565:
                     this.bpp = 16;
                     this.SendCommand(ST7735CommandId.COLMOD);
                     this.SendData(0x05);
