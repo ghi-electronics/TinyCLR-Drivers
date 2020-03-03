@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Text;
 using System.Threading;
-using GHIElectronics.TinyCLR.Devices.Display;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
@@ -51,8 +50,6 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351 {
         private readonly GpioPin reset;
 
         private bool rowColumnSwapped;
-
-        public DisplayDataFormat DataFormat { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
 
@@ -82,7 +79,6 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351 {
 
             this.Reset();
             this.Initialize();
-            this.SetDataFormat(DisplayDataFormat.Rgb565);
             this.SetDataAccessControl(false, true, true, false);
             this.SetDrawWindow(0, 0, this.MaxWidth, this.MaxHeight);
         }
@@ -191,8 +187,6 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351 {
 
             this.rowColumnSwapped = swapRowColumn;
         }
-
-        public void SetDataFormat(DisplayDataFormat dataFormat) => this.DataFormat = dataFormat;
 
         private void SetDrawWindow(int x, int y, int width, int height) {
             this.Width = width;
