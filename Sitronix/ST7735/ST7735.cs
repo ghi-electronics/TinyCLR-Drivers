@@ -274,7 +274,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.DataFormat = dataFormat;
         }
 
-        private void SetDrawWindow(int x, int y, int width, int height) {
+        public void SetDrawWindow(int x, int y, int width, int height) {
             this.Width = width;
             this.Height = height;
 
