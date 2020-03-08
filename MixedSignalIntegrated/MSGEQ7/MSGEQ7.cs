@@ -18,14 +18,13 @@ namespace GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7 {
 
         private const int MAX_BAND = 7;
 
-        public AdcController AdcController { get; set; } = AdcController.GetDefault();
-        public GpioController GpioController { get; set; } = GpioController.GetDefault();
-        public MSGEQ7(int adcChannelLeft, int adcChannelRight, int strobePin, int resetPin) {
-            this.channelLeft = this.AdcController.OpenChannel(adcChannelLeft);
-            this.channelRight = this.AdcController.OpenChannel(adcChannelRight);
 
-            this.strobePin = this.GpioController.OpenPin(strobePin);
-            this.resetPin = this.GpioController.OpenPin(resetPin);
+        public MSGEQ7(AdcChannel channelLeft, AdcChannel channelRight, GpioPin strobePin, GpioPin resetPin) {
+            this.channelLeft = channelLeft;
+            this.channelRight = channelRight;
+
+            this.strobePin = strobePin;
+            this.resetPin = resetPin;
 
             this.strobePin.SetDriveMode(GpioPinDriveMode.Output);
             this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
@@ -70,6 +69,6 @@ namespace GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7 {
                 this.strobePin.Write(GpioPinValue.Low);
                 while ((DateTime.Now.Ticks - t1) / 10 < 100) ;  // wait 50us
             }
-        }        
+        }
     }
 }
