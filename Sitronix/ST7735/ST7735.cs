@@ -84,7 +84,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public int MaxWidth => this.rowColumnSwapped ? 160 : 128;
         public int MaxHeight => this.rowColumnSwapped ? 128 : 160;
 
-        public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, int chipSelectLine) => new SpiConnectionSettings {
+        public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, GpioPin chipSelectLine) => new SpiConnectionSettings {
             Mode = SpiMode.Mode3,
             ClockFrequency = 12_000_000,
             DataBitLength = 8,
