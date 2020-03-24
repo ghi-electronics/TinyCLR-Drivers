@@ -28,7 +28,7 @@ namespace GHIElectronics.TinyCLR.Drivers.VlsiSolution.VS1053B
         private byte[] block = new byte[32];
         private byte[] cmdBuffer = new byte[4];
 
-        public VS1053B(SpiController spi, int dreq, int reset, int dataChipSelect, int commandChipSelect) {
+        public VS1053B(SpiController spi, GpioPin dreq, GpioPin reset, GpioPin dataChipSelect, GpioPin commandChipSelect) {
             this.dataSetting = new SpiConnectionSettings() {
                 ChipSelectType = SpiChipSelectType.Gpio,
                 ChipSelectLine = dataChipSelect,
@@ -46,10 +46,10 @@ namespace GHIElectronics.TinyCLR.Drivers.VlsiSolution.VS1053B
                 ChipSelectActiveState = false
             };
 
-            this.reset = GpioController.GetDefault().OpenPin(reset);
+            this.reset = reset;
             this.reset.SetDriveMode(GpioPinDriveMode.Output);
 
-            this.dreq = GpioController.GetDefault().OpenPin(dreq);
+            this.dreq = dreq;
             this.dreq.SetDriveMode(GpioPinDriveMode.InputPullUp);
 
             this.spi = spi;

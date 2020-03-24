@@ -56,7 +56,7 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351 {
         public int MaxWidth => this.rowColumnSwapped ? 96 : 128;
         public int MaxHeight => this.rowColumnSwapped ? 128 : 96;
 
-        public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, int chipSelectLine) => new SpiConnectionSettings {
+        public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, GpioPin chipSelectLine) => new SpiConnectionSettings {
             Mode = SpiMode.Mode3,
             ClockFrequency = 8_000_000,
             DataBitLength = 8,
