@@ -42,6 +42,11 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
         public event TouchEventHandler TouchMove;
         public event GestureEventHandler GestureReceived;
 
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public TouchOrientation Orientation { get; set; } = TouchOrientation.Degrees0;
+
         public int SampleCount { get; set; } = 5;
 
         public static I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(0x38) {
@@ -64,6 +69,13 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
             this.interrupt.Dispose();
         }
 
+        public enum TouchOrientation {
+            Degrees0 = 0,
+            Degrees90 = 1,
+            Degrees180 = 2,
+            Degrees270 = 3
+        }
+
         private void OnInterrupt(GpioPin sender, GpioPinValueChangedEventArgs e) {
             this.i2c.WriteRead(this.addressBuffer, 0, 1, this.read32, 0, this.SampleCount * 6 + 2);
 
@@ -77,6 +89,32 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
                 var x = ((this.read32[0 + idx] & 0x0F) << 8) | this.read32[1 + idx];
                 var y = ((this.read32[2 + idx] & 0x0F) << 8) | this.read32[3 + idx];
 
+                if (this.Orientation != TouchOrientation.Degrees0) {
+                    // Need width, height to know do swap x,y
+                    if (this.Width == 0 || this.Height == 0)
+                        throw new InvalidOperationException("Width, Height must be set correctly.");
+
+                    switch(this.Orientation) {
+                        case TouchOrientation.Degrees180:
+                            x = this.Width - x;
+                            y = this.Height - y;
+                            break;
+
+                        case TouchOrientation.Degrees270:
+                            var temp = x;
+                            x = this.Width - y;
+                            y = temp;
+
+                            break;
+
+                        case TouchOrientation.Degrees90:
+                            var tmp = x;
+                            x = y;
+                            y = this.Width - tmp;
+                            break;
+                    }
+                }
+               
                 (flag == 0 ? this.TouchDown : flag == 1 ? this.TouchUp : flag == 2 ? this.TouchMove : null)?.Invoke(this, new TouchEventArgs(x, y));
 
                 if (flag == 3)
