@@ -29,13 +29,15 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
 
             for (var i = 0; i < numLeds; i++)
                 this.SetColor(i, 0x00, 0x00, 0x00);
+
+            this.Draw();
         }
 
         public void SetColor(int ledIndex, int red, int green, int blue) {
             var idx = 0;
 
-            for (var i = 0; i < 8; i++) {
-                if ((green & 1) > 0) {
+            for (var i = 7; i >=0; i--) {
+                if ((green & (1<<i)) > 0) {
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.HighTick);
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.LowTick);
                 }
@@ -44,7 +46,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.HighTick); ;
                 }
 
-                if ((red & 1) > 0) {
+                if ((red & (1 << i)) > 0) {
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.HighTick); ;
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.LowTick);
                 }
@@ -53,7 +55,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.HighTick); ;
                 }
 
-                if ((blue & 1) > 0) {
+                if ((blue & (1 << i)) > 0) {
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = TimeSpan.FromTicks(this.HighTick); ;
                     this.bufferColor[1 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = TimeSpan.FromTicks(this.LowTick);
                 }
@@ -63,9 +65,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
                 }
 
                 idx += 2;
-                red >>= 1;
-                green >>= 1;
-                blue >>= 1;
+
             }
         }
 
