@@ -7,21 +7,17 @@ using GHIElectronics.TinyCLR.Devices.Gpio;
 
 namespace GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7 {
     public sealed class MSGEQ7 {
-        private AdcChannel channelLeft;
-        private AdcChannel channelRight;
+        private AdcChannel adcSignal;
 
-        public int[] BandsLeft { get; private set; }
-        public int[] BandsRight { get; private set; }
+        public int[] Data { get; private set; }
 
         private readonly GpioPin strobePin;
         private readonly GpioPin resetPin;
 
         private const int MAX_BAND = 7;
 
-
-        public MSGEQ7(AdcChannel channelLeft, AdcChannel channelRight, GpioPin strobePin, GpioPin resetPin) {
-            this.channelLeft = channelLeft;
-            this.channelRight = channelRight;
+        public MSGEQ7(AdcChannel adcSignal, GpioPin strobePin, GpioPin resetPin) {
+            this.adcSignal = adcSignal;
 
             this.strobePin = strobePin;
             this.resetPin = resetPin;
@@ -29,8 +25,7 @@ namespace GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7 {
             this.strobePin.SetDriveMode(GpioPinDriveMode.Output);
             this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
 
-            this.BandsLeft = new int[MAX_BAND];
-            this.BandsRight = new int[MAX_BAND];
+            this.Data = new int[MAX_BAND];
 
             this.Reset();
         }
@@ -58,8 +53,7 @@ namespace GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7 {
 
         public void UpdateBands() {
             for (var i = 0; i < MAX_BAND; i++) {
-                this.BandsLeft[i] = this.channelLeft.ReadValue();
-                this.BandsRight[i] = this.channelRight.ReadValue();
+                this.Data[i] = this.adcSignal.ReadValue();
 
                 var t1 = DateTime.Now.Ticks;
 
