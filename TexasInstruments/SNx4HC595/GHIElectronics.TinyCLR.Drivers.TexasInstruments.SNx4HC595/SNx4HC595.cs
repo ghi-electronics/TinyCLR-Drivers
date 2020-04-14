@@ -12,8 +12,7 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595 {
             var settings = new SpiConnectionSettings {
                 ChipSelectType = SpiChipSelectType.None,
                 Mode = SpiMode.Mode0,
-                ClockFrequency = clock,
-                DataBitLength = 8
+                ClockFrequency = clock
             };
 
             this.spiBus = spiController.GetDevice(settings);
