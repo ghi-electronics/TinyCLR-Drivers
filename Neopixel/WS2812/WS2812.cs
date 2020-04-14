@@ -16,7 +16,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
 
         const int BYTE_PER_LED = 48; // 24 bit RGB  = 48 element
 
-        public WS2812(int dataPin, int numLeds) {
+        public WS2812(GpioPin dataPin, int numLeds) {
             this.signalPin = new SignalGenerator(dataPin) {
                 DisableInterrupts = true,
                 IdleValue = GpioPinValue.High

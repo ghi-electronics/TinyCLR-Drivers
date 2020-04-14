@@ -87,7 +87,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, GpioPin chipSelectLine) => new SpiConnectionSettings {
             Mode = SpiMode.Mode3,
             ClockFrequency = 12_000_000,
-            DataBitLength = 8,
             ChipSelectType = chipSelectType,
             ChipSelectLine = chipSelectLine
         };

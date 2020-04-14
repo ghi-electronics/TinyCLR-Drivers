@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
@@ -13,7 +13,6 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
         public static SpiConnectionSettings GetConnectionSettings() => new SpiConnectionSettings {
             Mode = SpiMode.Mode0,
             ClockFrequency = 1_200_000,
-            DataBitLength = 8,
             ChipSelectType = SpiChipSelectType.None
         };
 

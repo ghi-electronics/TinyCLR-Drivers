@@ -12,8 +12,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806 {
             this.spi = spiBus.GetDevice(new SpiConnectionSettings() {
                 ChipSelectType = SpiChipSelectType.None,
                 Mode = SpiMode.Mode0,
-                ClockFrequency = speed,
-                DataBitLength = 8
+                ClockFrequency = speed
             }
             );
 

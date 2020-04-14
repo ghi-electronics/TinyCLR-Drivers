@@ -59,7 +59,6 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351 {
         public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, GpioPin chipSelectLine) => new SpiConnectionSettings {
             Mode = SpiMode.Mode3,
             ClockFrequency = 8_000_000,
-            DataBitLength = 8,
             ChipSelectType = chipSelectType,
             ChipSelectLine = chipSelectLine
         };
