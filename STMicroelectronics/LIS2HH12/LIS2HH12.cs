@@ -5,7 +5,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.I2c;
 
 namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12 {
-    public class LIS2HH12 {
+    public sealed class LIS2HH12Controller {
         const int LIS2HH12_WHO_AM_I = 0x0F;
 
         const int LIS2HH12_CTRL1 = 0x20;
@@ -25,17 +25,16 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12 {
         public double Y => this.GetY();
         public double Z => this.GetZ();
 
-        public static I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(0x1D) {
-            BusSpeed = 100000,
-            AddressFormat = I2cAddressFormat.SevenBit,
-        };
+        public LIS2HH12Controller(I2cController i2cController) {
 
-        public LIS2HH12(I2cDevice i2cDevice) {
+            var setting = new I2cConnectionSettings(0x1D) {
+                BusSpeed = 100000,
+                AddressFormat = I2cAddressFormat.SevenBit,
+            };
 
-            this.i2cDevice = i2cDevice;
+            this.i2cDevice = i2cController.GetDevice(setting);
 
             var id = this.ReadFromRegister(LIS2HH12_WHO_AM_I, 1);
-
 
             if (id[0] != LIS2HH12_ID) {
                 throw new InvalidOperationException("Wrong Id detected!");

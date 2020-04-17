@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806", "Adafruit\LPD8806\GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806.csproj", "{60EEECBF-26AF-4BC0-B920-152AA73E3D33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Nxp.PCA9685", "Nxp\PCA9685\GHIElectronics.TinyCLR.Drivers.Nxp.PCA9685.csproj", "{6E3E6107-F537-437B-86F3-04982098D4D1}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12", "STMicroelectronics\LIS2HH12\GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12.csproj", "{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}"
 EndProject
 Global
@@ -93,6 +95,10 @@ Global
 		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E3E6107-F537-437B-86F3-04982098D4D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E3E6107-F537-437B-86F3-04982098D4D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E3E6107-F537-437B-86F3-04982098D4D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E3E6107-F537-437B-86F3-04982098D4D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
