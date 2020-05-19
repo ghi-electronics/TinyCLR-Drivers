@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12", "STMicroelectronics\LIS2HH12\GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12.csproj", "{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Microchip.AT25M02", "Microchip\AT25M02\GHIElectronics.TinyCLR.Drivers.Microchip.AT25M02.csproj", "{77CB30D1-5126-4FC6-B36D-27ECC4CE6337}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,14 +93,18 @@ Global
 		{60EEECBF-26AF-4BC0-B920-152AA73E3D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60EEECBF-26AF-4BC0-B920-152AA73E3D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60EEECBF-26AF-4BC0-B920-152AA73E3D33}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E3E6107-F537-437B-86F3-04982098D4D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E3E6107-F537-437B-86F3-04982098D4D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E3E6107-F537-437B-86F3-04982098D4D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E3E6107-F537-437B-86F3-04982098D4D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC84FF9B-A4EF-48A5-8E2D-C11A953FC1A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77CB30D1-5126-4FC6-B36D-27ECC4CE6337}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77CB30D1-5126-4FC6-B36D-27ECC4CE6337}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77CB30D1-5126-4FC6-B36D-27ECC4CE6337}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77CB30D1-5126-4FC6-B36D-27ECC4CE6337}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
