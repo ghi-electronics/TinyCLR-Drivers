@@ -77,48 +77,53 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
         }
 
         private void OnInterrupt(GpioPin sender, GpioPinValueChangedEventArgs e) {
-            this.i2c.WriteRead(this.addressBuffer, 0, 1, this.read32, 0, this.SampleCount * 6 + 2);
+            try {
+                this.i2c.WriteRead(this.addressBuffer, 0, 1, this.read32, 0, this.SampleCount * 6 + 2);
 
-            if (this.read32[1] != 0 && this.GestureReceived != null)
-                this.GestureReceived(this, new GestureEventArgs((Gesture)this.read32[1]));
+                if (this.read32[1] != 0 && this.GestureReceived != null)
+                    this.GestureReceived(this, new GestureEventArgs((Gesture)this.read32[1]));
 
-            //We do not read the TD_STATUS register because it returns a touch count _excluding_ touch up events, even though the touch registers contain the proper touch up data.
-            for (var i = 0; i < this.SampleCount; i++) {
-                var idx = i * 6 + 3;
-                var flag = (this.read32[0 + idx] & 0xC0) >> 6;
-                var x = ((this.read32[0 + idx] & 0x0F) << 8) | this.read32[1 + idx];
-                var y = ((this.read32[2 + idx] & 0x0F) << 8) | this.read32[3 + idx];
+                //We do not read the TD_STATUS register because it returns a touch count _excluding_ touch up events, even though the touch registers contain the proper touch up data.
+                for (var i = 0; i < this.SampleCount; i++) {
+                    var idx = i * 6 + 3;
+                    var flag = (this.read32[0 + idx] & 0xC0) >> 6;
+                    var x = ((this.read32[0 + idx] & 0x0F) << 8) | this.read32[1 + idx];
+                    var y = ((this.read32[2 + idx] & 0x0F) << 8) | this.read32[3 + idx];
 
-                if (this.Orientation != TouchOrientation.Degrees0) {
-                    // Need width, height to know do swap x,y
-                    if (this.Width == 0 || this.Height == 0)
-                        throw new InvalidOperationException("Width, Height must be set correctly.");
+                    if (this.Orientation != TouchOrientation.Degrees0) {
+                        // Need width, height to know do swap x,y
+                        if (this.Width == 0 || this.Height == 0)
+                            return;
 
-                    switch(this.Orientation) {
-                        case TouchOrientation.Degrees180:
-                            x = this.Width - x;
-                            y = this.Height - y;
-                            break;
+                        switch (this.Orientation) {
+                            case TouchOrientation.Degrees180:
+                                x = this.Width - x;
+                                y = this.Height - y;
+                                break;
 
-                        case TouchOrientation.Degrees270:
-                            var temp = x;
-                            x = this.Width - y;
-                            y = temp;
+                            case TouchOrientation.Degrees270:
+                                var temp = x;
+                                x = this.Width - y;
+                                y = temp;
 
-                            break;
+                                break;
 
-                        case TouchOrientation.Degrees90:
-                            var tmp = x;
-                            x = y;
-                            y = this.Width - tmp;
-                            break;
+                            case TouchOrientation.Degrees90:
+                                var tmp = x;
+                                x = y;
+                                y = this.Width - tmp;
+                                break;
+                        }
                     }
-                }
-               
-                (flag == 0 ? this.TouchDown : flag == 1 ? this.TouchUp : flag == 2 ? this.TouchMove : null)?.Invoke(this, new TouchEventArgs(x, y));
 
-                if (flag == 3)
-                    break;
+                    (flag == 0 ? this.TouchDown : flag == 1 ? this.TouchUp : flag == 2 ? this.TouchMove : null)?.Invoke(this, new TouchEventArgs(x, y));
+
+                    if (flag == 3)
+                        break;
+                }
+            }
+            catch {
+                return; // Don't stop main application
             }
         }
     }
