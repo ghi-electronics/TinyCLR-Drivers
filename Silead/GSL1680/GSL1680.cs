@@ -108,45 +108,50 @@ namespace GHIElectronics.TinyCLR.Drivers.Silead.GSL1680
         private void WriteInt(byte address, uint data) => this.i2c.Write(new byte[] { address, (byte)((data >> 0) & 0xFF), (byte)((data >> 8) & 0xFF), (byte)((data >> 16) & 0xFF), (byte)((data >> 24) & 0xFF) });
 
         private void OnInterrupt(GpioPin sender, GpioPinValueChangedEventArgs e) {
+            try {
 
-            var touchN = this.ReadData(SILEAD_REG_TOUCH_NR, 1);
+                var touchN = this.ReadData(SILEAD_REG_TOUCH_NR, 1);
 
-            if (touchN[0] == 0)
-                return;
+                if (touchN[0] == 0)
+                    return;
 
-            var buf = this.ReadData(SILEAD_REG_DATA, SILEAD_TS_DATA_LEN);
+                var buf = this.ReadData(SILEAD_REG_DATA, SILEAD_TS_DATA_LEN);
 
-            for (var i = 4; i < 8; i += 4) {
-                var x = (buf[i + 0] | ((buf[i + 1] & 0x0F) << 8));
-                var y = (buf[i + 2] | ((buf[i + 3] & 0x0F) << 8));
+                for (var i = 4; i < 8; i += 4) {
+                    var x = (buf[i + 0] | ((buf[i + 1] & 0x0F) << 8));
+                    var y = (buf[i + 2] | ((buf[i + 3] & 0x0F) << 8));
 
-                if (this.Orientation != TouchOrientation.Degrees0) {
-                    // Need width, height to know do swap x,y
-                    if (this.Width == 0 || this.Height == 0)
-                        throw new InvalidOperationException("Width, Height must be set correctly.");
+                    if (this.Orientation != TouchOrientation.Degrees0) {
+                        // Need width, height to know do swap x,y
+                        if (this.Width == 0 || this.Height == 0)
+                            throw new InvalidOperationException("Width, Height must be set correctly.");
 
-                    switch (this.Orientation) {
-                        case TouchOrientation.Degrees180:
-                            x = this.Width - x;
-                            y = this.Height - y;
-                            break;
+                        switch (this.Orientation) {
+                            case TouchOrientation.Degrees180:
+                                x = this.Width - x;
+                                y = this.Height - y;
+                                break;
 
-                        case TouchOrientation.Degrees270:
-                            var temp = x;
-                            x = this.Width - y;
-                            y = temp;
+                            case TouchOrientation.Degrees270:
+                                var temp = x;
+                                x = this.Width - y;
+                                y = temp;
 
-                            break;
+                                break;
 
-                        case TouchOrientation.Degrees90:
-                            var tmp = x;
-                            x = y;
-                            y = this.Width - tmp;
-                            break;
+                            case TouchOrientation.Degrees90:
+                                var tmp = x;
+                                x = y;
+                                y = this.Width - tmp;
+                                break;
+                        }
                     }
+
+                    this.CursorChanged?.Invoke(this, new TouchEventArgs(x, y));
                 }
-                
-                this.CursorChanged?.Invoke(this, new TouchEventArgs(x, y));
+            }
+            catch {
+                return; // Don't stop main application
             }
         }
 
