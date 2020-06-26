@@ -58,8 +58,7 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
             this.i2c = i2c;
 
             this.interrupt = interrupt;
-            this.interrupt.SetDriveMode(GpioPinDriveMode.Input);
-            this.interrupt.DebounceTimeout = TimeSpan.FromMilliseconds(1);
+            this.interrupt.SetDriveMode(GpioPinDriveMode.InputPullUp);
             this.interrupt.ValueChangedEdge = GpioPinEdge.FallingEdge;
             this.interrupt.ValueChanged += this.OnInterrupt;
         }
