@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306", "SolomonSystech\SSD1306\GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306.csproj", "{95DE8D49-631E-41EB-90F7-B53768803FE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B", "TexasInstruments\CD4017B\GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B\GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B.csproj", "{620771FC-4F70-42E5-BEB4-B69C8FCD6617}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B", "TexasInstruments\CD4017B\GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B.csproj", "{620771FC-4F70-42E5-BEB4-B69C8FCD6617}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595", "TexasInstruments\SNx4HC595\GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595\GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595.csproj", "{5657EA06-0A3C-4F9A-AA96-7808D471FE27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595", "TexasInstruments\SNx4HC595\GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595.csproj", "{5657EA06-0A3C-4F9A-AA96-7808D471FE27}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6", "FocalTech\FT5xx6\GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6.csproj", "{82A2F5B0-4073-4B98-845D-AE7C5A925BE8}"
 EndProject
