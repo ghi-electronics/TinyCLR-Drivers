@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\packages\GHIElectronics.TinyCLR.Core.2.0.0-rc1\build\net452\GHIElectronics.TinyCLR.Core.props" Condition="Exists('..\..\..\packages\GHIElectronics.TinyCLR.Core.2.0.0-rc1\build\net452\GHIElectronics.TinyCLR.Core.props')" />
+  <Import Project="..\..\packages\GHIElectronics.TinyCLR.Core.2.0.0-rc1\build\net452\GHIElectronics.TinyCLR.Core.props" Condition="Exists('..\..\packages\GHIElectronics.TinyCLR.Core.2.0.0-rc1\build\net452\GHIElectronics.TinyCLR.Core.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5657EA06-0A3C-4F9A-AA96-7808D471FE27}</ProjectGuid>
+    <ProjectGuid>{620771FC-4F70-42E5-BEB4-B69C8FCD6617}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Drivers.TexasInstruments.SNx4HC595</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Drivers.TexasInstruments.CD4017B</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SNx4HC595.cs" />
+    <Compile Include="CD4017B.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -42,13 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\GHIElectronics.TinyCLR.Devices.Gpio.2.0.0-rc1\lib\net452\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
-    </Reference>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Spi, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\GHIElectronics.TinyCLR.Devices.Spi.2.0.0-rc1\lib\net452\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Gpio.2.0.0-rc1\lib\net452\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Native, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\GHIElectronics.TinyCLR.Native.2.0.0-rc1\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Native.2.0.0-rc1\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -56,8 +53,10 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\GHIElectronics.TinyCLR.Core.2.0.0-rc1\build\net452\GHIElectronics.TinyCLR.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\GHIElectronics.TinyCLR.Core.2.0.0-rc1\build\net452\GHIElectronics.TinyCLR.Core.props'))" />    
-    <Error Condition="!Exists('..\..\..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets'))" />
-  </Target>  
-  <Import Project="..\..\..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets" Condition="Exists('..\..\..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" />
+    <Error Condition="!Exists('..\..\packages\GHIElectronics.TinyCLR.Core.2.0.0-rc1\build\net452\GHIElectronics.TinyCLR.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GHIElectronics.TinyCLR.Core.2.0.0-rc1\build\net452\GHIElectronics.TinyCLR.Core.props'))" />
+    <Error Condition="'$(DoAssemblySign)'=='true' And !Exists('..\..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets'))" />
+    <Error Condition="!Exists('..\..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets" Condition="'$(DoAssemblySign)'=='true' And Exists('..\..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" />
+  <Import Project="..\..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets" Condition="Exists('..\..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" />
 </Project>
