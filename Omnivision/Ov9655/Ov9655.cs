@@ -8,13 +8,13 @@ using GHIElectronics.TinyCLR.Devices.I2c;
 
 namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655
 {
-    public class Ov9655
+    public class Ov9655Controller
     {
         private const byte I2C_ADDRESS = 0x30;
 
         private I2cDevice i2cDevice;
         private CameraController cameraController;
-        public Ov9655(I2cController i2cController) {
+        public Ov9655Controller(I2cController i2cController) {
 
             var settings = new I2cConnectionSettings(I2C_ADDRESS) {
 

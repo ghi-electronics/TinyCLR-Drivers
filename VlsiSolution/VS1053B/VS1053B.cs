@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Drivers.VlsiSolution.VS1053B
 {
-    public class VS1053B
+    public sealed class VS1053BController
     {
         private readonly SpiController spi;
         private readonly GpioPin dreq;
@@ -28,7 +28,7 @@ namespace GHIElectronics.TinyCLR.Drivers.VlsiSolution.VS1053B
         private byte[] block = new byte[32];
         private byte[] cmdBuffer = new byte[4];
 
-        public VS1053B(SpiController spi, GpioPin dreq, GpioPin reset, GpioPin dataChipSelect, GpioPin commandChipSelect) {
+        public VS1053BController(SpiController spi, GpioPin dreq, GpioPin reset, GpioPin dataChipSelect, GpioPin commandChipSelect) {
             this.dataSetting = new SpiConnectionSettings() {
                 ChipSelectType = SpiChipSelectType.Gpio,
                 ChipSelectLine = dataChipSelect,
