@@ -6,7 +6,7 @@ using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Signals;
 
 namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
-    public class WS2812 {
+    public class WS2812Controller {
         private readonly SignalGenerator signalPin;
         private readonly int numLeds;
         private readonly TimeSpan[] bufferColor;
@@ -16,7 +16,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
 
         const int BYTE_PER_LED = 48; // 24 bit RGB  = 48 element
 
-        public WS2812(GpioPin dataPin, int numLeds) {
+        public WS2812Controller(GpioPin dataPin, int numLeds) {
             this.signalPin = new SignalGenerator(dataPin) {
                 DisableInterrupts = true,
                 IdleValue = GpioPinValue.High
@@ -30,7 +30,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
             for (var i = 0; i < numLeds; i++)
                 this.SetColor(i, 0x00, 0x00, 0x00);
 
-            this.Draw();
+            this.Flush();
         }
 
         public void SetColor(int ledIndex, int red, int green, int blue) {
@@ -69,7 +69,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
             }
         }
 
-        public void Draw() {
+        public void Flush() {
             if (this.signalPin != null) {
                 // First element is reset
                 // From 1....48 is first Led.
@@ -77,6 +77,13 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
                 // and so on.
                 this.signalPin.Write(this.bufferColor);
             }
+        }
+
+        public void SetBuffer(byte[] buffer, int offset, int count) {
+            if (count > this.bufferColor.Length)
+                throw new IndexOutOfRangeException();
+
+            Array.Copy(buffer, offset, this.bufferColor, 0, count);
         }
     }
 }
