@@ -6,7 +6,7 @@ using GHIElectronics.TinyCLR.Devices.Adc;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 
 namespace GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7 {
-    public sealed class Msgeq7 {
+    public sealed class Msgeq7Controller {
         private AdcChannel adcSignal;
 
         public int[] Data { get; private set; }
@@ -16,7 +16,7 @@ namespace GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7 {
 
         private const int MAX_BAND = 7;
 
-        public Msgeq7(AdcChannel adcSignal, GpioPin strobePin, GpioPin resetPin) {
+        public Msgeq7Controller(AdcChannel adcSignal, GpioPin strobePin, GpioPin resetPin) {
             this.adcSignal = adcSignal;
 
             this.strobePin = strobePin;
