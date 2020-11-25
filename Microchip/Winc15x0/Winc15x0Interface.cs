@@ -80,7 +80,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             return macAddress;
         }
 
-        public static void SetMulticastMacAddress(byte[] multicastMacAddress) {
+        public static void AddMulticastMacAddress(byte[] multicastMacAddress) {
             if (multicastMacAddress == null)
                 throw new ArgumentNullException();
 
