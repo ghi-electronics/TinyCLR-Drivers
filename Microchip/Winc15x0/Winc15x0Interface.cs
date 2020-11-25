@@ -80,6 +80,18 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             return macAddress;
         }
 
+        public static void SetMulticastMacAddress(byte[] multicastMacAddress) {
+            if (multicastMacAddress == null)
+                throw new ArgumentNullException();
+
+            if (multicastMacAddress.Length != 6)
+                throw new ArgumentException("Invalid argument.");
+
+            TurnOn();
+
+            NativeSetMulticastMacAddress(multicastMacAddress);
+        }
+
         private static void TurnOn() {
             if (!initialized) {
                 if (NativeTurnOn()) {
@@ -108,5 +120,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void NativeGetMacAddress(ref byte[] macAddress);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void NativeSetMulticastMacAddress(byte[] multiCastMacAddress);
     }
 }
