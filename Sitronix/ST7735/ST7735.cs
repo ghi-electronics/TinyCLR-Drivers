@@ -69,7 +69,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
     public class ST7735Controller {
         private readonly byte[] buffer1 = new byte[1];
         private readonly byte[] buffer4 = new byte[4];
-        private byte[] buffer;
         private readonly SpiDevice spi;
         private readonly GpioPin control;
         private readonly GpioPin reset;
@@ -296,15 +295,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void DrawBuffer(byte[] buffer) {
             this.SendDrawCommand();
 
-            if (this.buffer == null) {
-                this.buffer = new byte[this.Height * this.Width * this.bpp / 8];
-            }
+            BitConverter.SwapEndianness(buffer, 2);
 
-            Array.Copy(buffer, 0, this.buffer, 0, buffer.Length);
-            BitConverter.SwapEndianness(this.buffer, 2);
+            this.spi.Write(buffer, 0, this.Height * this.Width * this.bpp / 8);
 
-
-            this.spi.Write(this.buffer, 0, this.Height * this.Width * this.bpp / 8);
+            BitConverter.SwapEndianness(buffer, 2);
         }
     }
 }
