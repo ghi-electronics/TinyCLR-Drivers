@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Silead.GSL1680", "Silead\GSL1680\GHIElectronics.TinyCLR.Drivers.Silead.GSL1680.csproj", "{ABC90EC4-0BA2-47A9-984A-B24E89EB00EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341", "HiLetgo\ILI9341\GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341.csproj", "{9C63A2E2-5D77-4012-81DE-C6AA82366111}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{ABC90EC4-0BA2-47A9-984A-B24E89EB00EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABC90EC4-0BA2-47A9-984A-B24E89EB00EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABC90EC4-0BA2-47A9-984A-B24E89EB00EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C63A2E2-5D77-4012-81DE-C6AA82366111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C63A2E2-5D77-4012-81DE-C6AA82366111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C63A2E2-5D77-4012-81DE-C6AA82366111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C63A2E2-5D77-4012-81DE-C6AA82366111}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
