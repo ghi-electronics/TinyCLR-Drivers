@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drivers.TowerPro.ServoController")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drivers.TowerPro.Servo")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2020")]
