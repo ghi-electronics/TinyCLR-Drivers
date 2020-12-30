@@ -46,10 +46,6 @@ namespace GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341 {
                 get; private set;
             }
 
-            public int Orientation {
-                get; private set;
-            }
-
             private int bpp = 16;
 
             public int MaxWidth => this.rowColumnSwapped ? 320 : 240;

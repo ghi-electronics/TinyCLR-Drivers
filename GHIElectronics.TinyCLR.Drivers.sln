@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341", "HiLetgo\ILI9341\GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341.csproj", "{9C63A2E2-5D77-4012-81DE-C6AA82366111}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Motor.Servo", "Motor\Servo\GHIElectronics.TinyCLR.Drivers.Motor.Servo.csproj", "{FC977532-9E2F-4C23-9032-1DF0DA9EF78A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,10 @@ Global
 		{9C63A2E2-5D77-4012-81DE-C6AA82366111}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C63A2E2-5D77-4012-81DE-C6AA82366111}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C63A2E2-5D77-4012-81DE-C6AA82366111}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC977532-9E2F-4C23-9032-1DF0DA9EF78A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC977532-9E2F-4C23-9032-1DF0DA9EF78A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC977532-9E2F-4C23-9032-1DF0DA9EF78A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC977532-9E2F-4C23-9032-1DF0DA9EF78A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

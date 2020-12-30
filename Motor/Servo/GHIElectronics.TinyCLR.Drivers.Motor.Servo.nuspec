@@ -2,7 +2,7 @@
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806</id>
+    <id>GHIElectronics.TinyCLR.Drivers.Motor.Servo</id>
     <version>2.1.0-preview3</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
@@ -10,17 +10,16 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Adafruit LPD8806 driver for TinyCLR OS.</description>
+    <description>Micro Servo driver for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2020</copyright>
-    <tags>TinyCLR TinyCLROS Adafruit LPD8806</tags>
+    <tags>TinyCLR TinyCLROS Servo ServoController</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.1.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="2.1.0-preview3" />    
-      <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="2.1.0-preview3" />    
+      <dependency id="GHIElectronics.TinyCLR.Devices.Pwm" version="2.1.0-preview3" />
       <dependency id="GHIElectronics.TinyCLR.Native" version="2.1.0-preview3" />
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Motor.Servo.dll" target="lib\net452" />
   </files>
 </package>
