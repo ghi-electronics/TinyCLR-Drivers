@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Pwm;
 
-namespace GHIElectronics.TinyCLR.Drivers.TowerPro.Servo {
+namespace GHIElectronics.TinyCLR.Drivers.Motor.Servo {
     public class ServoController {
         private enum ServoType {
             Positional,

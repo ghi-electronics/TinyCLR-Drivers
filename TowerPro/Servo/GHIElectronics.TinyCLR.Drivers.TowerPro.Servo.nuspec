@@ -2,7 +2,7 @@
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>GHIElectronics.TinyCLR.Drivers.TowerPro.Servo</id>
+    <id>GHIElectronics.TinyCLR.Drivers.Motor.Servo</id>
     <version>2.1.0-preview3</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
@@ -20,6 +20,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.TowerPro.Servo.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Motor.Servo.dll" target="lib\net452" />
   </files>
 </package>
