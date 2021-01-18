@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
+using System.Drawing;
 using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
@@ -98,19 +100,6 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
             this.SendCommand((byte)((0x0f & add) | 0X04));
         }
 
-        private void SetPixel(int x, int y, bool color) {
-            if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return;
-
-            var index = (y / 8) * this.Width + x;
-
-            if (color) {
-                this.vram[index] |= (byte)(1 << (y % 8));
-            }
-            else {
-                this.vram[index] &= (byte)(~(1 << (y % 8)));
-            }
-        }
-
         private void Flush() {
             var offset = 0;
             for (var i = 0; i < 8; i++) {
@@ -133,19 +122,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
         }
 
         public void DrawBuffer(byte[] buffer) {
-            var x = 0;
-            var y = 0;
-
-            for (var i = 0; i < buffer.Length; i += 2) {
-                var color = (buffer[i + 1] << 8) | (buffer[i]);
-
-                this.SetPixel(x++, y, color != 0);
-
-                if (x == this.Width) {
-                    x = 0;
-                    y++;
-                }
-            }
+            Color.Convert(buffer, Color.RgbFormat.Rgb565, this.vram, Color.RgbFormat.Rgb1bit, this.Width);           
 
             this.Flush();
         }       

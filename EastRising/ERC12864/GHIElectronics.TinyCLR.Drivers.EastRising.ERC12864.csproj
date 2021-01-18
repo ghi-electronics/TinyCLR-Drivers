@@ -48,6 +48,9 @@
     <Reference Include="GHIElectronics.TinyCLR.Devices.Spi, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Spi.2.1.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
     </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Drawing, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Drawing.2.1.0-preview3\lib\net452\GHIElectronics.TinyCLR.Drawing.dll</HintPath>
+    </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Native, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GHIElectronics.TinyCLR.Native.2.1.0-preview3\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
     </Reference>
