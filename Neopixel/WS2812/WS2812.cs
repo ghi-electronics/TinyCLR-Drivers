@@ -17,23 +17,22 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
 
         private readonly bool digitalSignalMode;
 
-        public uint BitOne { get; set; }
-        public uint BitZero { get; set; }
-        public uint DigitalSignalMultiplier { get; set; } = 400;//ns
+        public uint TimingHigh { get; set; }
+        public uint TimingLow { get; set; }
 
         const int BYTE_PER_LED = 48; // 24 bit RGB  = 48 element
 
         public WS2812Controller(DigitalSignal dataPin, int numLeds) {
             this.digitalSignalPin = dataPin;
             this.digitalSignalMode = true;
-            this.BitOne = 2;
-            this.BitZero = 1;
+            this.TimingHigh = 17;
+            this.TimingLow = 8;
             this.numLeds = numLeds;
-            this.bufferTimming = new uint[this.numLeds * BYTE_PER_LED + 1];
+            this.bufferTimming = new uint[1 + this.numLeds * BYTE_PER_LED ];
 
             // reset
-            // digitalSignal Reset command, 100 * 3 * 400 (multiplier) = 120us            
-            this.bufferTimming[0] = 100 * 3;
+            // digitalSignal Reset command, 1000 * 2 * 50 (multiplier) = 100us            
+            this.bufferTimming[this.bufferTimming.Length - 1] = 1000 * 2;
 
             for (var i = 0; i < numLeds; i++)
                 this.SetColor(i, 0x00, 0x00, 0x00);
@@ -43,10 +42,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
 
         public WS2812Controller(SignalGenerator dataPin, int numLeds) {
             this.signalGeneratorPin = dataPin;
-            this.BitOne = 5;
-            this.BitZero = 1;
+            this.TimingHigh = 5;
+            this.TimingLow = 1;
             this.numLeds = numLeds;
-            this.timeSpanTimming = new TimeSpan[this.numLeds * BYTE_PER_LED + 1];
+            this.timeSpanTimming = new TimeSpan[1 + this.numLeds * BYTE_PER_LED];
 
             this.signalGeneratorPin.DisableInterrupts = true;
             this.signalGeneratorPin.IdleValue = GpioPinValue.High;
@@ -67,30 +66,30 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
             if (this.digitalSignalMode) {
                 for (var i = 7; i >= 0; i--) {
                     if ((green & (1 << i)) > 0) {
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = this.BitOne;
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = this.BitZero;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = this.TimingHigh;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = this.TimingLow;
                     }
                     else {
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = this.BitZero;
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = this.BitOne; ;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = this.TimingLow;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = this.TimingHigh; ;
                     }
 
                     if ((red & (1 << i)) > 0) {
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = this.BitOne; ;
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = this.BitZero;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = this.TimingLow;
                     }
                     else {
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = this.BitZero;
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = this.BitOne; ;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = this.TimingLow;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = this.TimingHigh; ;
                     }
 
                     if ((blue & (1 << i)) > 0) {
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = this.BitOne; ;
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = this.BitZero;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = this.TimingLow;
                     }
                     else {
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = this.BitZero;
-                        this.bufferTimming[1 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = this.BitOne; ;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = this.TimingLow;
+                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = this.TimingHigh; ;
                     }
 
                     idx += 2;
@@ -100,37 +99,37 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
             else {
                 for (var i = 7; i >= 0; i--) {
                     if ((green & (1 << i)) > 0) {
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.BitOne);
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.BitZero);
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.TimingHigh);
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.TimingLow);
                     }
                     else {
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.BitZero);
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.BitOne); ;
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.TimingLow);
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
                     }
 
                     if ((red & (1 << i)) > 0) {
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.BitOne); ;
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.BitZero);
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.TimingLow);
                     }
                     else {
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.BitZero);
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.BitOne); ;
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.TimingLow);
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
                     }
 
                     if ((blue & (1 << i)) > 0) {
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = TimeSpan.FromTicks(this.BitOne); ;
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = TimeSpan.FromTicks(this.BitZero);
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = TimeSpan.FromTicks(this.TimingLow);
                     }
                     else {
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = TimeSpan.FromTicks(this.BitZero);
-                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = TimeSpan.FromTicks(this.BitOne); ;
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = TimeSpan.FromTicks(this.TimingLow);
+                        this.timeSpanTimming[1 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
                     }
 
                     idx += 2;
                 }
             }
         }
-
+        
         public void Flush() {
             // First element is reset
             // From 1....48 is first Led.
@@ -138,11 +137,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
             // and so on.
             if (this.digitalSignalPin != null) {
 
-                while (this.digitalSignalPin.CanWrite == false) {
+                while (this.digitalSignalPin.CanGenerate == false) {
                     Thread.Sleep(1);
                 }
 
-                this.digitalSignalPin.Write(this.bufferTimming, 0, (uint)this.bufferTimming.Length, 400, GpioPinValue.Low);
+                this.digitalSignalPin.Generate(this.bufferTimming, 0, (uint)this.bufferTimming.Length, 50);
             }
             else {
                 this.signalGeneratorPin.Write(this.timeSpanTimming);
