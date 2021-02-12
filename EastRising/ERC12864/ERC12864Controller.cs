@@ -122,7 +122,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
         }
 
         public void DrawBuffer(byte[] buffer) {
-            Color.Convert(buffer, Color.RgbFormat.Rgb565, this.vram, Color.RgbFormat.Rgb1bit, this.Width);           
+            Color.ConvertTo1Bpp(buffer, this.vram, (uint)this.Width);
 
             this.Flush();
         }       
