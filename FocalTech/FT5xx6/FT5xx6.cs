@@ -93,7 +93,7 @@ namespace GHIElectronics.TinyCLR.Drivers.FocalTech.FT5xx6 {
                     if (this.Orientation != TouchOrientation.Degrees0) {
                         // Need width, height to know do swap x,y
                         if (this.Width == 0 || this.Height == 0)
-                            return;
+                            throw new ArgumentException("Width and Height must be not zero");
 
                         switch (this.Orientation) {
                             case TouchOrientation.Degrees180:
