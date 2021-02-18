@@ -295,11 +295,13 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void DrawBuffer(byte[] buffer) {
             this.SendDrawCommand();
 
-            BitConverter.SwapEndianness(buffer, 2);
+            var elementGroupSize = this.bpp == 12 ? 3 : 2;
 
-            this.spi.Write(buffer, 0, this.Height * this.Width * this.bpp / 8);
+            BitConverter.SwapEndianness(buffer, elementGroupSize);
 
-            BitConverter.SwapEndianness(buffer, 2);
+            this.spi.Write(buffer);
+
+            BitConverter.SwapEndianness(buffer, elementGroupSize);
         }
 
         public void DrawBuffer(byte[] buffer, int x, int y, int width, int height) {
@@ -309,6 +311,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         }
 
         public void DrawBuffer(byte[] buffer, int x, int y, int width, int height, int originalWidth, int columnMultiplier, int rowMultiplier) {
+            if (this.bpp != 16)
+                throw new NotSupportedException(); // Multiplier does suppport 16bbp only
+
             this.SendDrawCommand();
 
             BitConverter.SwapEndianness(buffer, 2);
