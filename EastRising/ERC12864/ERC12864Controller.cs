@@ -89,7 +89,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
 
             this.PowerControl(0x07);
             this.RegulorResistorSelect(0x05);
-            this.SetContrastControlRegister(32);
+            this.SetContrastControlRegister(30);
             this.InitialDisplayLine(0x00);
             this.DisplayOn();
         }
