@@ -18,6 +18,13 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
         public int Width => 128;
         public int Height => 64;
 
+        public enum Flip {
+            None = 0,
+            X,
+            Y,
+            XY,
+        }
+
         public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, GpioPin chipSelectLine) => new SpiConnectionSettings {
             Mode = SpiMode.Mode0,
             ClockFrequency = 2_000_000,
@@ -25,11 +32,15 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
             ChipSelectLine = chipSelectLine
         };
 
-        public ERC12864Controller(SpiDevice spi, GpioPin control) : this(spi, control, null) {
+        public ERC12864Controller(SpiDevice spi, GpioPin control) : this(spi, control, null, Flip.None) {
 
         }
 
-        public ERC12864Controller(SpiDevice spi, GpioPin ctrl, GpioPin reset) {
+        public ERC12864Controller(SpiDevice spi, GpioPin control, GpioPin reset) : this(spi, control, reset, Flip.None) {
+
+        }
+
+        public ERC12864Controller(SpiDevice spi, GpioPin ctrl, GpioPin reset, Flip flip) {
             this.vram = new byte[this.Width * this.Height / 8];
 
             this.spi = spi;
@@ -42,7 +53,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
 
             this.Reset();
 
-            this.Initialize();
+            this.Initialize(flip);
         }
 
         private void Reset() {
@@ -52,14 +63,33 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
             Thread.Sleep(100);
         }
 
-        private void Initialize() {
-            this.SendCommand(0xa1);
-            this.SendCommand(0xc8);
+        private void Initialize(Flip flip) {
+            switch (flip) {
+                case Flip.X:
+                    this.SendCommand(0xa0);
+                    this.SendCommand(0xc8);
+                    break;
+
+                case Flip.Y:
+                    this.SendCommand(0xa1);
+                    this.SendCommand(0xc0);
+                    break;
+                case Flip.XY:
+                    this.SendCommand(0xa0);
+                    this.SendCommand(0xc0);
+                    break;
+
+                case Flip.None:
+                    this.SendCommand(0xa1);
+                    this.SendCommand(0xc8);
+                    break;
+            }
+
             this.SendCommand(0xa2);
 
             this.PowerControl(0x07);
             this.RegulorResistorSelect(0x05);
-            this.SetContrastControlRegister(21);
+            this.SetContrastControlRegister(30);
             this.InitialDisplayLine(0x00);
             this.DisplayOn();
         }
@@ -104,7 +134,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
             var offset = 0;
             for (var i = 0; i < 8; i++) {
                 this.SetPageAddress(i);
-                this.SetColumnAddress(0);                
+                this.SetColumnAddress(0);
 
                 this.SendData(this.vram, offset, this.Width);
 
@@ -114,6 +144,12 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
 
         public void Enable() => this.SendCommand(0xaf);
         public void Disable() => this.SendCommand(0xae);
+
+        public void SetContrast(byte level) {
+            level &= 0x3F;
+
+            this.SetContrastControlRegister(level);
+        }
 
         public void Dispose() {
             this.spi.Dispose();
@@ -125,6 +161,6 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
             Color.ConvertTo1Bpp(buffer, this.vram, (uint)this.Width);
 
             this.Flush();
-        }       
+        }
     }
 }

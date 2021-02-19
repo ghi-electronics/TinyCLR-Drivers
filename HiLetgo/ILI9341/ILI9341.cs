@@ -81,10 +81,10 @@ namespace GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341 {
             }
 
             private void Reset() {
-                this.reset.Write(GpioPinValue.Low);
+                this.reset?.Write(GpioPinValue.Low);
                 Thread.Sleep(50);
 
-                this.reset.Write(GpioPinValue.High);
+                this.reset?.Write(GpioPinValue.High);
                 Thread.Sleep(200);
             }
 
