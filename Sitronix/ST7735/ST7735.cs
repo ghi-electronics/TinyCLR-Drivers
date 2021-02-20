@@ -295,13 +295,13 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public void DrawBuffer(byte[] buffer) {
             this.SendDrawCommand();
 
-            var elementGroupSize = this.bpp == 12 ? 3 : 2;
-
-            BitConverter.SwapEndianness(buffer, elementGroupSize);
+            if (this.bpp == 16)
+                BitConverter.SwapEndianness(buffer, 2);
 
             this.spi.Write(buffer);
 
-            BitConverter.SwapEndianness(buffer, elementGroupSize);
+            if (this.bpp == 16)
+                BitConverter.SwapEndianness(buffer, 2);
         }
 
         public void DrawBuffer(byte[] buffer, int x, int y, int width, int height) {
