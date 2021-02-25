@@ -99,7 +99,15 @@ namespace GHIElectronics.TinyCLR.Drivers.Azure.SAS
         protected virtual string Sign(string requestString, string key) {
             var algorithm = new HMACSHA256(Convert.FromBase64String(key));
 
-            return Convert.ToBase64String(algorithm.ComputeHash(Encoding.UTF8.GetBytes(requestString)));
+            var useRFC4648EncodingTemp = Convert.UseRFC4648Encoding;
+
+            Convert.UseRFC4648Encoding = true;
+
+            var sign = Convert.ToBase64String(algorithm.ComputeHash(Encoding.UTF8.GetBytes(requestString)));
+
+            Convert.UseRFC4648Encoding = useRFC4648EncodingTemp; // restore what it was!
+
+            return sign;
         }
 
         private bool IsNullOrWhiteSpace(string s) {
