@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Azure.SAS", "Azure\GHIElectronics.TinyCLR.Drivers.Azure.SAS.csproj", "{F0F3F037-DC1F-4496-82A7-6D4B9C8FD50B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch", "Touch\GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch.csproj", "{F6472533-5F6B-4EEA-BE7D-BE52D0A5E79A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,10 @@ Global
 		{F0F3F037-DC1F-4496-82A7-6D4B9C8FD50B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0F3F037-DC1F-4496-82A7-6D4B9C8FD50B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0F3F037-DC1F-4496-82A7-6D4B9C8FD50B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6472533-5F6B-4EEA-BE7D-BE52D0A5E79A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6472533-5F6B-4EEA-BE7D-BE52D0A5E79A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6472533-5F6B-4EEA-BE7D-BE52D0A5E79A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6472533-5F6B-4EEA-BE7D-BE52D0A5E79A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
