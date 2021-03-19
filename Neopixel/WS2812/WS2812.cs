@@ -52,7 +52,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
 
             // reset            
             // signalgenerator Reset command, 100 * 10 () = 100us
-            this.timeSpanTimming[this.timeSpanTimming - 1] = TimeSpan.FromTicks(100 * 10);
+            this.timeSpanTimming[this.timeSpanTimming.Length - 1] = TimeSpan.FromTicks(100 * 10);
 
             for (var i = 0; i < numLeds; i++)
                 this.SetColor(i, 0x00, 0x00, 0x00);
