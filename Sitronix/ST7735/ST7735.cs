@@ -66,12 +66,19 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         Rgb444 = 1
     }
 
+    public enum ScreenSize {
+        _160x128,
+        _132x130,
+        _128x128,
+    }
+
     public class ST7735Controller {
         private readonly byte[] buffer1 = new byte[1];
         private readonly byte[] buffer4 = new byte[4];
         private readonly SpiDevice spi;
         private readonly GpioPin control;
         private readonly GpioPin reset;
+        private readonly ScreenSize screenSize;
 
         private int bpp;
         private bool rowColumnSwapped;
@@ -80,8 +87,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        public int MaxWidth => this.rowColumnSwapped ? 160 : 128;
-        public int MaxHeight => this.rowColumnSwapped ? 128 : 160;
+        public int MaxWidth => this.rowColumnSwapped ? (this.screenSize == ScreenSize._160x128 ? 160 : this.screenSize == ScreenSize._132x130 ? 132 : 128) : (this.screenSize == ScreenSize._160x128 ? 128 : this.screenSize == ScreenSize._132x130 ? 130 : 128);
+        public int MaxHeight => this.rowColumnSwapped ? (this.screenSize == ScreenSize._160x128 ? 128 : this.screenSize == ScreenSize._132x130 ? 130 : 128) : (this.screenSize == ScreenSize._160x128 ? 160 : this.screenSize == ScreenSize._132x130 ? 132 : 128);
 
         public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, GpioPin chipSelectLine) => new SpiConnectionSettings {
             Mode = SpiMode.Mode3,
@@ -94,7 +101,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
         }
 
-        public ST7735Controller(SpiDevice spi, GpioPin control, GpioPin reset) {
+        public ST7735Controller(SpiDevice spi, GpioPin control, GpioPin reset) : this(spi, control, reset, ScreenSize._160x128) {
+
+        }
+        public ST7735Controller(SpiDevice spi, GpioPin control, GpioPin reset, ScreenSize screenSize) {
             this.spi = spi;
 
             this.control = control;
@@ -102,6 +112,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             this.reset = reset;
             this.reset?.SetDriveMode(GpioPinDriveMode.Output);
+
+            this.screenSize = screenSize;
 
             this.Reset();
             this.Initialize();
