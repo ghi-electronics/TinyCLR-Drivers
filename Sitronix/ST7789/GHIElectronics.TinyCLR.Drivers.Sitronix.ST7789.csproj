@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{60EEECBF-26AF-4BC0-B920-152AA73E3D33}</ProjectGuid>
+    <ProjectGuid>{21C8A250-0F14-4CC0-9626-4D3219A9469F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Drivers.Sitronix.ST7789</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Drivers.Sitronix.ST7789</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,19 +34,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="LPD8806.cs" />
+    <Compile Include="ST7789.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Spi, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Spi.2.1.0-preview4\lib\net452\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
-    </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Gpio.2.1.0-preview4\lib\net452\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
+    </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Spi, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Spi.2.1.0-preview4\lib\net452\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Native, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GHIElectronics.TinyCLR.Native.2.1.0-preview4\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
