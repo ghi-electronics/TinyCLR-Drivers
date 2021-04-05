@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351", "SolomonSystech\SSD1351\GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351.csproj", "{12CF3A2E-F00D-4A97-809D-E1AB7C9E80F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806", "Adafruit\LPD8806\GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806.csproj", "{60EEECBF-26AF-4BC0-B920-152AA73E3D33}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.GreeledElectronics.LPD8806", "GreeledElectronics\LPD8806\GHIElectronics.TinyCLR.Drivers.GreeledElectronics.LPD8806.csproj", "{60EEECBF-26AF-4BC0-B920-152AA73E3D33}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Nxp.PCA9685", "Nxp\PCA9685\GHIElectronics.TinyCLR.Drivers.Nxp.PCA9685.csproj", "{6E3E6107-F537-437B-86F3-04982098D4D1}"
 EndProject
