@@ -1,7 +1,7 @@
 using System;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
-namespace GHIElectronics.TinyCLR.Drivers.Adafruit.LPD8806 {
+namespace GHIElectronics.TinyCLR.Drivers.GreeledElectronics.LPD8806 {
     public sealed class LPD8806Controller {
         private const byte MASK = 0x80;
 
