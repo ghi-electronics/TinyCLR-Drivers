@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.XModem", "XModem\GHIElectronics.TinyCLR.Drivers.XModem.csproj", "{7FFE33A0-175B-4010-B780-CEC678A0E26A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Sitronix.ST7789", "Sitronix\ST7789\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7789.csproj", "{21C8A250-0F14-4CC0-9626-4D3219A9469F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{7FFE33A0-175B-4010-B780-CEC678A0E26A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FFE33A0-175B-4010-B780-CEC678A0E26A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FFE33A0-175B-4010-B780-CEC678A0E26A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21C8A250-0F14-4CC0-9626-4D3219A9469F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21C8A250-0F14-4CC0-9626-4D3219A9469F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21C8A250-0F14-4CC0-9626-4D3219A9469F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21C8A250-0F14-4CC0-9626-4D3219A9469F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
