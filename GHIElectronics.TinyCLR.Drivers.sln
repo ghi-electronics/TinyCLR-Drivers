@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.VlsiSolution.VS1053B", "VlsiSolution\VS1053B\GHIElectronics.TinyCLR.Drivers.VlsiSolution.VS1053B.csproj", "{8A352D82-167C-4E06-9BD8-B1C054471806}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812", "Neopixel\WS2812\GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812.csproj", "{599F63DF-033D-45B3-BBB4-E4F57C319DB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812", "Worldsemi\WS2812\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.csproj", "{599F63DF-033D-45B3-BBB4-E4F57C319DB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7", "MixedSignalIntegrated\MSGEQ7\GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7.csproj", "{6FE7815A-14AD-4D72-9C6A-496201A698DB}"
 EndProject

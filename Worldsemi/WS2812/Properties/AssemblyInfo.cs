@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2021")]
