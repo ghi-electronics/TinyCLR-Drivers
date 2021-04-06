@@ -1,0 +1,6 @@
+Code was derived from, all with Apache 2 license:
+
+https://github.com/zxing/zxing
+https://github.com/micjahn/ZXing.Net
+https://github.com/micjahn/ZXing.Net-NETMF
+
