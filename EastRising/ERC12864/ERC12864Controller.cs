@@ -162,5 +162,11 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
 
             this.Flush();
         }
+
+        public void DrawBufferNative(byte[] buffer, int offset, int count) { 
+            Array.Copy(buffer, offset, this.vram, 0, count);
+
+            this.Flush();
+        }
     }
 }

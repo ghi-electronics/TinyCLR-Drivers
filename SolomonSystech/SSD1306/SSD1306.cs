@@ -1,3 +1,4 @@
+using System;
 using GHIElectronics.TinyCLR.Devices.I2c;
 
 namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {
@@ -94,6 +95,12 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {
                     y++;
                 }
             }
+
+            this.i2c.Write(this.vram);
+        }
+
+        public void DrawBufferNative(byte[] buffer, int offset, int count) {
+            Array.Copy(buffer, offset, this.vram, 0, count);
 
             this.i2c.Write(this.vram);
         }

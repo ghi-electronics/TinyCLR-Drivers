@@ -334,5 +334,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
 
             BitConverter.SwapEndianness(buffer, 2);
         }
+
+        public void DrawBufferNative(byte[] buffer, int offset, int count) {
+            this.SendDrawCommand();
+
+            this.spi.Write(buffer, offset, count);
+        }
+    
     }
 }
