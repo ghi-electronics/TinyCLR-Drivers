@@ -5,7 +5,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Signals;
 
-namespace GHIElectronics.TinyCLR.Drivers.Neopixel.WS2812 {
+namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
     public class WS2812Controller {
         private readonly DigitalSignal digitalSignalPin;
         private readonly SignalGenerator signalGeneratorPin;
