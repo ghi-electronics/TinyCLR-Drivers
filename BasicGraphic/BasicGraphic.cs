@@ -1,8 +1,72 @@
 using System;
 
 namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
-    public abstract class BasicGraphic {
-        public abstract void SetPixel(int x, int y, uint color);
+    public enum DataFormat {
+        _Rgb565 = 0,
+        _1bpp = 1
+    }
+    public class Settings {
+        public DataFormat DataFormat { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public byte[] Buffer { get; set; }
+    }
+    public class BasicGraphic {
+        private DataFormat dataFormat;
+        private byte[] buffer;
+        private int width;
+        private int height;
+
+        public int Width { get => this.width; set => this.width = value; }
+        public int Height { get => this.height; set => this.height = value; }
+        public DataFormat DataFormat { get => this.DataFormat; set => this.DataFormat = value; }
+        public byte[] Buffer { get => this.buffer; set => this.buffer = value; }
+        public BasicGraphic() {
+
+        }
+
+        public BasicGraphic(Settings settings) {
+            this.dataFormat = settings.DataFormat;
+            this.width = settings.Width;
+            this.height = settings.Height;
+            this.buffer = settings.Buffer;
+
+        }
+
+        public virtual void Clear() {
+            if (this.buffer != null)
+                Array.Clear(this.buffer, 0, this.buffer.Length);
+        }
+        public virtual void SetPixel(int x, int y, uint color) {
+            if (this.buffer == null) {
+                throw new Exception("Buffer null.");
+            }
+
+            if (x < 0 || y < 0 || x >= this.width || y >= this.height) return;
+
+            if (this.dataFormat == DataFormat._Rgb565) {
+                var index = (y * this.width + x) * 2;
+                var clr = color;
+
+                this.buffer[index + 0] = (byte)(((clr & 0b0000_0000_0000_0000_0001_1100_0000_0000) >> 5) | ((clr & 0b0000_0000_0000_0000_0000_0000_1111_1000) >> 3));
+                this.buffer[index + 1] = (byte)(((clr & 0b0000_0000_1111_1000_0000_0000_0000_0000) >> 16) | ((clr & 0b0000_0000_0000_0000_1110_0000_0000_0000) >> 13));
+
+            }
+            else if (this.dataFormat == DataFormat._1bpp) {
+                var index = (y / 8) * this.width + x;
+
+                if (color != 0) {
+                    this.buffer[index] |= (byte)(1 << (y % 8));
+                }
+                else {
+                    this.buffer[index] &= (byte)(~(1 << (y % 8)));
+                }
+            }
+            else {
+                throw new Exception("Only 16bpp or 1bpp supported.");
+            }
+
+        }
         public void DrawLine(uint color, int x0, int y0, int x1, int y1) {
 
             var xLength = x1 - x0;
