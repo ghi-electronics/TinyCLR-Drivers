@@ -14,11 +14,7 @@ namespace GHIElectronics.TinyCLR.Drivers.OneTimePassword {
         public TimeSpan Interval {
             get => TimeSpan.FromMilliseconds(this.interval);
             set {
-                this.interval = (int)value.TotalMilliseconds;
-
-                if (this.interval == 0)
-                    throw new ArgumentException("Interval can not be zero.");
-
+                this.interval = (int)value.TotalMilliseconds;                
             }
         }
         private int interval  = 30000;    
@@ -59,7 +55,10 @@ namespace GHIElectronics.TinyCLR.Drivers.OneTimePassword {
         }
 
         private string Generate() {
-            var code = BitConverter.GetBytes(this.TimeSource / this.interval);
+            var code = new byte[8];
+
+            if (this.interval != 0)
+                 code = BitConverter.GetBytes(this.TimeSource / this.interval);
 
             if (BitConverter.IsLittleEndian) {
                 code = this.Reverse(code);
