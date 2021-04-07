@@ -6,36 +6,45 @@ using GHIElectronics.TinyCLR.Cryptography;
 
 namespace GHIElectronics.TinyCLR.Drivers.OneTimePassword {
     public class OneTimePassword {
-        private const byte DIGITS = 6;
 
-        private readonly int[] DIGITS_POWER = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
+        private readonly int[] digitsPower = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
 
         private const long EPOCH = 621355968000000000;
 
-        public int Interval { get; set; } = 30000;
-
-        public string Key {
+        public TimeSpan Interval {
+            get => TimeSpan.FromMilliseconds(this.interval);
             set {
-                this.sKey = value;
-                this.bKey = this.ToBytesBase32(value);
+                this.interval = (int)value.TotalMilliseconds;                
             }
         }
+        private int interval  = 30000;    
 
+        private int digits = 6;
+        public int Length {
+            get => this.digits;
+            set  {
+                if (value < 1 || value >= this.digitsPower.Length)
+                    throw new ArgumentException("Password length must be between 1 to 9.");
+                this.digits = value;
+            }
+        }
         public string TOneTimePassword => this.Generate();
 
         public bool IsValid(string totp) => (totp.Equals(this.Generate()));
 
         private byte[] bKey;
 
-        private string sKey;
-
         private long TimeSource => (DateTime.UtcNow.Ticks - EPOCH) / TimeSpan.TicksPerMillisecond;
 
-        public OneTimePassword() {
-            var random = new Random();
-            this.bKey = new byte[64];
+        public OneTimePassword(string key) {
+            if (key == null) {
+                throw new ArgumentNullException("Key null.");
+            }
 
-            random.NextBytes(this.bKey);
+            if (key.Length < 1 || key.Length > 64)
+                throw new ArgumentException("key length must be between 1 to 64.");
+
+            this.bKey = this.ToBytesBase32(key);
         }
 
         private byte[] HmacSha1(byte[] data) {
@@ -46,7 +55,10 @@ namespace GHIElectronics.TinyCLR.Drivers.OneTimePassword {
         }
 
         private string Generate() {
-            var code = BitConverter.GetBytes(this.TimeSource / this.Interval);
+            var code = new byte[8];
+
+            if (this.interval != 0)
+                 code = BitConverter.GetBytes(this.TimeSource / this.interval);
 
             if (BitConverter.IsLittleEndian) {
                 code = this.Reverse(code);
@@ -62,10 +74,11 @@ namespace GHIElectronics.TinyCLR.Drivers.OneTimePassword {
                 ((hash[offset + 2] & 0xff) << 8) |
                 (hash[offset + 3] & 0xff);
 
-            var otp = binary % this.DIGITS_POWER[DIGITS];
+            var otp = binary % this.digitsPower[this.digits];
 
             var result = otp.ToString();
-            while (result.Length < DIGITS) {
+
+            while (result.Length < this.digits) {
                 result = "0" + result;
             }
             return result;

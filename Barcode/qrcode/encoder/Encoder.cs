@@ -91,7 +91,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
 
          // This will store the header information, like mode and
          // length, as well as "header" segments like an ECI segment.
-         BitArray headerBits = new BitArray();
+         GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray headerBits = new GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray();
 
          // Append ECI segment if applicable
          if (mode == Mode.BYTE && !DEFAULT_BYTE_MODE_ENCODING.Equals(encoding))
@@ -108,7 +108,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
 
          // Collect data within the main segment, separately, to count its size if needed. Don't add it to
          // main payload yet.
-         BitArray dataBits = new BitArray();
+         GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray dataBits = new GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray();
          appendBytes(content, mode, dataBits, encoding);
 
          // Hard part: need to know version to know how many bits length takes. But need to know how many
@@ -118,7 +118,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
              + dataBits.Size;
          Version version = chooseVersion(bitsNeeded, ecLevel);
 
-         BitArray headerAndDataBits = new BitArray();
+         GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray headerAndDataBits = new GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray();
          headerAndDataBits.appendBitArray(headerBits);
          // Find "length" of main segment and write it
          int numLetters = mode == Mode.BYTE ? dataBits.SizeInBytes : content.Length;
@@ -133,7 +133,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
          terminateBits(numDataBytes, headerAndDataBits);
 
          // Interleave data bits with error correction code.
-         BitArray finalBits = interleaveWithECBytes(headerAndDataBits,
+         GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray finalBits = interleaveWithECBytes(headerAndDataBits,
                                                     version.TotalCodewords,
                                                     numDataBytes,
                                                     ecBlocks.NumBlocks);
@@ -252,7 +252,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
          return true;
       }
 
-      private static int chooseMaskPattern(BitArray bits,
+      private static int chooseMaskPattern(GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits,
                                            ErrorCorrectionLevel ecLevel,
                                            Version version,
                                            ByteMatrix matrix)
@@ -301,7 +301,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
        * Terminate bits as described in 8.4.8 and 8.4.9 of JISX0510:2004 (p.24).
        */
 
-      internal static void terminateBits(int numDataBytes, BitArray bits)
+      internal static void terminateBits(int numDataBytes, GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits)
       {
          int capacity = numDataBytes << 3;
          if (bits.Size > capacity)
@@ -415,7 +415,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
       /// <param name="numDataBytes">The num data bytes.</param>
       /// <param name="numRSBlocks">The num RS blocks.</param>
       /// <returns></returns>
-      internal static BitArray interleaveWithECBytes(BitArray bits,
+      internal static GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray interleaveWithECBytes(GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits,
                                              int numTotalBytes,
                                              int numDataBytes,
                                              int numRSBlocks)
@@ -461,7 +461,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
             throw new WriterException("Data bytes does not match offset");
          }
 
-         BitArray result = new BitArray();
+         GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray result = new GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray();
 
          // First, place data blocks.
          for (int i = 0; i < maxNumDataBytes; ++i)
@@ -521,7 +521,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
       /// </summary>
       /// <param name="mode">The mode.</param>
       /// <param name="bits">The bits.</param>
-      internal static void appendModeInfo(Mode mode, BitArray bits)
+      internal static void appendModeInfo(Mode mode, GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits)
       {
          bits.appendBits(mode.Bits, 4);
       }
@@ -534,7 +534,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
       /// <param name="version">The version.</param>
       /// <param name="mode">The mode.</param>
       /// <param name="bits">The bits.</param>
-      internal static void appendLengthInfo(int numLetters, Version version, Mode mode, BitArray bits)
+      internal static void appendLengthInfo(int numLetters, Version version, Mode mode, GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits)
       {
          int numBits = mode.getCharacterCountBits(version);
          if (numLetters >= (1 << numBits))
@@ -553,7 +553,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
       /// <param name="encoding">The encoding.</param>
       internal static void appendBytes(string content,
                               Mode mode,
-                              BitArray bits,
+                              GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits,
                               string encoding)
       {
          if (mode.Equals(Mode.NUMERIC))
@@ -571,7 +571,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
                      throw new WriterException("Invalid mode: " + mode);
       }
 
-      internal static void appendNumericBytes(string content, BitArray bits)
+      internal static void appendNumericBytes(string content, GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits)
       {
          int length = content.Length;
 
@@ -603,7 +603,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
          }
       }
 
-      internal static void appendAlphanumericBytes(string content, BitArray bits)
+      internal static void appendAlphanumericBytes(string content, GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits)
       {
          int length = content.Length;
 
@@ -635,7 +635,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
          }
       }
 
-      internal static void append8BitBytes(string content, BitArray bits, string encoding)
+      internal static void append8BitBytes(string content, GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits, string encoding)
       {
          byte[] bytes;
          try
@@ -652,7 +652,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
          }
       }
 
-      internal static void appendKanjiBytes(string content, BitArray bits)
+      internal static void appendKanjiBytes(string content, GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits)
       {
          byte[] bytes;
          try
@@ -689,7 +689,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Barcode.QrCode.Internal
          }
       }
 
-      private static void appendECI(CharacterSetECI eci, BitArray bits)
+      private static void appendECI(CharacterSetECI eci, GHIElectronics.TinyCLR.Drivers.Barcode.Common.BitArray bits)
       {
          bits.appendBits(Mode.ECI.Bits, 4);
 
