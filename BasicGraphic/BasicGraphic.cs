@@ -1,35 +1,35 @@
 using System;
 
 namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
-    public enum DataFormat {
-        _Rgb565 = 0,
-        _1bpp = 1
-    }
-    public class Settings {
-        public DataFormat DataFormat { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public byte[] Buffer { get; set; }
+    public enum ColorFormat {
+        Rgb565 = 0,
+        OneBpp = 1
     }
     public class BasicGraphic {
-        private DataFormat dataFormat;
+        private ColorFormat colorFormat;
         private byte[] buffer;
         private int width;
         private int height;
 
         public int Width { get => this.width; set => this.width = value; }
         public int Height { get => this.height; set => this.height = value; }
-        public DataFormat DataFormat { get => this.DataFormat; set => this.DataFormat = value; }
+        public ColorFormat ColorFormat { get => this.ColorFormat; set => this.ColorFormat = value; }
         public byte[] Buffer { get => this.buffer; set => this.buffer = value; }
         public BasicGraphic() {
 
         }
 
-        public BasicGraphic(Settings settings) {
-            this.dataFormat = settings.DataFormat;
-            this.width = settings.Width;
-            this.height = settings.Height;
-            this.buffer = settings.Buffer;
+        public BasicGraphic(uint width, uint height, ColorFormat colorFormat) {
+            this.colorFormat = colorFormat;
+            this.width = (int)width;
+            this.height = (int)height;
+
+            if (this.colorFormat == ColorFormat.Rgb565) {
+                this.buffer = new byte[this.width * this.height * 2];
+            }
+            else if (this.colorFormat == ColorFormat.OneBpp) {
+                this.buffer = new byte[this.width * this.height  / 8];
+            }
 
         }
 
@@ -44,7 +44,7 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
 
             if (x < 0 || y < 0 || x >= this.width || y >= this.height) return;
 
-            if (this.dataFormat == DataFormat._Rgb565) {
+            if (this.colorFormat == ColorFormat.Rgb565) {
                 var index = (y * this.width + x) * 2;
                 var clr = color;
 
@@ -52,7 +52,7 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
                 this.buffer[index + 1] = (byte)(((clr & 0b0000_0000_1111_1000_0000_0000_0000_0000) >> 16) | ((clr & 0b0000_0000_0000_0000_1110_0000_0000_0000) >> 13));
 
             }
-            else if (this.dataFormat == DataFormat._1bpp) {
+            else if (this.colorFormat == ColorFormat.OneBpp) {
                 var index = (y / 8) * this.width + x;
 
                 if (color != 0) {
