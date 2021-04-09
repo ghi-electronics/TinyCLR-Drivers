@@ -11,30 +11,17 @@ namespace GHIElectronics.TinyCLR.Drivers.OneTimePassword {
 
         private const long EPOCH = 621355968000000000;
 
-        public TimeSpan Interval {
-            get => TimeSpan.FromMilliseconds(this.interval);
-            set {
-                this.interval = (int)value.TotalMilliseconds;                
-            }
-        }
-        private int interval  = 30000;    
-
         private int digits = 6;
         public int Length {
             get => this.digits;
-            set  {
+            set {
                 if (value < 1 || value >= this.digitsPower.Length)
                     throw new ArgumentException("Password length must be between 1 to 9.");
                 this.digits = value;
             }
         }
-        public string TOneTimePassword => this.Generate();
-
-        public bool IsValid(string totp) => (totp.Equals(this.Generate()));
 
         private byte[] bKey;
-
-        private long TimeSource => (DateTime.UtcNow.Ticks - EPOCH) / TimeSpan.TicksPerMillisecond;
 
         public OneTimePassword(string key) {
             if (key == null) {
@@ -54,11 +41,16 @@ namespace GHIElectronics.TinyCLR.Drivers.OneTimePassword {
             return result;
         }
 
-        private string Generate() {
+        public string Generate(int token) => throw new NotSupportedException();
+        public string Generate(long utcTick, TimeSpan range) {
+
+            var timeSource = (utcTick - EPOCH) / TimeSpan.TicksPerMillisecond;
+            var interval = (int)range.TotalMilliseconds;
+
             var code = new byte[8];
 
-            if (this.interval != 0)
-                 code = BitConverter.GetBytes(this.TimeSource / this.interval);
+            if (interval != 0)
+                code = BitConverter.GetBytes(timeSource / interval);
 
             if (BitConverter.IsLittleEndian) {
                 code = this.Reverse(code);
