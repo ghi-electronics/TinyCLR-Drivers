@@ -63,6 +63,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Media", "Media\GHIElectronics.TinyCLR.Drivers.Media.csproj", "{8EE20AD7-4B9C-40E2-B88E-C0AA62615CE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.TexasInstruments.ADC121", "TexasInstruments\ADC121\GHIElectronics.TinyCLR.Drivers.TexasInstruments.ADC121.csproj", "{4F2492ED-FE7B-44D7-AEDF-F8706DBFA3EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Microchip.MCP4725", "Microchip\MCP4725\GHIElectronics.TinyCLR.Drivers.Microchip.MCP4725.csproj", "{D18059CE-E835-447E-8D2C-00858F62638A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Scania.J1939", "Scania\J1939\GHIElectronics.TinyCLR.Drivers.Scania.J1939.csproj", "{F00DCCFA-5054-49B9-AC81-7F57F0252D3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,6 +195,18 @@ Global
 		{8EE20AD7-4B9C-40E2-B88E-C0AA62615CE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EE20AD7-4B9C-40E2-B88E-C0AA62615CE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EE20AD7-4B9C-40E2-B88E-C0AA62615CE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F2492ED-FE7B-44D7-AEDF-F8706DBFA3EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F2492ED-FE7B-44D7-AEDF-F8706DBFA3EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F2492ED-FE7B-44D7-AEDF-F8706DBFA3EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F2492ED-FE7B-44D7-AEDF-F8706DBFA3EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D18059CE-E835-447E-8D2C-00858F62638A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D18059CE-E835-447E-8D2C-00858F62638A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D18059CE-E835-447E-8D2C-00858F62638A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D18059CE-E835-447E-8D2C-00858F62638A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F00DCCFA-5054-49B9-AC81-7F57F0252D3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F00DCCFA-5054-49B9-AC81-7F57F0252D3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F00DCCFA-5054-49B9-AC81-7F57F0252D3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F00DCCFA-5054-49B9-AC81-7F57F0252D3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
