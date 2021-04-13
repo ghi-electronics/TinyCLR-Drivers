@@ -13,7 +13,7 @@
 
 using System;
 
-namespace MBN.Modules
+namespace GHIElectronics.TinyCLR.Drivers.MBNSoftware.Net
 {
     public static class NMEAParser
     {
