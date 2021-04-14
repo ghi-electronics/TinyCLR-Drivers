@@ -69,6 +69,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Scania.J1939", "Scania\J1939\GHIElectronics.TinyCLR.Drivers.Scania.J1939.csproj", "{F00DCCFA-5054-49B9-AC81-7F57F0252D3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Gps.Nmea0183", "Gps\GHIElectronics.TinyCLR.Drivers.Gps.Nmea0183.csproj", "{5DE4F317-A132-48D1-B2AF-E3DCBC8E74DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -207,6 +209,10 @@ Global
 		{F00DCCFA-5054-49B9-AC81-7F57F0252D3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F00DCCFA-5054-49B9-AC81-7F57F0252D3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F00DCCFA-5054-49B9-AC81-7F57F0252D3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DE4F317-A132-48D1-B2AF-E3DCBC8E74DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DE4F317-A132-48D1-B2AF-E3DCBC8E74DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DE4F317-A132-48D1-B2AF-E3DCBC8E74DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DE4F317-A132-48D1-B2AF-E3DCBC8E74DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
