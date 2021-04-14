@@ -10,9 +10,9 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Gps Nmea0183 driver for TinyCLR OS.</description>
+    <description>Nmea0183 parser driver for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2021</copyright>
-    <tags>TinyCLR TinyCLROS Gps Nmea0183</tags>
+    <tags>TinyCLR TinyCLROS Gps Nmea0183 Parser</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.1.0-rc1" />
     </dependencies>

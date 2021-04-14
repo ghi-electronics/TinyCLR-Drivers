@@ -14,7 +14,7 @@
 using System;
 
 namespace GHIElectronics.TinyCLR.Drivers.Gps.Nmea0183 {
-    public static class Nmea0183 {
+    public static class Parser {
         #region Public enums
         /// <summary>
         /// List of well-known talkers.
@@ -182,7 +182,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Gps.Nmea0183 {
         #endregion
 
         #region Constructor
-        static Nmea0183()
+        static Parser()
         {
             RMCSentence = new RMC();
             GGASentence = new GGA();
