@@ -1,6 +1,6 @@
 /* 
 * NMEA parser for TinyCLR 2.0
-* 
+* Ported and contributed to TinyCLR OS by MBN Software
 * Version 1.0 : 
 * - Initial revision
 * 
@@ -13,10 +13,8 @@
 
 using System;
 
-namespace MBN.Modules
-{
-    public static class NMEAParser
-    {
+namespace GHIElectronics.TinyCLR.Drivers.Gps.Nmea0183 {
+    public static class Parser {
         #region Public enums
         /// <summary>
         /// List of well-known talkers.
@@ -184,7 +182,7 @@ namespace MBN.Modules
         #endregion
 
         #region Constructor
-        static NMEAParser()
+        static Parser()
         {
             RMCSentence = new RMC();
             GGASentence = new GGA();
