@@ -49,10 +49,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
             return NativeGetRssi();
         }
 
-        public static bool FirmwareUpdate(string url, int timeout) {
+        public static bool FirmwareUpdate(string url, TimeSpan timeout) {
             TurnOn();
 
-            return NativeFirmwareUpdatebyOta(url, timeout);
+            return NativeFirmwareUpdatebyOta(url, (int)timeout.TotalMilliseconds);
         }
 
         public static bool FirmwareUpdate(byte[] buffer) => FirmwareUpdate(buffer, 0, buffer.Length);
