@@ -26,18 +26,18 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
 
         public void Dispose() => this.spi.Dispose();
 
-        public void Set(int led, Color color) => this.Set(led, color, 0b0001_1111);
+        public void SetColor(int led, int red, int green, int blue) => this.SetColor(led, red, green, blue, 0b0001_1111);
 
-        public void Set(int led, Color color, int intensity) {
+        public void SetColor(int led, int red, int green, int blue, int intensity) {
             if (led >= this.ledCount) throw new ArgumentOutOfRangeException(nameof(led));
             if (intensity > 0b0001_1111) throw new ArgumentOutOfRangeException(nameof(intensity));
 
             led *= 4;
 
             this.dataFrame[led] = (byte)(0b1110_0000 | intensity);
-            this.dataFrame[led + 1] = color.B;
-            this.dataFrame[led + 2] = color.G;
-            this.dataFrame[led + 3] = color.R;
+            this.dataFrame[led + 1] = (byte)blue;
+            this.dataFrame[led + 2] = (byte)green;
+            this.dataFrame[led + 3] = (byte)red;
         }
 
         public void SetBuffer(byte[] buffer, int offset, int count) {
@@ -51,6 +51,11 @@ namespace GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C {
             this.spi.Write(this.startFrame);
             this.spi.Write(this.dataFrame);
             this.spi.Write(this.stopFrame);
+        }
+
+        public void Clear() {
+            for (var i = 0; i < this.dataFrame.Length; i += 4)
+                this.dataFrame[i] = 0b1110_0000;
         }
     }
 }

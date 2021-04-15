@@ -60,36 +60,36 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
             this.Flush();
         }
 
-        public void SetColor(int ledIndex, int red, int green, int blue) {
+        public void SetColor(int index, int red, int green, int blue) {
             var idx = 0;
 
             if (this.digitalSignalMode) {
                 for (var i = 7; i >= 0; i--) {
                     if ((green & (1 << i)) > 0) {
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = this.TimingHigh;
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = this.TimingLow;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 0 + 0 + idx] = this.TimingHigh;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 0 + 1 + idx] = this.TimingLow;
                     }
                     else {
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = this.TimingLow;
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 0 + 0 + idx] = this.TimingLow;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 0 + 1 + idx] = this.TimingHigh; ;
                     }
 
                     if ((red & (1 << i)) > 0) {
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = this.TimingHigh; ;
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = this.TimingLow;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 16 + 0 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 16 + 1 + idx] = this.TimingLow;
                     }
                     else {
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = this.TimingLow;
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 16 + 0 + idx] = this.TimingLow;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 16 + 1 + idx] = this.TimingHigh; ;
                     }
 
                     if ((blue & (1 << i)) > 0) {
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = this.TimingHigh; ;
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = this.TimingLow;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 32 + 0 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 32 + 1 + idx] = this.TimingLow;
                     }
                     else {
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = this.TimingLow;
-                        this.bufferTimming[0 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 32 + 0 + idx] = this.TimingLow;
+                        this.bufferTimming[0 + index * BYTE_PER_LED + 32 + 1 + idx] = this.TimingHigh; ;
                     }
 
                     idx += 2;
@@ -99,30 +99,30 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
             else {
                 for (var i = 7; i >= 0; i--) {
                     if ((green & (1 << i)) > 0) {
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.TimingHigh);
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.TimingLow);
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.TimingHigh);
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.TimingLow);
                     }
                     else {
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.TimingLow);
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 0 + 0 + idx] = TimeSpan.FromTicks(this.TimingLow);
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 0 + 1 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
                     }
 
                     if ((red & (1 << i)) > 0) {
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.TimingLow);
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.TimingLow);
                     }
                     else {
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.TimingLow);
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 16 + 0 + idx] = TimeSpan.FromTicks(this.TimingLow);
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 16 + 1 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
                     }
 
                     if ((blue & (1 << i)) > 0) {
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = TimeSpan.FromTicks(this.TimingLow);
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 32 + 0 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 32 + 1 + idx] = TimeSpan.FromTicks(this.TimingLow);
                     }
                     else {
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 32 + 0 + idx] = TimeSpan.FromTicks(this.TimingLow);
-                        this.timeSpanTimming[0 + ledIndex * BYTE_PER_LED + 32 + 1 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 32 + 0 + idx] = TimeSpan.FromTicks(this.TimingLow);
+                        this.timeSpanTimming[0 + index * BYTE_PER_LED + 32 + 1 + idx] = TimeSpan.FromTicks(this.TimingHigh); ;
                     }
 
                     idx += 2;
@@ -165,6 +165,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
 
                 this.SetColor(led, red, green, blue);
             }
+        }
+
+        public void Clear() {
+            for (var i = 0; i < this.numLeds; i++)
+                this.SetColor(i, 0x00, 0x00, 0x00);
         }
     }
 }

@@ -48,5 +48,13 @@ namespace GHIElectronics.TinyCLR.Drivers.GreeledElectronics.LPD8806 {
 
             Array.Copy(buffer, offset, this.data, 0, count);
         }
+
+        public void Clear() {
+            Array.Clear(this.data, 0, this.data.Length);
+
+            for (var i = 0; i < this.numLeds; i++) {
+                this.data[i] = MASK;
+            }
+        }
     }
 }
