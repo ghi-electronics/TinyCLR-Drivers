@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Drawing;
 using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
@@ -157,13 +156,8 @@ namespace GHIElectronics.TinyCLR.Drivers.EastRising.ERC12864 {
             this.reset?.Dispose();
         }
 
-        public void DrawBuffer(byte[] buffer) {
-            Color.ConvertTo1Bpp(buffer, this.vram, (uint)this.Width);
-
-            this.Flush();
-        }
-
-        public void DrawBufferNative(byte[] buffer, int offset, int count) { 
+        public void DrawBufferNative(byte[] buffer) => this.DrawBufferNative(buffer, 0, buffer.Length);
+        public void DrawBufferNative(byte[] buffer, int offset, int count) {
             Array.Copy(buffer, offset, this.vram, 0, count);
 
             this.Flush();

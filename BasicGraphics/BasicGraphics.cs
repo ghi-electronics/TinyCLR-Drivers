@@ -198,6 +198,8 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
             }
         }
 
+        public static uint ColorFromRgb(byte red, byte green, byte blue) => (uint)(red << 16 | green << 8 | blue << 0 );
+
         readonly byte[] ghiGHIMono8x5 = new byte[95 * 5] {
             0x00, 0x00, 0x00, 0x00, 0x00, /* Space	0x20 */
             0x00, 0x00, 0x4f, 0x00, 0x00, /* ! */

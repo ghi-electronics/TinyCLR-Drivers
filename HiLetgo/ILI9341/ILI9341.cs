@@ -207,11 +207,13 @@ namespace GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341 {
             public void DrawBuffer(byte[] buffer) {
                 this.SendDrawCommand();
 
-                BitConverter.SwapEndianness(buffer, 2);
+                if (this.bpp == 16)
+                    BitConverter.SwapEndianness(buffer, 2);
 
                 this.spi.Write(buffer, 0, this.Height * this.Width * this.bpp / 8);
 
-                BitConverter.SwapEndianness(buffer, 2);
+                if (this.bpp == 16)
+                    BitConverter.SwapEndianness(buffer, 2);
             }
 
             public void DrawBuffer(byte[] buffer, int x, int y, int width, int height) {
@@ -221,6 +223,9 @@ namespace GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341 {
             }
 
             public void DrawBuffer(byte[] buffer, int x, int y, int width, int height, int originalWidth, int columnMultiplier, int rowMultiplier) {
+                if (this.bpp != 16)
+                    throw new NotSupportedException(); // Only suppport 16bbp
+
                 this.SendDrawCommand();
 
                 BitConverter.SwapEndianness(buffer, 2);
@@ -230,6 +235,12 @@ namespace GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341 {
                 BitConverter.SwapEndianness(buffer, 2);
             }
 
+            public void DrawBufferNative(byte[] buffer) => this.DrawBufferNative(buffer, 0, buffer.Length);
+            public void DrawBufferNative(byte[] buffer, int offset, int count) {
+                this.SendDrawCommand();
+
+                this.spi.Write(buffer, offset, count);
+            }
         }
     }
 }

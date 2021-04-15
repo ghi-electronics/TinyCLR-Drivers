@@ -222,7 +222,7 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351 {
         private void SendDrawCommand() => this.control.Write(GpioPinValue.High);
 
         public void DrawBuffer(byte[] buffer) => this.DrawBufferNative(buffer, 0, buffer.Length);
-
+        public void DrawBufferNative(byte[] buffer) => this.DrawBufferNative(buffer, 0, buffer.Length);
         public void DrawBufferNative(byte[] buffer, int offset, int count) {
             this.SendDrawCommand();
             this.spi.Write(buffer, offset, count);
