@@ -75,7 +75,7 @@ namespace GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341 {
                 this.Reset();
                 this.Initialize();
                 this.SetDataAccessControl(false, false, false, true);
-                this.SetDrawWindow(0, 0, this.MaxWidth, this.MaxHeight);
+                this.SetDrawWindow(0, 0, this.MaxWidth-1, this.MaxHeight-1);
 
                 this.Enable();
             }
@@ -164,8 +164,8 @@ namespace GHIElectronics.TinyCLR.Drivers.HiLetgo.ILI9341 {
 
 
             public void SetDrawWindow(int x, int y, int width, int height) {
-                var x_end = x + width - 1;
-                var y_end = y + height - 1;
+                var x_end = x + width;
+                var y_end = y + height;
 
                 this.SendCommand(ILI9341CommandId.CASET);
                 this.SendData((byte)(x >> 8));
