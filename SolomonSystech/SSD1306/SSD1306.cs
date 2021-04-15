@@ -68,39 +68,48 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306 {
 
         public void SetColorFormat(bool invert) => this.SendCommand((byte)(invert ? 0xA7 : 0xA6));
 
-        public void SetPixel(int x, int y, bool color) {
-            if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return;
+        //public void SetPixel(int x, int y, bool color) {
+        //    if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return;
 
-            var index = (y / 8) * this.Width + x;
+        //    var index = (y / 8) * this.Width + x;
 
-            if (color) {
-                this.vram[1 + index] |= (byte)(1 << (y % 8));
-            }
-            else {
-                this.vram[1 + index] &= (byte)(~(1 << (y % 8)));
-            }
-        }
+        //    if (color) {
+        //        this.vram[1 + index] |= (byte)(1 << (y % 8));
+        //    }
+        //    else {
+        //        this.vram[1 + index] &= (byte)(~(1 << (y % 8)));
+        //    }
+        //}
 
-        public void DrawBuffer(byte[] buffer) {
-            var x = 0;
-            var y = 0;
+        //public void DrawBuffer(byte[] buffer) {
+        //    var x = 0;
+        //    var y = 0;
 
-            for (var i = 0; i < buffer.Length; i += 2) {
-                var color = (buffer[i + 1] << 8) | (buffer[i]);
+        //    for (var i = 0; i < buffer.Length; i += 2) {
+        //        var color = (buffer[i + 1] << 8) | (buffer[i]);
 
-                this.SetPixel(x++, y, color != 0);
+        //        if (color == 0) {
+        //            this.SetPixel(x++, y, false);
+        //        }
+        //        else {
+        //            this.SetPixel(x++, y, true);
+        //        }
 
-                if (x == this.Width) {
-                    x = 0;
-                    y++;
-                }
-            }
+        //        if (x == this.Width) {
+        //            x = 0;
+        //            y++;
+        //        }
+        //    }
 
-            this.i2c.Write(this.vram);
-        }
+
+
+        //    this.i2c.Write(this.vram);
+        //}
+
+        public void DrawBufferNative(byte[] buffer) => this.DrawBufferNative(buffer, 0, buffer.Length);
 
         public void DrawBufferNative(byte[] buffer, int offset, int count) {
-            Array.Copy(buffer, offset, this.vram, 0, count);
+            Array.Copy(buffer, offset, this.vram, 1, count);
 
             this.i2c.Write(this.vram);
         }

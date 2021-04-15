@@ -303,7 +303,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7789 {
 
         public void DrawBuffer(byte[] buffer, int x, int y, int width, int height, int originalWidth, int columnMultiplier, int rowMultiplier) {
             if (this.bpp != 16)
-                throw new NotSupportedException(); // Multiplier does suppport 16bbp only
+                throw new NotSupportedException(); // Only suppport 16bbp
 
             this.SendDrawCommand();
 
@@ -314,6 +314,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7789 {
             BitConverter.SwapEndianness(buffer, 2);
         }
 
+        public void DrawBufferNative(byte[] buffer) => this.DrawBufferNative(buffer, 0, buffer.Length);
         public void DrawBufferNative(byte[] buffer, int offset, int count) {
             this.SendDrawCommand();
 
