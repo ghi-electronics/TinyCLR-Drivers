@@ -162,9 +162,8 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
             }
         }
 
-        public void DrawString(string text, uint color, int x, int y) => this.DrawText(text, color, x, y, 1, 1);
-        public void DrawText(string text, uint color, int x, int y) => this.DrawText(text, color, x, y, 1, 1);
-        public void DrawText(string text, uint color, int x, int y, int hScale, int vScale) {
+        public void DrawString(string text, uint color, int x, int y) => this.DrawString(text, color, x, y, 1, 1);        
+        public void DrawString(string text, uint color, int x, int y, int hScale, int vScale) {
             if (hScale == 0 || vScale == 0) throw new ArgumentNullException();
             var originalX = x;
 
