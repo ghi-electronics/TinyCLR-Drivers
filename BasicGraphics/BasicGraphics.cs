@@ -28,7 +28,7 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
                 this.buffer = new byte[this.width * this.height * 2];
             }
             else if (this.colorFormat == ColorFormat.OneBpp) {
-                this.buffer = new byte[this.width * this.height  / 8];
+                this.buffer = new byte[this.width * this.height / 8];
             }
 
         }
@@ -183,6 +183,7 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
             }
         }
 
+        public void DrawCharacter(char character, uint color, int x, int y) => this.DrawCharacter(character, color, x, y, 1, 1);
         public void DrawCharacter(char character, uint color, int x, int y, int hScale, int vScale) {
             var index = 5 * (character - 32);
 
@@ -198,7 +199,7 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
             }
         }
 
-        public static uint ColorFromRgb(byte red, byte green, byte blue) => (uint)(red << 16 | green << 8 | blue << 0 );
+        public static uint ColorFromRgb(byte red, byte green, byte blue) => (uint)(red << 16 | green << 8 | blue << 0);
 
         readonly byte[] ghiGHIMono8x5 = new byte[95 * 5] {
             0x00, 0x00, 0x00, 0x00, 0x00, /* Space	0x20 */
