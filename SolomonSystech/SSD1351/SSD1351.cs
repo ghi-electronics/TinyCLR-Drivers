@@ -79,7 +79,7 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351 {
             this.Reset();
             this.Initialize();
             this.SetDataAccessControl(false, true, true, false);
-            this.SetDrawWindow(0, 0, this.MaxWidth, this.MaxHeight);
+            this.SetDrawWindow(0, 0, this.MaxWidth-1, this.MaxHeight-1);
         }
 
         private void Reset() {
@@ -191,8 +191,8 @@ namespace GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1351 {
             this.Width = width;
             this.Height = height;
 
-            var x2 = x + width - 1;
-            var y2 = y + height - 1;
+            var x2 = x + width;
+            var y2 = y + height;
 
             if (this.rowColumnSwapped) {
                 var tmp = x;

@@ -119,7 +119,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.Initialize();
             this.SetDataFormat(DataFormat.Rgb565);
             this.SetDataAccessControl(false, false, false, false);
-            this.SetDrawWindow(0, 0, this.MaxWidth, this.MaxHeight);
+            this.SetDrawWindow(0, 0, this.MaxWidth-1, this.MaxHeight-1);
         }
 
         private void Reset() {
@@ -289,12 +289,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735 {
             this.Height = height;
 
             this.buffer4[1] = (byte)x;
-            this.buffer4[3] = (byte)(x + width - 1);
+            this.buffer4[3] = (byte)(x + width);
             this.SendCommand(ST7735CommandId.CASET);
             this.SendData(this.buffer4);
 
             this.buffer4[1] = (byte)y;
-            this.buffer4[3] = (byte)(y + height - 1);
+            this.buffer4[3] = (byte)(y + height);
             this.SendCommand(ST7735CommandId.RASET);
             this.SendData(this.buffer4);
         }
