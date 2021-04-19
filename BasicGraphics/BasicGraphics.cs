@@ -1,6 +1,6 @@
 using System;
 
-namespace GHIElectronics.TinyCLR.Drivers.BasicGraphic {
+namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
     public enum ColorFormat {
         Rgb565 = 0,
         OneBpp = 1
