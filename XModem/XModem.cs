@@ -36,7 +36,7 @@ namespace GHIElectronics.TinyCLR.Drivers.XModem {
             this.crc.Reset();
         }
                 
-        public byte[] ReceivePacket() {
+        public byte[] ReceivePacket(bool sendAck) {
             if (this.nextPacketNumber == 1) {
                 while (this.stream.DataAvailable == false) {
                     this.stream.WriteByte((byte)'C');
@@ -87,14 +87,15 @@ namespace GHIElectronics.TinyCLR.Drivers.XModem {
 
             this.nextPacketNumber++;
 
-            this.AckPacket();
+            if (sendAck)
+                this.AckPacket();
 
             return this.buffer;
         }
 
-        private void AckPacket() => this.stream.WriteByte(ACK);
+        public void AckPacket() => this.stream.WriteByte(ACK);
 
-        private void Abort() {
+        public void Abort() {
             this.stream.WriteByte(NAK);
             this.stream.WriteByte(CAN);
             this.stream.WriteByte(CAN);
