@@ -1,14 +1,11 @@
 using System;
 
-namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
-{
-    public enum ColorFormat
-    {
+namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
+    public enum ColorFormat {
         Rgb565 = 0,
         OneBpp = 1
     }
-    public class BasicGraphics
-    {
+    public class BasicGraphics {
         private ColorFormat colorFormat;
         private byte[] buffer;
         private int width;
@@ -18,44 +15,36 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
         public int Height { get => this.height; set => this.height = value; }
         public ColorFormat ColorFormat { get => this.ColorFormat; set => this.ColorFormat = value; }
         public byte[] Buffer => this.buffer;
-        public BasicGraphics()
-        {
+        public BasicGraphics() {
 
         }
 
-        public BasicGraphics(uint width, uint height, ColorFormat colorFormat)
-        {
+        public BasicGraphics(uint width, uint height, ColorFormat colorFormat) {
             this.colorFormat = colorFormat;
             this.width = (int)width;
             this.height = (int)height;
 
-            if (this.colorFormat == ColorFormat.Rgb565)
-            {
+            if (this.colorFormat == ColorFormat.Rgb565) {
                 this.buffer = new byte[this.width * this.height * 2];
             }
-            else if (this.colorFormat == ColorFormat.OneBpp)
-            {
+            else if (this.colorFormat == ColorFormat.OneBpp) {
                 this.buffer = new byte[this.width * this.height / 8];
             }
 
         }
 
-        public virtual void Clear()
-        {
+        public virtual void Clear() {
             if (this.buffer != null)
                 Array.Clear(this.buffer, 0, this.buffer.Length);
         }
-        public virtual void SetPixel(int x, int y, uint color)
-        {
-            if (this.buffer == null)
-            {
+        public virtual void SetPixel(int x, int y, uint color) {
+            if (this.buffer == null) {
                 throw new Exception("Buffer null.");
             }
 
             if (x < 0 || y < 0 || x >= this.width || y >= this.height) return;
 
-            if (this.colorFormat == ColorFormat.Rgb565)
-            {
+            if (this.colorFormat == ColorFormat.Rgb565) {
                 var index = (y * this.width + x) * 2;
                 var clr = color;
 
@@ -63,27 +52,22 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
                 this.buffer[index + 1] = (byte)(((clr & 0b0000_0000_1111_1000_0000_0000_0000_0000) >> 16) | ((clr & 0b0000_0000_0000_0000_1110_0000_0000_0000) >> 13));
 
             }
-            else if (this.colorFormat == ColorFormat.OneBpp)
-            {
+            else if (this.colorFormat == ColorFormat.OneBpp) {
                 var index = (y / 8) * this.width + x;
 
-                if (color != 0)
-                {
+                if (color != 0) {
                     this.buffer[index] |= (byte)(1 << (y % 8));
                 }
-                else
-                {
+                else {
                     this.buffer[index] &= (byte)(~(1 << (y % 8)));
                 }
             }
-            else
-            {
+            else {
                 throw new Exception("Only 16bpp or 1bpp supported.");
             }
 
         }
-        public void DrawLine(uint color, int x0, int y0, int x1, int y1)
-        {
+        public void DrawLine(uint color, int x0, int y0, int x1, int y1) {
 
             var xLength = x1 - x0;
             var yLength = y1 - y0;
@@ -95,13 +79,10 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
             xLength <<= 1;                                  // xLength is now 2 * xLength
 
             this.SetPixel(x0, y0, color);
-            if (xLength > yLength)
-            {
+            if (xLength > yLength) {
                 var fraction = yLength - (xLength >> 1);    // same as 2 * yLength - xLength
-                while (x0 != x1)
-                {
-                    if (fraction >= 0)
-                    {
+                while (x0 != x1) {
+                    if (fraction >= 0) {
                         y0 += stepy;
                         fraction -= xLength;                // same as fraction -= 2 * xLength
                     }
@@ -110,13 +91,10 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
                     this.SetPixel(x0, y0, color);
                 }
             }
-            else
-            {
+            else {
                 var fraction = xLength - (yLength >> 1);
-                while (y0 != y1)
-                {
-                    if (fraction >= 0)
-                    {
+                while (y0 != y1) {
+                    if (fraction >= 0) {
                         x0 += stepx;
                         fraction -= yLength;
                     }
@@ -127,27 +105,23 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
             }
         }
 
-        public void DrawRectangle(uint color, int x, int y, int width, int height)
-        {
+        public void DrawRectangle(uint color, int x, int y, int width, int height) {
 
             if (width < 0) return;
             if (height < 0) return;
 
-            for (var i = x; i < x + width; i++)
-            {
+            for (var i = x; i < x + width; i++) {
                 this.SetPixel(i, y, color);
                 this.SetPixel(i, y + height - 1, color);
             }
 
-            for (var i = y; i < y + height; i++)
-            {
+            for (var i = y; i < y + height; i++) {
                 this.SetPixel(x, i, color);
                 this.SetPixel(x + width - 1, i, color);
             }
         }
 
-        public void DrawCircle(uint color, int x, int y, int radius)
-        {
+        public void DrawCircle(uint color, int x, int y, int radius) {
 
             if (radius <= 0) return;
 
@@ -165,10 +139,8 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
             this.SetPixel(centerX + radius, centerY, color);
             this.SetPixel(centerX - radius, centerY, color);
 
-            while (dX < dY)
-            {
-                if (f >= 0)
-                {
+            while (dX < dY) {
+                if (f >= 0) {
                     dY--;
                     ddFY += 2;
                     f += ddFY;
@@ -190,42 +162,32 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
             }
         }
         public void DrawTinyString(string text, uint color, int x, int y) => DrawTinyString(text, color, x, y, false);
-        public void DrawTinyString(string text, uint color, int x, int y, bool clear)
-        {
-            for (var i = 0; i < text.Length; i++)
-            {
-                if (text[i] >= 32)
-                {
+        public void DrawTinyString(string text, uint color, int x, int y, bool clear) {
+            for (var i = 0; i < text.Length; i++) {
+                if (text[i] >= 32) {
                     this.DrawTinyCharacter(text[i], color, x, y, clear);
                     x += 6;
                 }
-                if (clear)
-                {
+                if (clear) {
                     // clear the space between chars
-                    for (var s = 0; s < 5; s++)
-                    {
+                    for (var s = 0; s < 5; s++) {
                         this.SetPixel(x - 1, y + s, 0);
                     }
                 }
             }
         }
         public void DrawString(string text, uint color, int x, int y) => this.DrawString(text, color, x, y, 1, 1);
-        public void DrawString(string text, uint color, int x, int y, int hScale, int vScale)
-        {
+        public void DrawString(string text, uint color, int x, int y, int hScale, int vScale) {
             if (hScale == 0 || vScale == 0) throw new ArgumentNullException();
             var originalX = x;
 
-            for (var i = 0; i < text.Length; i++)
-            {
-                if (text[i] >= 32)
-                {
+            for (var i = 0; i < text.Length; i++) {
+                if (text[i] >= 32) {
                     this.DrawCharacter(text[i], color, x, y, hScale, vScale);
                     x += (6 * hScale);
                 }
-                else
-                {
-                    if (text[i] == '\n')
-                    {
+                else {
+                    if (text[i] == '\n') {
                         y += (9 * vScale);
                         x = originalX;
                     }
@@ -235,14 +197,11 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
             }
         }
         public void DrawTinyCharacter(char character, uint color, int x, int y) => DrawTinyCharacter(character, color, x, y, false);
-        public void DrawTinyCharacter(char character, uint color, int x, int y, bool clear)
-        {
+        public void DrawTinyCharacter(char character, uint color, int x, int y, bool clear) {
             var index = 5 * (character - 32);
 
-            for (var col = 0; col < 5; col++)
-            {
-                for (var row = 0; row < 5; row++)
-                {
+            for (var col = 0; col < 5; col++) {
+                for (var row = 0; row < 5; row++) {
                     if ((this.mono5x5[index + col] & (1 << (4 - row))) != 0)
                         this.SetPixel(x + row, y + col, color);
                     else
@@ -253,18 +212,13 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics
             }
         }
         public void DrawCharacter(char character, uint color, int x, int y) => this.DrawCharacter(character, color, x, y, 1, 1);
-        public void DrawCharacter(char character, uint color, int x, int y, int hScale, int vScale)
-        {
+        public void DrawCharacter(char character, uint color, int x, int y, int hScale, int vScale) {
             var index = 5 * (character - 32);
 
-            for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++)
-            {
-                for (var hs = 0; hs < hScale; hs++)
-                {
-                    for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++)
-                    {
-                        for (var vs = 0; vs < vScale; vs++)
-                        {
+            for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
+                for (var hs = 0; hs < hScale; hs++) {
+                    for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++) {
+                        for (var vs = 0; vs < vScale; vs++) {
                             if ((this.mono8x5[index + horizontalFontSize] & (1 << verticleFontSize)) != 0)
                                 this.SetPixel(x + (horizontalFontSize * hScale) + hs, y + (verticleFontSize * vScale) + vs, color);
                         }
