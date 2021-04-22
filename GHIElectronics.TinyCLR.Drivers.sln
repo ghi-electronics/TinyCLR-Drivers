@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Gps.Nmea0183", "Gps\GHIElectronics.TinyCLR.Drivers.Gps.Nmea0183.csproj", "{5DE4F317-A132-48D1-B2AF-E3DCBC8E74DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60", "Microchip\Enc28J60\GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60.csproj", "{714EF11D-4E03-40FB-A667-9A52B9C9DE79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -213,6 +215,10 @@ Global
 		{5DE4F317-A132-48D1-B2AF-E3DCBC8E74DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DE4F317-A132-48D1-B2AF-E3DCBC8E74DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DE4F317-A132-48D1-B2AF-E3DCBC8E74DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{714EF11D-4E03-40FB-A667-9A52B9C9DE79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{714EF11D-4E03-40FB-A667-9A52B9C9DE79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{714EF11D-4E03-40FB-A667-9A52B9C9DE79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{714EF11D-4E03-40FB-A667-9A52B9C9DE79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
