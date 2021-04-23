@@ -161,13 +161,11 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
                 this.SetPixel(centerX - dY, centerY - dX, color);
             }
         }
-        public void DrawTinyString(string text, uint color, int x, int y) => DrawTinyString(text, color, x, y, false);
+        public void DrawTinyString(string text, uint color, int x, int y) => this.DrawTinyString(text, color, x, y, false);
         public void DrawTinyString(string text, uint color, int x, int y, bool clear) {
             for (var i = 0; i < text.Length; i++) {
-                if (text[i] >= 32) {
-                    this.DrawTinyCharacter(text[i], color, x, y, clear);
-                    x += 6;
-                }
+                this.DrawTinyCharacter(text[i], color, x, y, clear);
+                x += 6;
                 if (clear) {
                     // clear the space between chars
                     for (var s = 0; s < 5; s++) {
@@ -196,7 +194,7 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
                 }
             }
         }
-        public void DrawTinyCharacter(char character, uint color, int x, int y) => DrawTinyCharacter(character, color, x, y, false);
+        public void DrawTinyCharacter(char character, uint color, int x, int y) => this.DrawTinyCharacter(character, color, x, y, false);
         public void DrawTinyCharacter(char character, uint color, int x, int y, bool clear) {
             var index = 5 * (character - 32);
 
