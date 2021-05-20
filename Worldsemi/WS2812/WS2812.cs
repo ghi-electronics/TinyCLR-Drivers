@@ -32,7 +32,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
 
             // reset
             // digitalSignal Reset command, 1000 * 2 * 50 (multiplier) = 100us            
-            this.bufferTimming[this.bufferTimming.Length - 1] = 1000 * 2;
+            this.bufferTimming[0] = 1000 * 2;
 
             for (var i = 0; i < numLeds; i++)
                 this.SetColor(i, 0x00, 0x00, 0x00);
@@ -66,30 +66,30 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
             if (this.digitalSignalMode) {
                 for (var i = 7; i >= 0; i--) {
                     if ((green & (1 << i)) > 0) {
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 0 + 0 + idx] = this.TimingHigh;
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 0 + 1 + idx] = this.TimingLow;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 0 + 0 + idx] = this.TimingHigh;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 0 + 1 + idx] = this.TimingLow;
                     }
                     else {
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 0 + 0 + idx] = this.TimingLow;
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 0 + 1 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 0 + 0 + idx] = this.TimingLow;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 0 + 1 + idx] = this.TimingHigh; ;
                     }
 
                     if ((red & (1 << i)) > 0) {
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 16 + 0 + idx] = this.TimingHigh; ;
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 16 + 1 + idx] = this.TimingLow;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 16 + 0 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 16 + 1 + idx] = this.TimingLow;
                     }
                     else {
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 16 + 0 + idx] = this.TimingLow;
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 16 + 1 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 16 + 0 + idx] = this.TimingLow;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 16 + 1 + idx] = this.TimingHigh; ;
                     }
 
                     if ((blue & (1 << i)) > 0) {
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 32 + 0 + idx] = this.TimingHigh; ;
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 32 + 1 + idx] = this.TimingLow;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 32 + 0 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 32 + 1 + idx] = this.TimingLow;
                     }
                     else {
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 32 + 0 + idx] = this.TimingLow;
-                        this.bufferTimming[0 + index * BYTE_PER_LED + 32 + 1 + idx] = this.TimingHigh; ;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 32 + 0 + idx] = this.TimingLow;
+                        this.bufferTimming[1 + index * BYTE_PER_LED + 32 + 1 + idx] = this.TimingHigh; ;
                     }
 
                     idx += 2;
