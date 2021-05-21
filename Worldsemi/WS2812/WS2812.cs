@@ -9,45 +9,77 @@ using GHIElectronics.TinyCLR.Devices.Signals;
 namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
     public class WS2812Controller {
 
+        private enum Bpp {
+            rgb888 = 0,
+            rgb565 = 1
+        };
+
         private readonly GpioPin gpioPin;
-        private readonly int numLeds;        
-        private readonly byte[] data;        
-        public WS2812Controller(GpioPin dataPin, int numLeds) {
+        private readonly int numLeds;
+        private readonly byte[] data;
+        private Bpp bpp;        
+
+        public WS2812Controller(GpioPin dataPin, int numLeds) : this(dataPin, numLeds, null) {
+
+        }
+
+        public WS2812Controller(GpioPin dataPin, int numLeds, byte[] data) {
             this.gpioPin = dataPin;
             this.numLeds = numLeds;
-            this.data = new byte[this.numLeds * 3];
+
+            if (data == null) {
+                this.data = new byte[this.numLeds * 3];
+
+                this.bpp = Bpp.rgb888;
+            }
+            else {
+                this.data = data;
+
+                if (data != null && data.Length == this.numLeds * 3) {
+                    this.bpp = Bpp.rgb888;
+                }
+                else if (data != null && data.Length == this.numLeds * 2) {
+                    this.bpp = Bpp.rgb565;
+                }
+                else
+                    throw new ArgumentException("Support 24bpp or 16bpp array only.");
+            }
 
             this.gpioPin.SetDriveMode(GpioPinDriveMode.Output);
         }
 
         public void SetColor(int index, byte red, byte green, byte blue) {
-            this.data[index * 3 + 0] = green;
-            this.data[index * 3 + 1] = red;
-            this.data[index * 3 + 2] = blue;
+            if (this.bpp == Bpp.rgb888) {
+                this.data[index * 3 + 0] = green;
+                this.data[index * 3 + 1] = red;
+                this.data[index * 3 + 2] = blue;
+            }
+            else {
+                red >>= 3;
+                green >>= 2;
+                blue >>= 3;
+
+                var color16 = (ushort)((red << 11) | (green << 5) | (blue << 0));
+
+                this.data[index * 2 + 1] = (byte)(color16 >> 8);
+                this.data[index * 2 + 0] = (byte)(color16 >> 0);
+            }
         }
 
         public void Flush() {
             this.Reset();
-            this.NativeFlush(this.gpioPin.PinNumber, this.data, 0, this.data.Length);
+            this.NativeFlush(this.gpioPin.PinNumber, this.data, 0, this.data.Length, this.bpp == Bpp.rgb888);
         }
 
-        public void SetBuffer(byte[] buffer, int offset, int count) {
-            offset &= ~0x00000001;
-
-            if (count > this.numLeds * 2)
-                throw new IndexOutOfRangeException();
-
-            for (var i = offset; i < count; i += 2) {
-                var led = i / 2;
-
-                var color = (buffer[i + 1] << 8) | (buffer[i]);
-
-                var red = (((color) & 0xF800) >> 11) << 3;
-                var green = (((color) & 0x07E0) >> 5) << 2;
-                var blue = ((color) & 0x001F) << 3;
-
-                this.SetColor(led, (byte)red, (byte)green, (byte)blue);
+        public void Flush(byte[] data, int offset, int count) {                        
+            if ((count != this.numLeds * 3) && (count != this.numLeds * 2)) {
+                throw new ArgumentException("Support 24bpp or 16bpp array only.");
             }
+
+            var bpp24 = count == this.numLeds * 3;
+
+            this.Reset();
+            this.NativeFlush(this.gpioPin.PinNumber, data, offset, count, bpp24);
         }
 
         public void Clear() {
@@ -63,6 +95,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeFlush(int dataPin, byte[] buffer8, int offset, int size);
+        private extern void NativeFlush(int dataPin, byte[] buffer8, int offset, int size, bool bpp24);
     }
 }
