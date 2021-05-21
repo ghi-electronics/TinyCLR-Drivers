@@ -15,15 +15,15 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
         };
 
         private readonly GpioPin gpioPin;
-        private readonly int numLeds;
+        private readonly uint numLeds;
         private readonly byte[] data;
         private Bpp bpp;        
 
-        public WS2812Controller(GpioPin dataPin, int numLeds) : this(dataPin, numLeds, null) {
+        public WS2812Controller(GpioPin dataPin, uint numLeds) : this(dataPin, numLeds, null) {
 
         }
 
-        public WS2812Controller(GpioPin dataPin, int numLeds, byte[] data) {
+        public WS2812Controller(GpioPin dataPin, uint numLeds, byte[] data) {
             this.gpioPin = dataPin;
             this.numLeds = numLeds;
 
@@ -71,16 +71,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
             this.NativeFlush(this.gpioPin.PinNumber, this.data, 0, this.data.Length, this.bpp == Bpp.rgb888);
         }
 
-        public void Flush(byte[] data, int offset, int count) {                        
-            if ((count != this.numLeds * 3) && (count != this.numLeds * 2)) {
-                throw new ArgumentException("Support 24bpp or 16bpp array only.");
-            }
-
-            var bpp24 = count == this.numLeds * 3;
-
-            this.Reset();
-            this.NativeFlush(this.gpioPin.PinNumber, data, offset, count, bpp24);
-        }
 
         public void Clear() {
             for (var i = 0; i < this.numLeds; i++)
