@@ -8,8 +8,7 @@ using GHIElectronics.TinyCLR.Devices.Signals;
 
 namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
     public class WS2812Controller {
-
-        private enum Bpp {
+        public enum DataFormat {
             rgb888 = 0,
             rgb565 = 1
         };
@@ -17,39 +16,33 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
         private readonly GpioPin gpioPin;
         private readonly uint numLeds;
         private readonly byte[] data;
-        private Bpp bpp;        
+        private DataFormat bpp;
+        private long resetPulse = 10 * 50 * 2;
 
-        public WS2812Controller(GpioPin dataPin, uint numLeds) : this(dataPin, numLeds, null) {
+        public byte[] Buffer => this.data;
+        public TimeSpan ResetPulse {
+            get => TimeSpan.FromTicks(this.resetPulse);
 
+            set => this.resetPulse = value.Ticks;
         }
 
-        public WS2812Controller(GpioPin dataPin, uint numLeds, byte[] data) {
+        public WS2812Controller(GpioPin dataPin, uint numLeds, DataFormat bpp) {
             this.gpioPin = dataPin;
             this.numLeds = numLeds;
+            this.bpp = bpp;
 
-            if (data == null) {
+            if (bpp == DataFormat.rgb888) {
                 this.data = new byte[this.numLeds * 3];
-
-                this.bpp = Bpp.rgb888;
             }
             else {
-                this.data = data;
-
-                if (data != null && data.Length == this.numLeds * 3) {
-                    this.bpp = Bpp.rgb888;
-                }
-                else if (data != null && data.Length == this.numLeds * 2) {
-                    this.bpp = Bpp.rgb565;
-                }
-                else
-                    throw new ArgumentException("Support 24bpp or 16bpp array only.");
+                this.data = new byte[this.numLeds * 2];
             }
 
             this.gpioPin.SetDriveMode(GpioPinDriveMode.Output);
         }
 
         public void SetColor(int index, byte red, byte green, byte blue) {
-            if (this.bpp == Bpp.rgb888) {
+            if (this.bpp == DataFormat.rgb888) {
                 this.data[index * 3 + 0] = green;
                 this.data[index * 3 + 1] = red;
                 this.data[index * 3 + 2] = blue;
@@ -66,9 +59,13 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
             }
         }
 
-        public void Flush() {
-            this.Reset();
-            this.NativeFlush(this.gpioPin.PinNumber, this.data, 0, this.data.Length, this.bpp == Bpp.rgb888);
+        public void Flush() => this.Flush(true);
+
+        public void Flush(bool reset) {
+            this.NativeFlush(this.gpioPin.PinNumber, this.data, 0, this.data.Length, this.bpp == DataFormat.rgb888);
+
+            if (reset)
+                this.Reset();
         }
 
 
@@ -77,10 +74,11 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
                 this.SetColor(i, 0x00, 0x00, 0x00);
         }
 
-        private void Reset() {
+        public void Reset() {
             this.gpioPin.Write(GpioPinValue.Low);
 
-            var expired = DateTime.Now.Ticks + 10 * 50 * 2;
+            var expired = DateTime.Now.Ticks + this.resetPulse;
+
             while (DateTime.Now.Ticks < expired) ;
         }
 
