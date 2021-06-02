@@ -12,6 +12,16 @@ namespace GHIElectronics.TinyCLR.Drivers.ManagedFileSystem {
         OpenAlways = 0x10,
         Append = 0x30,
     }
+
+    public enum FileAttributes : uint {
+        ReadOnly = 0x1,
+        Hidden = 0x2,
+        System = 0x4,
+        Directory = 0x10,
+        Archive = 0x20,
+        Normal = 0x80,
+        NotExists = 0xFFFFFFFF
+    }
     public class ManagedFileSystem {
 
         FATFileSystem current;
@@ -152,7 +162,7 @@ namespace GHIElectronics.TinyCLR.Drivers.ManagedFileSystem {
             path = this.ReformatPath(path);
 
             var fileObject = new FATFileSystem.FileObject();
-            var fno = new FATFileSystem.FileInfo();           
+            var fno = new FATFileSystem.FileInfo();
 
             var res = this.Current.OpenFile(ref fileObject, path, (byte)mode);
 
@@ -184,7 +194,61 @@ namespace GHIElectronics.TinyCLR.Drivers.ManagedFileSystem {
             res.ThrowIfError();
         }
 
-        public void Close(FileHandle file) => this.Current.CloseFile(ref file.fileObject);
+        public void FlushFile(FileHandle file) => this.Current.SyncFile(ref file.fileObject);
+        public void CloseFile(FileHandle file) => this.Current.CloseFile(ref file.fileObject);
+        public int SeekFile(FileHandle file, int offset) {
+            var p = (uint)offset;
+            this.Current.SeekFile(ref file.fileObject, ref p);
+
+            return (int)p;
+        }
+
+        public void Rename(string fullPath1, string fullPath2) {
+            var path1 = this.ReformatPath(fullPath1);
+            var path2 = this.ReformatPath(fullPath2);
+
+            this.Current.RenameFileOrDirectory(path1, path2);
+        }
+
+        public bool FileExist(string path) {
+            var attribute = this.GetAttributes(path);
+
+            return attribute != FileAttributes.NotExists;
+        }
+
+        public bool DirectoryExist(string path) {
+            var attribute = this.GetAttributes(path);
+
+            return attribute == FileAttributes.Directory;
+        }
+
+        public FileAttributes GetAttributes(string path) {
+            path = this.ReformatPath(path);
+
+            var fno = new FATFileSystem.FileInfo();
+
+            var res = this.Current.GetFileAttributes(path, ref fno);
+
+            switch (res) {
+
+                case FATFileSystem.FileResult.Ok:
+                    if ((fno.fileAttribute & FATFileSystem.AM_DIR) > 0) return FileAttributes.Directory;
+                    if ((fno.fileAttribute & FATFileSystem.AM_RDO) > 0) return FileAttributes.ReadOnly;
+                    if ((fno.fileAttribute & FATFileSystem.AM_HID) > 0) return FileAttributes.Hidden;
+                    if ((fno.fileAttribute & FATFileSystem.AM_SYS) > 0) return FileAttributes.System;
+                    if ((fno.fileAttribute & FATFileSystem.AM_ARC) > 0) return FileAttributes.Archive;
+
+                    break;
+
+                case FATFileSystem.FileResult.FileNotExist:
+                    return FileAttributes.NotExists;
+
+
+                default:
+                    throw new Exception("error:" + res);
+            }
+            return FileAttributes.Normal;
+        }
 
         private string ReformatPath(string sPath) {
             if (sPath.IndexOf(this.Root) == 0) {
@@ -208,12 +272,18 @@ namespace GHIElectronics.TinyCLR.Drivers.ManagedFileSystem {
             this.fno = fno;
             this.FileSize = fno.fileSize;
             this.FileName = filename;
+            this.Attribute = fno.fileAttribute;
+            this.Time = fno.fileTime;
+            this.Date = fno.fileDate;
         }
 
         public FATFileSystem.FileObject fileObject;
         public FATFileSystem.FileInfo fno;
         public long FileSize { get; }
         public string FileName { get; }
+        public uint Date { get; }
+        public uint Time { get; }
+        public uint Attribute { get; }
     }
 
 

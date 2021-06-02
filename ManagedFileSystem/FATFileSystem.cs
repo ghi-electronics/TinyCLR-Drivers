@@ -1970,7 +1970,7 @@ namespace GHIElectronics.TinyCLR.Drivers.ManagedFileSystem {
         /* Synchronize the File                                                  */
         /*-----------------------------------------------------------------------*/
 
-        FileResult SyncFile(
+        public FileResult SyncFile(
             ref FileObject fp     /* Pointer to the file object */
         ) {
             FileResult res;
@@ -2040,7 +2040,7 @@ namespace GHIElectronics.TinyCLR.Drivers.ManagedFileSystem {
         /* Seek File Read/Write Pointer                                          */
         /*-----------------------------------------------------------------------*/
 
-        FileResult SeekFile(
+        public FileResult SeekFile(
             ref FileObject fp,        /* Pointer to the file object */
             ref uint ofs     /* File pointer from top of file */
         ) {
