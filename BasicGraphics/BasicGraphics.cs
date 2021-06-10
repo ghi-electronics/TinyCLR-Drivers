@@ -450,21 +450,29 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
             Rotate270,
             None
         }
-        public int Height { get; }
-        public int Width { get; }
-        public byte[] Data { get; }
-        
+        public int Height { get; internal set; }
+        public int Width { get; internal set; }
+        public byte[] Data { get; internal set; }
+
         public Image(string img, int width, int height) : this(img, width, height, 1, 1, Transform.None) { }
-        public Image(string img, int width, int height, int hScale, int vScale, Transform transform) : this(Encoding.UTF8.GetBytes(img), width, height, hScale, vScale, transform) { }
-        public Image(byte[] data, int width, int height) : this(data, width, height, 1, 1, Transform.None) { }
-        public Image(byte[] data, int width, int height, int hScale, int vScale, Transform transform) {
-            if (width * height != data.Length) throw new Exception("Incorrect image data size");
-            
+        public Image(string img, int width, int height, int hScale, int vScale, Transform transform) {
+            var data = Encoding.UTF8.GetBytes(img);
+
             for (var x = 0; x < data.Length; x++) {
-                if (data[x] == (byte)' ') {
+                if (data[x] == ' ') {
                     data[x] = 0;
                 }
             }
+
+            this.CreateImage(data, width, height, hScale, vScale, transform);
+        }
+        public Image(byte[] data, int width, int height) : this(data, width, height, 1, 1, Transform.None) { }
+
+        public Image(byte[] data, int width, int height, int hScale, int vScale, Transform transform) => this.CreateImage(data, width, height, hScale, vScale, transform);
+
+        private void CreateImage(byte[] data, int width, int height, int hScale, int vScale, Transform transform) {
+
+            if (width * height != data.Length) throw new Exception("Incorrect image data size");
 
             this.Height = height * vScale;
             this.Width = width * hScale;
@@ -484,14 +492,14 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
                             this.Data[(this.Height - y - 1) * this.Width + x] = data[y / vScale * width + x / hScale];
                             break;
                         case Transform.Rotate90:
-                            this.Data[x * this.Height + this.Height - y - 1] = data[y / vScale * width + x / hScale]; ;
+                            this.Data[x * this.Height + this.Height - y - 1] = data[y / vScale * width + x / hScale];
                             break;
                         case Transform.Rotate180:
                             this.Data[(this.Height - y - 1) * this.Width + (this.Width - x - 1)] = data[y / vScale * width + x / hScale];
                             break;
                         case Transform.Rotate270:
 
-                            this.Data[(this.Width - x - 1) * this.Height + y] = data[y / vScale * width + x / hScale]; ;
+                            this.Data[(this.Width - x - 1) * this.Height + y] = data[y / vScale * width + x / hScale];
                             break;
                     }
                 }
