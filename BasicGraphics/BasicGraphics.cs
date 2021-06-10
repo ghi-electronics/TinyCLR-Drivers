@@ -453,15 +453,19 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
         public int Height { get; }
         public int Width { get; }
         public byte[] Data { get; }
-
-        public Image(string img, int width, int height, int hScale, int vScale, Transform transform) {
-            if (width * height != img.Length) throw new Exception("Incorrect image data size");
-            var data = Encoding.UTF8.GetBytes(img);
+        
+        public Image(string img, int width, int height) : this(img, width, height, 1, 1, Transform.None) { }
+        public Image(string img, int width, int height, int hScale, int vScale, Transform transform) : this(Encoding.UTF8.GetBytes(img), width, height, hScale, vScale, transform) { }
+        public Image(byte[] data, int width, int height) : this(data, width, height, 1, 1, Transform.None) { }
+        public Image(byte[] data, int width, int height, int hScale, int vScale, Transform transform) {
+            if (width * height != data.Length) throw new Exception("Incorrect image data size");
+            
             for (var x = 0; x < data.Length; x++) {
-                if (data[x] == ' ') {
+                if (data[x] == (byte)' ') {
                     data[x] = 0;
                 }
             }
+
             this.Height = height * vScale;
             this.Width = width * hScale;
 
