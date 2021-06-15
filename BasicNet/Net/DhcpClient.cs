@@ -148,8 +148,11 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicNet {
             this.gwIPAddr = new IPAddress();
             this.dnsIPAddr = new IPAddress();
 
-            this.netif.EnableStaticIP(this.assignedIPAddr, this.subnetMask, this.gwIPAddr, this.netif.PhysicalAddress);
-            this.netif.EnableStaticDns(null); // clear all dns info
+            this.netif.Address = this.assignedIPAddr;
+            this.netif.SubnetMask = this.subnetMask;
+            this.netif.GatewayAddress = this.gwIPAddr;
+            this.netif.PrimaryDnsServer = null;
+            this.netif.SecondaryDnsServer = null;
 
             new Thread(this.RequestLease).Start();
         }
@@ -189,8 +192,11 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicNet {
                         break;
                     case DhcpState.REQUEST:
                         if (msgType == MessageType.ACK) {
-                            this.netif.EnableStaticIP(this.assignedIPAddr, this.subnetMask, this.gwIPAddr, this.netif.PhysicalAddress);
-                            this.netif.EnableStaticDns(this.dnsIPAddr);
+                            this.netif.Address = this.assignedIPAddr;
+                            this.netif.SubnetMask = this.subnetMask;
+                            this.netif.GatewayAddress = this.gwIPAddr;
+                            this.netif.PrimaryDnsServer = this.dnsIPAddr;
+
                             this.socket.Close();
                             this.socket = null;
                             this.SendArpMessage();

@@ -9,15 +9,24 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicNet {
     /// </summary>
     public interface INetworkInterface {
         byte[] PhysicalAddress { get; }
-
-        IPAddress PrimaryDnsServer { get; }
-        IPAddress SecondaryDnsServer { get; }
-
+        IPAddress Address { get; set; }
+        IPAddress SubnetMask  { get; set; }
+        IPAddress GatewayAddress { get; set; }
+        IPAddress PrimaryDnsServer { get; set; }
+        IPAddress SecondaryDnsServer { get; set; }
         ISocketImpl CreateSocket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType, bool useReservedSocket);
+        void SetInterfaceSettings(NetworkInterfaceSettings networkInterfaceSettings);
+        void Enable();
+    }
 
-        void EnableDhcp();
-        void EnableStaticIP(IPAddress addr, IPAddress subnet, IPAddress gateway, byte[] macAddr);
-        void EnableStaticDns(IPAddress dns1);
-        void EnableStaticDns(IPAddress dns1, IPAddress dns2);        
+    public class NetworkInterfaceSettings {
+        public IPAddress Address { get; set; }
+        public IPAddress SubnetMask { get; set; }
+        public IPAddress GatewayAddress { get; set; }
+        public IPAddress[] DnsAddresses { get; set; }
+        public byte[] MacAddress { get; set; }
+        public bool DhcpEnable { get; set; }
+        public bool DynamicDnsEnable { get; set; }
+        public string Hostname { get; set; } = null;
     }
 }

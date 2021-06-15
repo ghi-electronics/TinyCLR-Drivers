@@ -555,7 +555,7 @@ namespace GHIElectronics.TinyCLR.Drivers.WIZnet.W5500 {
             }
         }
 
-        public void EnableStaticIP(IPAddress addr, IPAddress subnet, IPAddress gateway, byte[] macAddr) {
+        private void EnableStaticIP(IPAddress addr, IPAddress subnet, IPAddress gateway, byte[] macAddr) {
             this.Address = addr;
             this.SubnetMask = subnet;
             this.GatewayAddress = gateway;
@@ -564,9 +564,8 @@ namespace GHIElectronics.TinyCLR.Drivers.WIZnet.W5500 {
             this.OnNetworkAddressChanged(this, new NetworkAddressChangedEventArgs(DateTime.Now));
         }
 
-        public void EnableDhcp() => this.EnableDhcp(null);
 
-        public void EnableDhcp(string hostname) {
+        private void EnableDhcp(string hostname) {
             if (this.dhcp == null) {
                 this.dhcp = new DhcpClient(this, hostname);
 
@@ -574,17 +573,40 @@ namespace GHIElectronics.TinyCLR.Drivers.WIZnet.W5500 {
             }
         }
 
-
-        public void EnableStaticDns(IPAddress dns1) {
+        private void EnableStaticDns(IPAddress dns1) {
             this.dns[0] = dns1;
             this.dns[1] = null;
         }
 
-        public void EnableStaticDns(IPAddress dns1, IPAddress dns2) {
+        private void EnableStaticDns(IPAddress dns1, IPAddress dns2) {
             this.dns[0] = dns1;
             this.dns[1] = dns2;
         }
 
+        NetworkInterfaceSettings networkInterfaceSettings;
+        public void SetInterfaceSettings(NetworkInterfaceSettings networkInterfaceSettings) => this.networkInterfaceSettings = networkInterfaceSettings;
+        public void Enable() {
+            if (this.networkInterfaceSettings == null)
+                throw new ArgumentNullException("Require SetInterfaceSettings.");
+
+            this.PhysicalAddress = this.networkInterfaceSettings.MacAddress;
+
+            if (this.networkInterfaceSettings.DynamicDnsEnable == false) {
+                if (this.networkInterfaceSettings.DnsAddresses.Length == 1)
+                    this.EnableStaticDns(this.networkInterfaceSettings.DnsAddresses[0]);
+                else
+                    this.EnableStaticDns(this.networkInterfaceSettings.DnsAddresses[0], this.networkInterfaceSettings.DnsAddresses[1]);
+            }
+
+            if (this.networkInterfaceSettings.DhcpEnable == false) {
+                this.EnableStaticIP(this.networkInterfaceSettings.Address, this.networkInterfaceSettings.SubnetMask, this.networkInterfaceSettings.GatewayAddress, this.networkInterfaceSettings.MacAddress);
+            }
+            else {
+                this.EnableDhcp(this.networkInterfaceSettings.Hostname);
+            }
+        }
+
+        public void Disable() => throw new NotSupportedException();
         public sealed class NetworkAddressChangedEventArgs : EventArgs {
             public DateTime Timestamp { get; }
 
