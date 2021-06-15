@@ -75,6 +75,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.ManagedFileSystem", "ManagedFileSystem\GHIElectronics.TinyCLR.Drivers.ManagedFileSystem.csproj", "{48A41AF5-179F-473B-B982-5EF24E9EEF29}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.WIZnet.W5500", "WIZnet\W5500\GHIElectronics.TinyCLR.Drivers.WIZnet.W5500.csproj", "{6DC0E266-C981-4CC1-9540-098DC546F6C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.BasicNet", "BasicNet\Net\GHIElectronics.TinyCLR.Drivers.BasicNet.csproj", "{3A5FC994-1394-4820-89F3-6CEFA8D5DB39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +229,14 @@ Global
 		{48A41AF5-179F-473B-B982-5EF24E9EEF29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48A41AF5-179F-473B-B982-5EF24E9EEF29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48A41AF5-179F-473B-B982-5EF24E9EEF29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DC0E266-C981-4CC1-9540-098DC546F6C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DC0E266-C981-4CC1-9540-098DC546F6C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DC0E266-C981-4CC1-9540-098DC546F6C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DC0E266-C981-4CC1-9540-098DC546F6C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A5FC994-1394-4820-89F3-6CEFA8D5DB39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A5FC994-1394-4820-89F3-6CEFA8D5DB39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A5FC994-1394-4820-89F3-6CEFA8D5DB39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A5FC994-1394-4820-89F3-6CEFA8D5DB39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
