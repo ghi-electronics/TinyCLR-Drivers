@@ -39,10 +39,6 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
                 Array.Clear(this.buffer, 0, this.buffer.Length);
         }
         public virtual void SetPixel(int x, int y, uint color) {
-            if (this.buffer == null) {
-                throw new Exception("Buffer null.");
-            }
-
             if (x < 0 || y < 0 || x >= this.width || y >= this.height) return;
 
             if (this.colorFormat == ColorFormat.Rgb565) {
@@ -54,13 +50,12 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
 
             }
             else if (this.colorFormat == ColorFormat.OneBpp) {
-                var index = (y / 8) * this.width + x;
-
+                var index = (y >> 3) * this.width + x;
                 if (color != 0) {
-                    this.buffer[index] |= (byte)(1 << (y % 8));
+                    this.buffer[index] |= (byte)(1 << (y & 7));
                 }
                 else {
-                    this.buffer[index] &= (byte)(~(1 << (y % 8)));
+                    this.buffer[index] &= (byte)(~(1 << (y & 7)));
                 }
             }
             else {
