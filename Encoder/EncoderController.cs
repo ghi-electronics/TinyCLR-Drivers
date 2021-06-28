@@ -69,9 +69,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Encoder {
             }
         }
 
-        public void Dispose() {
-            this.run = false;
-        }
+        public void Dispose() => this.run = false;
 
         public int Counter => this.counter;
 
