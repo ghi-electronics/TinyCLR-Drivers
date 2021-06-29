@@ -5,16 +5,16 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 
 namespace GHIElectronics.TinyCLR.Drivers.Encoder {
-    public class EncoderController : IDisposable {
+    public class EncoderController {
         readonly GpioPin pinA;
         readonly GpioPin pinB;
-        private int counter;
-        private bool run = false;
-
-        private TimeSpan timeout = TimeSpan.FromMilliseconds(100);
 
         public delegate void CounterChangedEvent(int counter);
         public event CounterChangedEvent OnCounterChangedEvent;
+
+        private long timeAStart, timeAEnd;
+        private long timeB;
+        private int counter;
 
         public EncoderController(GpioPin pinA, GpioPin pinB) {
             this.pinA = pinA;
@@ -23,54 +23,61 @@ namespace GHIElectronics.TinyCLR.Drivers.Encoder {
             this.pinA.SetDriveMode(GpioPinDriveMode.InputPullUp);
             this.pinB.SetDriveMode(GpioPinDriveMode.InputPullUp);
 
-            this.run = true;
+            this.pinA.DebounceTimeout = TimeSpan.FromMilliseconds(1);
+            this.pinB.DebounceTimeout = TimeSpan.FromMilliseconds(1);
 
-            new Thread(this.Process).Start();
+            this.pinA.ValueChanged += this.PinA_ValueChanged;
+            this.pinB.ValueChanged += this.PinB_ValueChanged;
+
+            this.pinA.ValueChangedEdge = GpioPinEdge.FallingEdge | GpioPinEdge.RisingEdge;
+            this.pinB.ValueChangedEdge = GpioPinEdge.FallingEdge;
         }
-        private void Process() {
-            while (this.run) {
 
-                var valueA = this.pinA.Read() == GpioPinValue.High ? true : false;
-                var valueB = this.pinB.Read() == GpioPinValue.High ? true : false;
 
-                var expired = DateTime.Now + this.timeout;
-                if (valueB == false) {
+        private void PinB_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
+            var valueB = this.pinB.Read() == GpioPinValue.High ? true : false;
 
-                    while (this.pinB.Read() == GpioPinValue.Low) {
-                        if (DateTime.Now >= expired)
-                            goto ignored;
-                    }
+            if (valueB == false)
+                this.timeB = DateTime.Now.Ticks;
+            else
+                this.timeB = 0;
+        }
 
-                    if (this.pinA.Read() == GpioPinValue.Low) {
-                        this.counter++;
+        private void PinA_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
 
-                        OnCounterChangedEvent?.Invoke(this.counter);
-                    }
+            var valueA = this.pinA.Read() == GpioPinValue.High ? true : false;
 
-                    continue;
+            if (this.timeAStart == 0) {
+                if (valueA == true)
+                    return;
 
+                this.timeAStart = DateTime.Now.Ticks;
+            }
+            else if (valueA == false) {
+                this.timeAStart = 0;
+                this.timeAEnd = 0;
+
+                return;
+            }
+            else {
+                this.timeAEnd = DateTime.Now.Ticks;
+
+                if (this.timeB < this.timeAEnd && this.timeB > this.timeAStart) {
+                    this.counter--;
+
+                    OnCounterChangedEvent?.Invoke(this.counter);
+                }
+                else if (this.timeB < this.timeAStart && this.timeB != 0) {
+                    this.counter++;
+
+                    OnCounterChangedEvent?.Invoke(this.counter);
                 }
 
-                if (valueA == false) {
-                    while (this.pinA.Read() == GpioPinValue.Low) {
-                        if (DateTime.Now >= expired)
-                            goto ignored;
-                    }
 
-                    if (this.pinB.Read() == GpioPinValue.Low) {
-                        this.counter--;
-
-                        OnCounterChangedEvent?.Invoke(this.counter);
-                    }
-                }
-
-            ignored:
-                Thread.Sleep(20);
+                this.timeAStart = 0;
+                this.timeAEnd = 0;
             }
         }
-
-        public void Dispose() => this.run = false;
-
         public int Counter => this.counter;
 
     }
