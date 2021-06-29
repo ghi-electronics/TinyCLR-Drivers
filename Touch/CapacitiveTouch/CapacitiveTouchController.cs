@@ -6,8 +6,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Touch.CapacitiveTouch {
     public class CapacitiveTouchController {
         private int level;
         private PulseFeedback pulseFeedback;
-        public double CalibrateMin { get; set; } = 0.008;
-        public double CalibrateMax { get; set; } = 0.015;
+        public double CalibrateMinValue { get; set; } = 0.008;
+        public double CalibrateMaxValue { get; set; } = 0.015;
 
         /// <summary>
         /// Capacitive Touch constructor
@@ -34,7 +34,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Touch.CapacitiveTouch {
         public double RawValue => this.pulseFeedback.Trigger().TotalMilliseconds;
         public bool IsTouched {
             get {
-                var scale = Scale(this.RawValue * 10000, (int)(this.CalibrateMin * 10000), (int)(this.CalibrateMax * 10000), 0, 100);
+                var scale = Scale(this.RawValue * 10000, (int)(this.CalibrateMinValue * 10000), (int)(this.CalibrateMaxValue * 10000), 0, 100);
 
                 if (scale >= this.level)
                     return true;
