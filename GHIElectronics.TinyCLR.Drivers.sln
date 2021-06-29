@@ -45,7 +45,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Azure.SAS", "Azure\GHIElectronics.TinyCLR.Drivers.Azure.SAS.csproj", "{F0F3F037-DC1F-4496-82A7-6D4B9C8FD50B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch", "Touch\GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch.csproj", "{F6472533-5F6B-4EEA-BE7D-BE52D0A5E79A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch", "Touch\ResistiveTouch\GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch.csproj", "{F6472533-5F6B-4EEA-BE7D-BE52D0A5E79A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Infrared", "Infrared\GHIElectronics.TinyCLR.Drivers.Infrared.csproj", "{CA009AF8-232D-4FFE-AD8E-E0058AFA2F8C}"
 EndProject
