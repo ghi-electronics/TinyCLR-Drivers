@@ -31,7 +31,6 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
             else if (this.colorFormat == ColorFormat.OneBpp) {
                 this.buffer = new byte[this.width * this.height / 8];
             }
-
         }
 
         public virtual void Clear() {
@@ -61,7 +60,6 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
             else {
                 throw new Exception("Only 16bpp or 1bpp supported.");
             }
-
         }
         public void DrawLine(uint color, int x0, int y0, int x1, int y1) {
 
@@ -174,15 +172,14 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
         public void DrawString(string text, uint color, int x, int y, int hScale, int vScale) {
             if (hScale == 0 || vScale == 0) throw new ArgumentNullException();
             var originalX = x;
-
             for (var i = 0; i < text.Length; i++) {
                 if (text[i] >= 32) {
                     this.DrawCharacter(text[i], color, x, y, hScale, vScale);
-                    x += (6 * hScale);
+                    x += 6;
                 }
                 else {
                     if (text[i] == '\n') {
-                        y += (9 * vScale);
+                        y += 9;
                         x = originalX;
                     }
                     if (text[i] == '\r')
@@ -195,8 +192,9 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
             var index = 5 * (character - 32);
 
             for (var col = 0; col < 5; col++) {
+                var fontCol = this.mono5x5[index + col];
                 for (var row = 0; row < 5; row++) {
-                    if ((this.mono5x5[index + col] & (1 << (4 - row))) != 0)
+                    if ((fontCol & (1 << (4 - row))) != 0)
                         this.SetPixel(x + row, y + col, color);
                     else
                         if (clear)
@@ -206,36 +204,41 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
             }
         }
         public void DrawCharacter(char character, uint color, int x, int y) => this.DrawCharacter(character, color, x, y, 1, 1);
+
         public void DrawCharacter(char character, uint color, int x, int y, int hScale, int vScale) {
             var index = 5 * (character - 32);
-
-            for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
-                for (var hs = 0; hs < hScale; hs++) {
+            if (hScale != 1 || vScale != 1) {
+                for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
+                    var sx = x + horizontalFontSize;
+                    var fontRow = this.mono8x5[index + horizontalFontSize];
                     for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++) {
-                        for (var vs = 0; vs < vScale; vs++) {
-                            if ((this.mono8x5[index + horizontalFontSize] & (1 << verticleFontSize)) != 0)
-                                this.SetPixel(x + (horizontalFontSize * hScale) + hs, y + (verticleFontSize * vScale) + vs, color);
-                        }
+                        if ((fontRow & (1 << verticleFontSize)) != 0) this.SetPixel(sx, y + verticleFontSize, hScale, vScale, color);
+                    }
+                }
+            }
+            else {
+                for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
+                    var sx = x + horizontalFontSize;
+                    var fontRow = this.mono8x5[index + horizontalFontSize];
+                    for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++) {
+                        if ((fontRow & (1 << verticleFontSize)) != 0) this.SetPixel(sx, y + verticleFontSize, color);
                     }
                 }
             }
         }
 
-        public static uint ColorFromRgb(byte red, byte green, byte blue) => (uint)(red << 16 | green << 8 | blue << 0);
-
-        public void DrawImage(Image img, int x, int y) {
-
-            var index = 0;
-
-            for (var vsize = 0; vsize < img.Height; vsize++) {
-                for (var hsize = 0; hsize < img.Width; hsize++) {
-                    this.SetPixel(x + hsize, y + vsize, img.Data[index]);
-                    index++;
+        private void SetPixel(int x, int y, int hScale, int vScale, uint color) {
+            x *= hScale;
+            y *= vScale;
+            for (var ix = 0; ix < hScale; ix++) {
+                for (var iy = 0; iy < vScale; iy++) {
+                    this.SetPixel(x + ix, y + iy, color);
                 }
             }
         }
 
-
+        public static uint ColorFromRgb(byte red, byte green, byte blue) => (uint)(red << 16 | green << 8 | blue << 0);
+       
         readonly byte[] mono5x5 = new byte[95 * 5] {
             // font from lancaster/microbit
             // each byte is a column
@@ -435,75 +438,5 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
             0x08, 0x08, 0x2a, 0x1c, 0x08  /* ~ */
         };
 
-    }
-    public class Image {
-        public enum Transform {
-            FlipHorizontal,
-            FlipVertical,
-            Rotate90,
-            Rotate180,
-            Rotate270,
-            None
-        }
-        public int Height { get; internal set; }
-        public int Width { get; internal set; }
-        public byte[] Data { get; internal set; }
-
-        public Image(string img, int width, int height) : this(img, width, height, 1, 1, Transform.None) { }
-        public Image(string img, int width, int height, int hScale, int vScale, Transform transform) {
-            var data = Encoding.UTF8.GetBytes(img);
-
-            for (var x = 0; x < data.Length; x++) {
-                if (data[x] == ' ') {
-                    data[x] = 0;
-                }
-            }
-
-            this.CreateImage(data, width, height, hScale, vScale, transform);
-        }
-        public Image(byte[] data, int width, int height) : this(data, width, height, 1, 1, Transform.None) { }
-
-        public Image(byte[] data, int width, int height, int hScale, int vScale, Transform transform) => this.CreateImage(data, width, height, hScale, vScale, transform);
-
-        private void CreateImage(byte[] data, int width, int height, int hScale, int vScale, Transform transform) {
-
-            if (width * height != data.Length) throw new Exception("Incorrect image data size");
-
-            this.Height = height * vScale;
-            this.Width = width * hScale;
-
-            this.Data = new byte[this.Width * this.Height];
-
-            for (var x = 0; x < this.Width; x++) {
-                for (var y = 0; y < this.Height; y++) {
-                    switch (transform) {
-                        case Transform.None:
-                            this.Data[y * this.Width + x] = data[y / vScale * width + x / hScale];
-                            break;
-                        case Transform.FlipHorizontal:
-                            this.Data[y * this.Width + (this.Width - x - 1)] = data[y / vScale * width + x / hScale];
-                            break;
-                        case Transform.FlipVertical:
-                            this.Data[(this.Height - y - 1) * this.Width + x] = data[y / vScale * width + x / hScale];
-                            break;
-                        case Transform.Rotate90:
-                            this.Data[x * this.Height + this.Height - y - 1] = data[y / vScale * width + x / hScale];
-                            break;
-                        case Transform.Rotate180:
-                            this.Data[(this.Height - y - 1) * this.Width + (this.Width - x - 1)] = data[y / vScale * width + x / hScale];
-                            break;
-                        case Transform.Rotate270:
-
-                            this.Data[(this.Width - x - 1) * this.Height + y] = data[y / vScale * width + x / hScale];
-                            break;
-                    }
-                }
-            }
-            if (transform == Transform.Rotate90 || transform == Transform.Rotate270) {
-                var temp = this.Width;
-                this.Width = this.Height;
-                this.Height = temp;
-            }
-        }
-    }
+    }    
 }
