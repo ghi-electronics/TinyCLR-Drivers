@@ -81,6 +81,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Encoder", "Encoder\GHIElectronics.TinyCLR.Drivers.Encoder.csproj", "{826F2BEA-28F6-46F9-AA7B-9E853551DF24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx", "Microchip\Mcp23xxx\GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx\GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.csproj", "{4DAE42D1-9BE6-47A5-93C1-4347A06746D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -243,6 +245,10 @@ Global
 		{826F2BEA-28F6-46F9-AA7B-9E853551DF24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{826F2BEA-28F6-46F9-AA7B-9E853551DF24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{826F2BEA-28F6-46F9-AA7B-9E853551DF24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DAE42D1-9BE6-47A5-93C1-4347A06746D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DAE42D1-9BE6-47A5-93C1-4347A06746D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DAE42D1-9BE6-47A5-93C1-4347A06746D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DAE42D1-9BE6-47A5-93C1-4347A06746D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
