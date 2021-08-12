@@ -47,7 +47,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 				foreach (var interrupt in this._interrupts)
 				{
 					// clean but a hack to ensure only 1 subscribed event handler.
-					// Not too concerned missing an interrupt as this should be done once on initialization and only removed if all pins closed? ToDo add capability to remove handler after all pins released
+					// Not too concerned missing an interrupt as this should be done once on initialization and only removed if all pins closed? ToDo add capability to remove handler after all pins released?
 					interrupt.PinChange -= value;
 					interrupt.PinChange += value;
 				}

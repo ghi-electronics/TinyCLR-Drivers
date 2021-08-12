@@ -72,6 +72,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Device
 
 		#region Implementation of IDisposable
 
+		// ToDo implement Dispose
 		public void Dispose()
 		{
 			throw new NotImplementedException();

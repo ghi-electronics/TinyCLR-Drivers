@@ -8,9 +8,9 @@ using GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Core;
 #pragma warning disable IDE1006 // Naming Styles
 
 
-// ToDo test
-// To keep consistency between devices Gpio only is used.  Ass Active driver devices, x08/x17,
-// do not have the ability to clear the interrupts by reading Interrupt capture register even though that appears more reliable.
+// ToDo INTCC workaround
+// To keep consistency between devices Gpio only is used.  As Active driver devices, x08/x17 both do not have
+// the ability to clear the interrupts by reading Interrupt capture register even though that appears more reliable.
 namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 {
 	internal class InterruptCore
@@ -155,7 +155,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 			}
 		}
 
-		// Bug: has threw twice due to reading IntF = 0xFF even though only one interrupt bit was enabled. Impossible. Both times device was being handled, ESD error? probably not.
+		// Bug: has threw twice due to reading IntF = 0xFF even though only one interrupt bit was enabled, which is not possible
+		// Both times device was being handled, ESD error? probably not.
 		/// <summary>
 		/// Called from upon port change interrupt
 		/// </summary>
