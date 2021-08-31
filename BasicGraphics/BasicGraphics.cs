@@ -175,11 +175,11 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
             for (var i = 0; i < text.Length; i++) {
                 if (text[i] >= 32) {
                     this.DrawCharacter(text[i], color, x, y, hScale, vScale);
-                    x += 6;
+                    x += (6 * hScale);
                 }
                 else {
                     if (text[i] == '\n') {
-                        y += 9;
+                        y += (9 * vScale);
                         x = originalX;
                     }
                     if (text[i] == '\r')
@@ -207,12 +207,15 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
 
         public void DrawCharacter(char character, uint color, int x, int y, int hScale, int vScale) {
             var index = 5 * (character - 32);
-            if (hScale != 1 || vScale != 1) {
+            if (hScale != 1 || vScale != 1) {               
                 for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
-                    var sx = x + horizontalFontSize;
-                    var fontRow = this.mono8x5[index + horizontalFontSize];
-                    for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++) {
-                        if ((fontRow & (1 << verticleFontSize)) != 0) this.SetPixel(sx, y + verticleFontSize, hScale, vScale, color);
+                    for (var hs = 0; hs < hScale; hs++) {
+                        for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++) {
+                            for (var vs = 0; vs < vScale; vs++) {
+                                if ((this.mono8x5[index + horizontalFontSize] & (1 << verticleFontSize)) != 0)
+                                    this.SetPixel(x + (horizontalFontSize * hScale) + hs, y + (verticleFontSize * vScale) + vs, color);
+                            }
+                        }
                     }
                 }
             }
@@ -226,17 +229,7 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
                 }
             }
         }
-
-        private void SetPixel(int x, int y, int hScale, int vScale, uint color) {
-            x *= hScale;
-            y *= vScale;
-            for (var ix = 0; ix < hScale; ix++) {
-                for (var iy = 0; iy < vScale; iy++) {
-                    this.SetPixel(x + ix, y + iy, color);
-                }
-            }
-        }
-
+      
         public static uint ColorFromRgb(byte red, byte green, byte blue) => (uint)(red << 16 | green << 8 | blue << 0);
        
         readonly byte[] mono5x5 = new byte[95 * 5] {
