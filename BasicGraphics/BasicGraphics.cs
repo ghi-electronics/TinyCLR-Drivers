@@ -40,15 +40,7 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
         public virtual void SetPixel(int x, int y, uint color) {
             if (x < 0 || y < 0 || x >= this.width || y >= this.height) return;
 
-            if (this.colorFormat == ColorFormat.Rgb565) {
-                var index = (y * this.width + x) * 2;
-                var clr = color;
-
-                this.buffer[index + 0] = (byte)(((clr & 0b0000_0000_0000_0000_0001_1100_0000_0000) >> 5) | ((clr & 0b0000_0000_0000_0000_0000_0000_1111_1000) >> 3));
-                this.buffer[index + 1] = (byte)(((clr & 0b0000_0000_1111_1000_0000_0000_0000_0000) >> 16) | ((clr & 0b0000_0000_0000_0000_1110_0000_0000_0000) >> 13));
-
-            }
-            else if (this.colorFormat == ColorFormat.OneBpp) {
+            if (this.colorFormat == ColorFormat.OneBpp) {
                 var index = (y >> 3) * this.width + x;
                 if (color != 0) {
                     this.buffer[index] |= (byte)(1 << (y & 7));
@@ -56,6 +48,14 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
                 else {
                     this.buffer[index] &= (byte)(~(1 << (y & 7)));
                 }
+            }
+            else if (this.colorFormat == ColorFormat.Rgb565) {
+                var index = (y * this.width + x) * 2;
+                var clr = color;
+
+                this.buffer[index + 0] = (byte)(((clr & 0b0000_0000_0000_0000_0001_1100_0000_0000) >> 5) | ((clr & 0b0000_0000_0000_0000_0000_0000_1111_1000) >> 3));
+                this.buffer[index + 1] = (byte)(((clr & 0b0000_0000_1111_1000_0000_0000_0000_0000) >> 16) | ((clr & 0b0000_0000_0000_0000_1110_0000_0000_0000) >> 13));
+
             }
             else {
                 throw new Exception("Only 16bpp or 1bpp supported.");
@@ -207,7 +207,7 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
 
         public void DrawCharacter(char character, uint color, int x, int y, int hScale, int vScale) {
             var index = 5 * (character - 32);
-            if (hScale != 1 || vScale != 1) {               
+            if (hScale != 1 || vScale != 1) {
                 for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
                     for (var hs = 0; hs < hScale; hs++) {
                         for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++) {
@@ -229,9 +229,9 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
                 }
             }
         }
-      
+
         public static uint ColorFromRgb(byte red, byte green, byte blue) => (uint)(red << 16 | green << 8 | blue << 0);
-       
+
         readonly byte[] mono5x5 = new byte[95 * 5] {
             // font from lancaster/microbit
             // each byte is a column
@@ -431,5 +431,5 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
             0x08, 0x08, 0x2a, 0x1c, 0x08  /* ~ */
         };
 
-    }    
+    }
 }
