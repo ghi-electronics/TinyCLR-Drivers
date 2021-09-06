@@ -83,6 +83,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx", "Microchip\Mcp23xxx\GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx\GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.csproj", "{4DAE42D1-9BE6-47A5-93C1-4347A06746D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.MemoryManager", "MemoryManager\GHIElectronics.TinyCLR.Drivers.MemoryManager\GHIElectronics.TinyCLR.Drivers.MemoryManager.csproj", "{D21B4747-8955-4D13-AC38-8F7C6840F5ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -249,6 +251,10 @@ Global
 		{4DAE42D1-9BE6-47A5-93C1-4347A06746D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DAE42D1-9BE6-47A5-93C1-4347A06746D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DAE42D1-9BE6-47A5-93C1-4347A06746D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D21B4747-8955-4D13-AC38-8F7C6840F5ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D21B4747-8955-4D13-AC38-8F7C6840F5ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D21B4747-8955-4D13-AC38-8F7C6840F5ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D21B4747-8955-4D13-AC38-8F7C6840F5ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
