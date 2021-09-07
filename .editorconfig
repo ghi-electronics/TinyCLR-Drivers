@@ -6,6 +6,10 @@ end_of_line = crlf
 charset = utf-8
 trim_trailing_whitespace = true
 
+# Microsoft .NET properties
+csharp_indent_braces = false
+csharp_new_line_before_open_brace = all
+
 [*.{cs,csx,vb,vbx}]
 indent_size = 4
 insert_final_newline = true

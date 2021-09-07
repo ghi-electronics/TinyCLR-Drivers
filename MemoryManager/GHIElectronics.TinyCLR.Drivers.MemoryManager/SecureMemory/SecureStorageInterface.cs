@@ -1,21 +1,26 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Text;
 using GHIElectronics.TinyCLR.Devices.SecureStorage;
 
+// ReSharper disable TooWideLocalVariableScope
 // ReSharper disable InconsistentNaming
 // ReSharper disable ArrangeThisQualifier
+
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable IDE0009 // Member access should be qualified.
 
 
 namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
 {
-    public class SecureStorageInterface : MemoryInterfaceBase, IMemoryInterface {
+    public class SecureStorageInterface : MemoryInterfaceBase, IMemoryInterface
+    {
         private readonly uint _blockCount;
         private readonly SecureStorageController _secureStorageController;
 
-        public SecureStorageInterface(SecureStorageController secureStorageController) {
+        public SecureStorageInterface(SecureStorageController secureStorageController)
+        {
             _secureStorageController = secureStorageController;
             _blockCount = _secureStorageController.TotalSize / _secureStorageController.BlockSize; // 256
 
@@ -30,43 +35,46 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
         /// <summary>
         /// Get structure of available data
         /// </summary>
-        /// <returns> Structure of available data</returns>
-        /// <exception cref="InvalidOperationException"> Thrown when a block of memory can't be read. </exception>
-        Hashtable IMemoryInterface.Deserialize(out uint usedMemory) {
-            var data = new Hashtable();
+        /// <returns> Structure of available data </returns>
+        bool IMemoryInterface.Deserialize(out Hashtable data, out uint usedMemory)
+        {
+            data = new Hashtable();
             object count = (ushort)0;
+            usedMemory = ((IMemoryInterface)this).Size; // assume full if memory is corrupt and cant be read
+
+            // optimize by moving outside of loop (interpreter will not do this)
+            var read = new byte[_secureStorageController.BlockSize];
 
             // seek data
             for (var blockIndex = (int)(_blockCount - 1); blockIndex >= 0; blockIndex--) // 255 -> 0
             {
-                var read = new byte[_secureStorageController.BlockSize];
+                if (_secureStorageController.Read((uint)blockIndex, read) == _secureStorageController.BlockSize && BitConverter.ToUInt16(Sentinel, 0) == BitConverter.ToUInt16(read, 0))
+                {
+                    if (!Read((int)(blockIndex * _secureStorageController.BlockSize), out var dataBuffer))
+                        return false;
 
-                // bad block
-                if (_secureStorageController.Read((uint)blockIndex, read) != _secureStorageController.BlockSize)
-                    throw new InvalidOperationException($"{nameof(IMemoryInterface.Deserialize)} platform read failed"); // ToDo? retry? throw? move on?
-
-                if (BitConverter.ToUInt16(Sentinel, 0) == BitConverter.ToUInt16(read, 0) && Read((int)(blockIndex * _secureStorageController.BlockSize), out var dataBuffer)) {
                     while ((ushort)count < dataBuffer.Length)
                         data.Add(dataBuffer[(ushort)count], Decode(dataBuffer, ref count));
 
                     usedMemory = (ushort)count > 0 ? (uint)(Sentinel.Length + DataCountSize + dataBuffer.Length + CrcSize) : 0;
-                    return data;
+                    break;
                 }
             }
 
-            usedMemory = (ushort)count;
-            return data;
+            return true;
         }
 
         /// <summary>
         /// Serialize and write to memory
         /// </summary>
         /// <param name="data"> Data structure to serialize </param>
-        /// <returns> True if resulting <see cref="data"/> was serialized and written to memory</returns>
-        bool IMemoryInterface.Serialize(Hashtable data) {
+        /// <returns> True if resulting <see cref="data"/> was serialized and written to memory </returns>
+        bool IMemoryInterface.Serialize(Hashtable data)
+        {
             ushort dataCount = 0;
             var values = new ArrayList();
-            foreach (DictionaryEntry entry in data) {
+            foreach (DictionaryEntry entry in data)
+            {
                 dataCount += Encode(entry, out var output);
                 values.Add(output);
             }
@@ -76,7 +84,8 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
                 dataCount += CrcSize; // if any data add size of crc to count
 
             // too large for memory
-            if (dataCount > ((IMemoryInterface)this).Size - (Sentinel.Length - 1 + DataCountSize)) // lost capacity from not wrapping sentinel
+            var size = ((IMemoryInterface)this).Size;
+            if (dataCount > size - (Sentinel.Length - 1 + DataCountSize)) // lost capacity from not wrapping header
                 return false;
 
             var headerSize = Sentinel.Length + DataCountSize;
@@ -85,9 +94,13 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
             var count = BitConverter.GetBytes(dataCount);
             Array.Copy(count, 0, encoded, Sentinel.Length, count.Length);
 
+            // optimize by moving outside of loop (interpreter will not do this)
+            byte[] bytes;
+
             var runningDataCount = headerSize;
-            foreach (var value in values) {
-                var bytes = (byte[])value;
+            foreach (var value in values)
+            {
+                bytes = (byte[])value;
                 Array.Copy(bytes, 0, encoded, runningDataCount, bytes.Length);
                 runningDataCount += bytes.Length;
             }
@@ -99,17 +112,17 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
             var crc = BitConverter.GetBytes(Crc.ComputeHash(encoded, headerSize, encoded.Length - (headerSize + CrcSize)));
             Array.Copy(crc, 0, encoded, encoded.Length - CrcSize, crc.Length);
 
-            return ((IMemoryInterface)this).Size >= encoded.Length && Write(encoded);
+            return size >= encoded.Length && Write(encoded);
         }
 
-        /// <summary> Get entire memory area </summary>
+        /// <summary> See entire memory area </summary>
         /// <remarks> For debugging </remarks>
-        /// <returns> Entire memory area</returns>
-        void IMemoryInterface.Dump() {
-            var sb = Dump();
-
+        void IMemoryInterface.Dump(StringBuilder sb)
+        {
+            sb = Dump(sb);
             var block = new byte[_secureStorageController.BlockSize];
-            for (uint i = 0; i < _blockCount; i++) {
+            for (uint i = 0; i < _blockCount; i++)
+            {
                 _secureStorageController.Read(i, block);
                 sb.Append($"{i,0x03:x2}| ");
                 for (var @byte = 0; @byte < 32; @byte++)
@@ -128,9 +141,10 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
         ///  </summary>
         /// <remarks> Points to frame start </remarks>
         ///  <param name="index"> Index of start of data frame in overall memory map</param>
-        ///  <param name="data"></param>
-        ///  <returns> True if memory is read successfully </returns>
-        private bool Read(int index, out byte[] data) {
+        ///  <param name="data"> Read data </param>
+        ///  <returns> True if data is read successfully </returns>
+        private bool Read(int index, out byte[] data)
+        {
             var blockIndex = GetBlockIndex(index);
             var byteIndex = GetByteIndex(index);
 
@@ -138,7 +152,8 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
 
             // move index to count, get count
             //byteIndex += Sentinel.Length;
-            if ((byteIndex += Sentinel.Length) >= _secureStorageController.BlockSize) {
+            if ((byteIndex += Sentinel.Length) >= _secureStorageController.BlockSize)
+            {
                 ++blockIndex;
                 byteIndex = 0;
             }
@@ -156,8 +171,8 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
             var buffer = new byte[dataCount];
 
             // move index to data
-            //byteIndex += DataCountSize;
-            if ((byteIndex += DataCountSize) >= _secureStorageController.BlockSize) {
+            if ((byteIndex += DataCountSize) >= _secureStorageController.BlockSize)
+            {
                 ++blockIndex;
                 byteIndex = 0;
             }
@@ -165,10 +180,16 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
             // gather data
             var remainingCount = (int)dataCount;
             var destinationIndex = 0;
-            while (remainingCount > 0) {
-                _secureStorageController.Read((uint)blockIndex, read); // ToDo check this?
-                var segmentLength = (int)(_secureStorageController.BlockSize - byteIndex);
-                var length = remainingCount < segmentLength ? remainingCount : segmentLength;
+
+            // optimize by moving outside of loop (interpreter will not do this)
+            int segmentLength;
+            int length;
+
+            while (remainingCount > 0)
+            {
+                _secureStorageController.Read((uint)blockIndex, read);
+                segmentLength = (int)(_secureStorageController.BlockSize - byteIndex);
+                length = remainingCount < segmentLength ? remainingCount : segmentLength;
                 Array.Copy(read, byteIndex, buffer, destinationIndex, length);
                 remainingCount -= length;
                 destinationIndex += length;
@@ -176,7 +197,8 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
                 byteIndex = 0;
             }
 
-            if (dataCount > 0) {
+            if (dataCount > 0)
+            {
                 var dataSize = buffer.Length - CrcSize;
                 data = new byte[dataSize];
                 Array.Copy(buffer, 0, data, 0, data.Length);
@@ -189,30 +211,33 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
         }
 
         /// <summary>
-        /// Write entire 1 full data frame (Sentinel to CRC) to memory, while maximizing wear leveling.<para />
+        /// Write 1 full data frame (Sentinel to CRC) to memory<para />
         /// Api limits writing to each block only once until erased, therefore all writes start at block index 0
         /// </summary>
-        /// <param name="data"> Full data frame (Sentinel to CRC) </param>
-        /// <returns> True if data was verified to be written at least once </returns>
-        /// <exception cref="InvalidOperationException"> Thrown when a block of memory cant be read. </exception>
         /// <remarks> Memory read in order to find end of data </remarks>
-        private bool Write(byte[] data) {
+        /// <param name="data"> Full data frame </param>
+        /// <returns> True if data was verified to be written at least once </returns>
+        /// <exception cref="ArgumentNullException"> Thrown if <see cref="data"/> is null </exception>
+        private bool Write(byte[] data)
+        {
             if (data == null) throw new ArgumentNullException(nameof(data));
             var index = -1;
+
+            // optimize by moving outside of loop (interpreter will not do this)
+            var read = new byte[_secureStorageController.BlockSize];
 
             // seek data end
             for (var blockIndex = (int)(_blockCount - 1); blockIndex >= 0; blockIndex--) // 255 -> 0
             {
-                var read = new byte[_secureStorageController.BlockSize];
-
                 // bad block
                 if (_secureStorageController.Read((uint)blockIndex, read) != _secureStorageController.BlockSize)
-                    throw new InvalidOperationException($"{nameof(Write)} platform read failed"); // ToDo? retry? throw? move on?
+                    return false;
 
                 var empty = true;
                 for (var byteIndex = (int)_secureStorageController.BlockSize - 1; byteIndex >= 0; byteIndex--) // 31 -> 0
                 {
-                    if (read[byteIndex] != 0xff) {
+                    if (read[byteIndex] != 0xff)
+                    {
                         index = (int)(++blockIndex * _secureStorageController.BlockSize); // secure storage blocks can only be written to once before requiring to be erased so go to next block
                         empty = false;
                         break;
@@ -231,32 +256,40 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
             var full = index >= _secureStorageController.TotalSize;
             var free = (int)_secureStorageController.TotalSize - index;
             var needed = data.Length;
-            if (full || needed > free) {
+            if (full || needed > free)
+            {
                 Erase();
                 index = 0;
             }
 
             // write and validate
-            return CoreWrite(data, index, out var wrote) && Read(index, out _);
+            return this.CoreWrite(data, index) && Read(index, out _);
         }
 
-        /// <summary>  Write entire 1 full or partial block to memory  </summary>
-        ///<remarks> Expects 1 full frame (Sentinel+Count+Data+Crc) </remarks>
-        /// <param name="data"> Full or partial block of memory to write</param>
+        /// <summary> Write entire 1 full or partial block to memory </summary>
+        /// <remarks> Expects 1 full frame (Sentinel+Count+Data+Crc) </remarks>
+        /// <param name="data"> Full or partial block of memory to write </param>
         /// <param name="index"> Start index </param>
-        /// <param name="count"> Bytes written </param>
-        /// <returns> True if resulting <see cref="count"/> = <see cref="data"/> length </returns>
-        private bool CoreWrite(byte[] data, int index, out int count) {
+        /// <exception cref="ArgumentNullException"> Thrown if <see cref="data"/> is null </exception>
+        private bool CoreWrite(byte[] data, int index)
+        {
             if (data == null) throw new ArgumentNullException(nameof(data));
             var writeBuffer = new byte[_secureStorageController.BlockSize];
             var remainingLength = data.Length;
-            count = 0;
+            var count = 0;
 
-            while (remainingLength > 0) {
-                var blockIndex = GetBlockIndex(index);
-                var byteIndex = GetByteIndex(index);
-                var remainingBlockLength = (int)(_secureStorageController.BlockSize - byteIndex);
-                var writeLength = remainingLength < remainingBlockLength ? remainingLength : remainingBlockLength;
+            // optimize by moving outside of loop (interpreter will not do this)
+            int blockIndex;
+            int byteIndex;
+            int remainingBlockLength;
+            int writeLength;
+
+            while (remainingLength > 0)
+            {
+                blockIndex = GetBlockIndex(index);
+                byteIndex = GetByteIndex(index);
+                remainingBlockLength = (int)(_secureStorageController.BlockSize - byteIndex);
+                writeLength = remainingLength < remainingBlockLength ? remainingLength : remainingBlockLength;
 
                 // empty, set, write
                 for (var i = 0; i < _secureStorageController.BlockSize; i++)
@@ -277,7 +310,8 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
         }
 
         /// <summary> Erase Entire memory area if not already blank </summary>
-        private void Erase() {
+        private void Erase()
+        {
             if (!IsAllBlank())
                 _secureStorageController.Erase();
         }
@@ -286,7 +320,8 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager.SecureMemory
         /// Check entire memory area is blank (erased)
         /// </summary>
         /// <returns></returns>
-        private bool IsAllBlank() {
+        private bool IsAllBlank()
+        {
             for (uint block = 0; block < _blockCount; block++)
                 if (!_secureStorageController.IsBlank(block))
                     return false;
