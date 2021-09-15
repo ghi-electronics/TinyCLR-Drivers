@@ -57,16 +57,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0 {
 
         public static bool FirmwareUpdate(byte[] buffer) => FirmwareUpdate(buffer, 0, buffer.Length);
 
-        public static bool FirmwareUpdate(byte[] buffer, int offset, int count) {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
-            if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (offset + count > buffer.Length) throw new ArgumentOutOfRangeException(nameof(buffer));
-
-            TurnOn();
-
-            return NativeFirmwareUpdate(buffer, offset, count);
-        }
+        public static bool FirmwareUpdate(byte[] buffer, int offset, int count) => throw new Exception("Not supported.");
 
         public static byte[] GetMacAddress() {
             var macAddress = new byte[6];
