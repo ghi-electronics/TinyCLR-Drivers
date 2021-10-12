@@ -21,7 +21,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Io
 		}
 
 		internal GpioPinValue ReadPin(byte pin) => this._mcp23Core.ReadBit(ControlRegister.GpIo, this._port, pin) ? GpioPinValue.High : GpioPinValue.Low;
-		internal void WritePin(byte pin, GpioPinValue value) => this._mcp23Core.WriteBit(ControlRegister.GpIo, this._port, pin, value);
+		//internal void WritePin(byte pin, GpioPinValue value) => this._mcp23Core.WriteBit(ControlRegister.GpIo, this._port, pin, value);
+		internal void WritePin(byte pin, GpioPinValue value) => this._mcp23Core.WriteBit(ControlRegister.OLat, this._port, pin, value);
 
 		internal void SetPinMode(byte pin, Mcp23Core.PinMode mode) => this._mcp23Core.WriteBit(ControlRegister.IoDir, this._port, pin, mode);
 		internal Mcp23Core.PinMode GetPinMode(byte pin) => (Mcp23Core.PinMode)this._mcp23Core.ReadBitValue(ControlRegister.IoDir, this._port, pin);

@@ -42,21 +42,21 @@
     <Compile Include="SecureMemory\SecureStorageInterface.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Reference Include="GHIElectronics.TinyCLR.Cryptography">
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Cryptography\bin\Debug\GHIElectronics.TinyCLR.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Rtc">
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Devices.Rtc\bin\Debug\GHIElectronics.TinyCLR.Devices.Rtc.dll</HintPath>
+    </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.SecureStorage">
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Devices.SecureStorage\bin\Debug\GHIElectronics.TinyCLR.Devices.SecureStorage.dll</HintPath>
+    </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Native">
+      <HintPath>..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Native\bin\Debug\GHIElectronics.TinyCLR.Native.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Cryptography, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Cryptography.2.1.0\lib\net452\GHIElectronics.TinyCLR.Cryptography.dll</HintPath>
-    </Reference>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Rtc, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Rtc.2.1.0\lib\net452\GHIElectronics.TinyCLR.Devices.Rtc.dll</HintPath>
-    </Reference>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.SecureStorage, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.SecureStorage.2.1.0\lib\net452\GHIElectronics.TinyCLR.Devices.SecureStorage.dll</HintPath>
-    </Reference>
-    <Reference Include="GHIElectronics.TinyCLR.Native, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Native.2.1.0\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
-    </Reference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

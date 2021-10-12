@@ -13,15 +13,11 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager
     {
         private readonly IMemoryInterface _memoryInterface;
 
-        /// <summary>
-        /// Instantiate a new copy of the <see cref="MemoryManager"/>
-        /// </summary>
+        /// <summary> Instantiate a new copy of the <see cref="MemoryManager"/> </summary>
         /// <param name="memoryInterface"></param>
         public MemoryManager(IMemoryInterface memoryInterface) => _memoryInterface = memoryInterface;
 
-        /// <summary>
-        /// Recall a value
-        /// </summary>
+        /// <summary> Recall a value </summary>
         /// <param name="key"> Item to recall </param>
         /// <param name="value"> Value of item </param>
         /// <returns> True if item was found </returns>
@@ -37,9 +33,7 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager
             return false;
         }
 
-        /// <summary>
-        /// Adds or Replaces a value in the secure memory manager
-        /// </summary>
+        /// <summary> Adds or Replaces a value in the secure memory manager </summary>
         /// <param name="key"> Item to remove or replace </param>
         /// <param name="value"> Value of item </param>
         /// <returns> True if item was added or replaced </returns>
@@ -56,9 +50,7 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager
             return _memoryInterface.Serialize(data);
         }
 
-        /// <summary>
-        /// Remove a value from the secure memory manager
-        /// </summary>
+        /// <summary> Remove a value from the secure memory manager </summary>
         /// <param name="key"> Item to remove </param>
         /// <returns> True if item was found and removed </returns>
         public bool Remove(byte key)
@@ -73,9 +65,7 @@ namespace GHIElectronics.TinyCLR.Drivers.MemoryManager
             return false;
         }
 
-        /// <summary>
-        /// Retrieve the size of free memory
-        /// </summary>
+        /// <summary> Retrieve the size of free memory </summary>
         /// <returns> Free memory in bytes</returns>
         public uint Free()
         {

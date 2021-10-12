@@ -54,9 +54,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio">
       <HintPath>..\..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Devices.Gpio\bin\Debug\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
     </Reference>
@@ -66,9 +63,12 @@
     <Reference Include="GHIElectronics.TinyCLR.Devices.Spi">
       <HintPath>..\..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Devices.Spi\bin\Debug\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
     </Reference>
-    <Reference Include="GHIElectronics.TinyCLR.Native, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\GHIElectronics.TinyCLR.Native.2.1.0\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
+    <Reference Include="GHIElectronics.TinyCLR.Native">
+      <HintPath>..\..\..\..\TinyCLR-Libraries\GHIElectronics.TinyCLR.Native\bin\Debug\GHIElectronics.TinyCLR.Native.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
