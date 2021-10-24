@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 	{
 		private readonly InterruptCore[] _interrupts;
 
-		internal Mcp23Interrupt(Mcp23Core mcp23Core, int portCount, GpioPin interruptInputPin, InterruptDriveMode interruptDriveMode = default, GpioPinValue interruptPolarity = default)
+		internal Mcp23Interrupt(Mcp23Core mcp23Core, int portCount, GpioPin interruptInputPin, InterruptDriveMode interruptDriveMode = InterruptDriveMode.OpenDrain, GpioPinValue interruptPolarity = default)
 		{
 			if (mcp23Core is null)
 				throw new ArgumentNullException(nameof(mcp23Core), $"{nameof(mcp23Core)} cannot be null");
@@ -21,18 +21,29 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 			if (interruptInputPin is null)
 				throw new ArgumentNullException(nameof(interruptInputPin), "Assigned interrupt pin must be initialize to utilize the IO expander interrupt function");
 
+			// ToDo remove options to control interrupt drive properties?
 			mcp23Core.WriteBit(ControlRegister.IoCon, default, (byte)ConfigurationBit.ODr, interruptDriveMode); // Set Interrupt Drive Mode
-			mcp23Core.WriteBit(ControlRegister.IoCon, default, (byte)ConfigurationBit.IntPol, interruptPolarity); // Set Active Interrupt Polarity
-			// ToDo INTCC workaround
-			//mcp23Core.WriteBit(ControlRegister.IoCon, default, (byte)ConfigurationBit.IntCC, InterruptClearRegister.IntCap); // Set Interrupt Flag Clear Control
-			mcp23Core.WriteBit(ControlRegister.IoCon, default, (byte)ConfigurationBit.IntCC, InterruptClearRegister.Gpio); // Set Interrupt Flag Clear Control
+			if (interruptDriveMode == InterruptDriveMode.OpenDrain)
+			{
+				interruptInputPin.SetDriveMode(GpioPinDriveMode.InputPullUp);
+				interruptInputPin.ValueChangedEdge = GpioPinEdge.FallingEdge;
+			}
+			else
+			{
+				interruptInputPin.SetDriveMode(GpioPinDriveMode.Input);
+				mcp23Core.WriteBit(ControlRegister.IoCon, default, (byte)ConfigurationBit.IntPol, interruptPolarity); // Set Active Interrupt Polarity, no need if Drive Mode Open Drain
+				interruptInputPin.ValueChangedEdge = interruptPolarity == GpioPinValue.High ? GpioPinEdge.RisingEdge : GpioPinEdge.FallingEdge;
+			}
+
+			interruptInputPin.DebounceTimeout = TimeSpan.FromMilliseconds(0); // needed as default is set to 20ms
+
+			mcp23Core.WriteBit(ControlRegister.IoCon, default, (byte)ConfigurationBit.IntCC, InterruptClearRegister.IntCap); // Set Interrupt Flag Clear Control
 			mcp23Core.WriteBit(ControlRegister.IoCon, default, (byte)ConfigurationBit.Mirror, true); // mirror interrupts allows use of either or interrupt pin
 
 			this._interrupts = new InterruptCore[portCount];
 			for (var p = 0; p < portCount; p++)
 				this._interrupts[p] = new InterruptCore(mcp23Core, (Mcp23Core.Port)p);
 
-			interruptInputPin.ValueChangedEdge = interruptPolarity == GpioPinValue.High ? GpioPinEdge.RisingEdge : GpioPinEdge.FallingEdge;
 			interruptInputPin.ValueChanged += (_, _) =>
 			{
 				foreach (var interrupt in this._interrupts)
@@ -65,10 +76,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 			OpenDrain,
 		}
 
-		/// <summary>
-		/// To keep consistency between devices Gpio only is used.  Ass Active driver devices, x08/x17,
-		/// do not have the ability to clear the interrupts by reading Interrupt capture register even though that appears more reliable.
-		/// </summary>
 		private enum InterruptClearRegister
 		{
 			Gpio,
