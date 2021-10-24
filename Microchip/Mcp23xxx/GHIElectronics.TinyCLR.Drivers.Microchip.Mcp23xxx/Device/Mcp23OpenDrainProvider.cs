@@ -6,8 +6,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Device
 {
 	internal class Mcp23OpenDrainProvider : Mcp23GpioProviderBase
 	{
-		internal Mcp23OpenDrainProvider(DeviceSettings deviceSettings, GpioPin reset = null, GpioPin interruptPin = null)
-			: base(deviceSettings, reset, interruptPin) { }
+		internal Mcp23OpenDrainProvider(DeviceSettings deviceSettings, GpioPin reset = null, GpioPin interruptPin = null) : base(deviceSettings, reset, interruptPin) { }
 
 		#region Overrides of Mcp23GpioProviderBase
 

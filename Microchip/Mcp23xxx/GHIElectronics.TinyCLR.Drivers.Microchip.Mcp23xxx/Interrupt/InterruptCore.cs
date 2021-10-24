@@ -1,5 +1,4 @@
 using System;
-
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Core;
@@ -17,16 +16,16 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 		private readonly Mcp23Core.Port _port;
 		private readonly Timer[] _dBounceTimer = new Timer[8];
 		private readonly TimeSpan[] _debounceTimeout = new TimeSpan[8];
-		private byte _intCap, _lastCap;
+		private byte _intCap;
 		private InterruptEventHandler _pinChange;
 		/// <summary>
 		/// work around for devices' funky single edge interrupt mode.
 		/// from spec: "Read GPIO or INTCAP (INT clears only if interrupt condition does not exist.)"
-		/// wtf. need to continuously poll until bit changes back to DEF then clear the flag?
-		/// no reason to use interrupt if need to poll.
+		/// wtf! need to continuously poll until bit changes back to DEF then clear the flag?
+		/// no reason in using interrupts if need to poll.
 		/// see spec FIGURE 1-12:
 		/// </summary>
-		private GpioPinEdge _edge;// = GpioPinEdge.FallingEdge | GpioPinEdge.RisingEdge;
+		private readonly GpioPinEdge[] _edge = new GpioPinEdge[8];
 
 		/// <summary>
 		/// Implements an 8 bit interrupt port
@@ -37,7 +36,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 		{
 			this._mcp23Core = mcp23Core ?? throw new ArgumentNullException(nameof(mcp23Core), "cannot be null");
 			this._port = port;
-			this._intCap = this._lastCap = this._mcp23Core.ReadRegister(ControlRegister.IntCap, this._port); // clear int flags
+			this._intCap = this._mcp23Core.ReadRegister(ControlRegister.IntCap, this._port); // clear int flags
 		}
 
 		internal event InterruptEventHandler PinChange
@@ -69,16 +68,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 		/// <param name="edge">interrupt edge</param>
 		internal void SetPinInterruptMode(byte pin, GpioPinEdge edge)
 		{
-			if (edge == (GpioPinEdge.FallingEdge | GpioPinEdge.RisingEdge)) // both edges
-				this._mcp23Core.WriteBit(ControlRegister.IntCon, this._port, pin, PinChangeCompareValue.Last);
-			else
-			{
-				this._mcp23Core.WriteBit(ControlRegister.IntCon, this._port, pin, PinChangeCompareValue.Default);
-				this._mcp23Core.WriteBit(ControlRegister.DefVal, this._port, pin, edge == GpioPinEdge.FallingEdge ? GpioPinValue.High : GpioPinValue.Low);
-			}
-
-			/*this._edge = edge;
-			this._mcp23Core.WriteBit(ControlRegister.IntCon, this._port, pin, PinChangeCompareValue.Last);*/
+			this._edge[pin] = edge;
+			this._mcp23Core.WriteBit(ControlRegister.IntCon, this._port, pin, PinChangeCompareValue.Last);
 		}
 
 		/// <summary>
@@ -97,30 +88,9 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 					this._dBounceTimer[pin] ??= new Timer(b =>
 					{
 						var bit = (byte)b;
-						var bitMask = (1 << bit);
-						var intCap = this._intCap & bitMask;
-						if ((intCap ^ (this._lastCap & bitMask)) > 0) // if bit changed
-						{
-							var bitValue = intCap > 0 ? GpioPinValue.High : GpioPinValue.Low;
-							this._lastCap = bitValue == GpioPinValue.High ? (byte)(this._lastCap | bitMask) : (byte)(this._lastCap & ~bitMask);
-
-							/*switch (this._edge)
-							{
-								case GpioPinEdge.RisingEdge when bitValue == GpioPinValue.High:
-								case GpioPinEdge.FallingEdge when bitValue == GpioPinValue.Low:
-								case GpioPinEdge.FallingEdge | GpioPinEdge.RisingEdge: // both rising & falling
-									this._pinChange?.Invoke(this, new InterruptEventArgs(this._port, bit, bitValue, DateTime.Now));
-									break;
-							}*/
-
+						if (this.ValidateEdge(bit, out var bitValue))
 							this._pinChange?.Invoke(this, new InterruptEventArgs(this._port, bit, bitValue, DateTime.Now));
-						}
 					}, pin, InfiniteTimeSpan, InfiniteTimeSpan);
-
-					// capture initial value of pin without clearing its or others interrupt flags
-					var gpio = this._mcp23Core.ReadRegister(ControlRegister.GpIo, this._port) & (1 << pin);
-					this._intCap = (byte)(this._intCap | gpio);
-					this._lastCap = (byte)(this._lastCap | gpio);
 
 					this._mcp23Core.WriteBit(ControlRegister.GpIntEn, this._port, pin, true);
 					break;
@@ -136,8 +106,6 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 			}
 		}
 
-		// Bug: has threw twice due to reading IntF = 0xFF even though only one interrupt bit was enabled, which is not possible
-		// Both times device was being handled, ESD error? probably not.
 		/// <summary>
 		/// Called from upon port change interrupt
 		/// </summary>
@@ -146,11 +114,19 @@ namespace GHIElectronics.TinyCLR.Drivers.Microchip.Mcp23xxx.Interrupt
 			var intFlag = this._mcp23Core.ReadRegister(ControlRegister.IntF, this._port);
 			this._intCap = this._mcp23Core.ReadRegister(ControlRegister.IntCap, this._port); // clear int flags
 
-			for (var bit = 0; bit < 8; bit++)
+			for (byte bit = 0; bit < 8; bit++)
 			{
-				if ((intFlag & (1 << bit)) > 0/* && this._dBounceTimer[bit] is not null*/) // if pin caused interrupt then reset its dBounce timer, and avoid above noted Bug ToDo see if this is still valid
-					this._dBounceTimer[bit].Change(this._debounceTimeout[bit], InfiniteTimeSpan);
+				if ((intFlag & (1 << bit)) > 0) // if pin caused interrupt
+					this._dBounceTimer[bit].Change(this.ValidateEdge(bit, out _) ? this._debounceTimeout[bit] : InfiniteTimeSpan, InfiniteTimeSpan);
 			}
+		}
+
+		private bool ValidateEdge(byte bit, out GpioPinValue bitValue)
+		{
+			bitValue = (this._intCap & (1 << bit)) > 0 ? GpioPinValue.High : GpioPinValue.Low;
+			return (this._edge[bit] == GpioPinEdge.RisingEdge && bitValue == GpioPinValue.High)
+				   || (this._edge[bit] == GpioPinEdge.FallingEdge && bitValue == GpioPinValue.Low)
+				   || this._edge[bit] == (GpioPinEdge.FallingEdge | GpioPinEdge.RisingEdge);
 		}
 	}
 }
