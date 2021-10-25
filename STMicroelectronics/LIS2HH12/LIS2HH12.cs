@@ -90,12 +90,14 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12 {
             return readData;
         }
 
-        static double CovertFsToMg(ushort value) => value * 0.061f;
+        static double CovertFsToMg(int value) => value * 0.061f;
 
         private double GetX() {
             var data = this.ReadFromRegister(LIS2HH12_OUT_X_L, 2);
+            var raw = (data[0] << 0) | (data[1] << 8);
 
-            var raw = (ushort)((data[0] << 0) | (data[1] << 8));
+            if (raw > 32767)
+                raw = raw - 65536;
 
             return CovertFsToMg(raw);
         }
@@ -103,15 +105,20 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12 {
         private double GetY() {
             var data = this.ReadFromRegister(LIS2HH12_OUT_Y_L, 2);
 
-            var raw = (ushort)((data[0] << 0) | (data[1] << 8));
+            var raw = (data[0] << 0) | (data[1] << 8);
+
+            if (raw > 32767)
+                raw = raw - 65536;
 
             return CovertFsToMg(raw);
         }
 
         private double GetZ() {
             var data = this.ReadFromRegister(LIS2HH12_OUT_Z_L, 2);
+            var raw = (data[0] << 0) | (data[1] << 8);
 
-            var raw = (ushort)((data[0] << 0) | (data[1] << 8));
+            if (raw > 32767)
+                raw = raw - 65536;
 
             return CovertFsToMg(raw);
         }
