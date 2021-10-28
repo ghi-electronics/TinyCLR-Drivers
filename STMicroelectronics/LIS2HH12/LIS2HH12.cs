@@ -99,7 +99,15 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12 {
             if (raw > 32767)
                 raw = raw - 65536;
 
-            return CovertFsToMg(raw);
+            var ret = CovertFsToMg(raw);
+
+            if (ret > 1024) // overrun
+                ret = 1024;
+
+            if (ret < -1024) // overrun
+                ret = -1024;
+
+            return ret;
         }
 
         private double GetY() {
@@ -110,7 +118,15 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12 {
             if (raw > 32767)
                 raw = raw - 65536;
 
-            return CovertFsToMg(raw);
+            var ret = CovertFsToMg(raw);
+
+            if (ret > 1024) // overrun
+                ret = 1024;
+
+            if (ret < -1024) // overrun
+                ret = -1024;
+
+            return ret;
         }
 
         private double GetZ() {
@@ -120,7 +136,15 @@ namespace GHIElectronics.TinyCLR.Drivers.STMicroelectronics.LIS2HH12 {
             if (raw > 32767)
                 raw = raw - 65536;
 
-            return CovertFsToMg(raw);
+            var ret = CovertFsToMg(raw);
+
+            if (ret > 1024) // overrun
+                ret = 1024;
+
+            if (ret < -1024) // overrun
+                ret = -1024;
+
+            return ret;
         }
     }
 }
