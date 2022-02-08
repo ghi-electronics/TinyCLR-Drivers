@@ -11,6 +11,19 @@ namespace GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch {
         public int Min { get; set; }
         public int Max { get; set; }
     }
+   
+    public class ResistiveTouchSetting {
+        public int ScreenWidth { get; set; }
+        public int ScreenHeight { get; set; }
+        public int YU { get; set; }
+        public int XL { get; set; }
+        public int YD { get; set; }
+        public int XR { get; set; }
+        public string YUAdcControllerId { get; set; }
+        public string XLAdcControllerId { get; set; }
+        public int YUAnalogChannel { get; set; }
+        public int XLAnalogChannel { get; set; }
+    }
 
     public class ResistiveTouchController {
         private readonly int yu;
@@ -21,7 +34,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch {
         private readonly int yuAnalogChannel;
         private readonly int xlAnalogChannel;
 
-        private readonly AdcController adcController;
+        private readonly AdcController yuAdcController;
+        private readonly AdcController xlAdcController;
         private readonly GpioController gpioController;
 
         private readonly int screenWidth;
@@ -36,33 +50,25 @@ namespace GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch {
         public Scale ScaleX { get; set; }
         public Scale ScaleY { get; set; }
 
-        /// <summary>Resistive Touch constructor</summary>
-        /// <param name="screenWidth">Screen size.</param>
-        /// <param name="screenHeight">Screen size.</param>
-        /// <param name="yu">The analog channel on the YU pin.</param>
-        /// <param name="xl">The analog channel on the XL pin.</param>
-        /// <param name="yd">The YD pin.</param>
-        /// <param name="xr">The XR pin.</param>
-        /// <param name="adcControllerId">Adc controller id.</param>
-        /// <param name="yuAnalogChannel">yu analog channel id.</param>
-        /// <param name="xlAnalogChannel">xl analog channel id.</param>
-        public ResistiveTouchController(int screenWidth, int screenHeight, int yu, int xl, int yd, int xr, string adcControllerId, int yuAnalogChannel, int xlAnalogChannel) {
-            this.yu = yu;
-            this.xl = xl;
-            this.yd = yd;
-            this.xr = xr;
+        public ResistiveTouchController(ResistiveTouchSetting setting) {
+            this.yu = setting.YU;
+            this.xl = setting.XL;
+            this.yd = setting.YD;
+            this.xr = setting.XR;
 
-            this.yuAnalogChannel = yuAnalogChannel;
-            this.xlAnalogChannel = xlAnalogChannel;
+            this.yuAnalogChannel = setting.YUAnalogChannel;
+            this.xlAnalogChannel = setting.XLAnalogChannel;
 
-            this.adcController = AdcController.FromName(adcControllerId);
+            this.yuAdcController = AdcController.FromName(setting.YUAdcControllerId);
+            this.xlAdcController = AdcController.FromName(setting.XLAdcControllerId);
+
             this.gpioController = GpioController.GetDefault();
 
-            this.screenWidth = screenWidth;
-            this.screenHeight = screenHeight;
+            this.screenWidth = setting.ScreenWidth;
+            this.screenHeight = setting.ScreenHeight;
 
-            this.ScaleX = new Scale(0, screenWidth);
-            this.ScaleY = new Scale(0, screenHeight);
+            this.ScaleX = new Scale(0, this.screenWidth);
+            this.ScaleY = new Scale(0, this.screenHeight);
 
         }
 
@@ -83,7 +89,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch {
 
             yp.Dispose();
 
-            var analog = this.adcController.OpenChannel(this.yuAnalogChannel);
+            var analog = this.yuAdcController.OpenChannel(this.yuAnalogChannel);
 
             var value = analog.ReadRatio();
 
@@ -116,7 +122,7 @@ namespace GHIElectronics.TinyCLR.Drivers.Touch.ResistiveTouch {
 
             xm.Dispose();
 
-            var analog = this.adcController.OpenChannel(this.xlAnalogChannel);
+            var analog = this.xlAdcController.OpenChannel(this.xlAnalogChannel);
 
             var value = analog.ReadRatio();
 
