@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drivers.MixedSignalIntegrated.MSGEQ7")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
-[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2021")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2022")]
 [assembly: ComVisible(false)]
 [assembly: Guid("6FE7815A-14AD-4D72-9C6A-496201A698DB")]
 [assembly: AssemblyVersion("2.2.0.0")]
