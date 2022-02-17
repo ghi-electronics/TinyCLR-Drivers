@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Drivers.Scania.J1939</id>
-    <version>2.1.0</version>
+    <version>2.2.0-preview2</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -11,12 +11,12 @@
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Scania J1939 driver for TinyCLR OS.</description>
-    <copyright>Copyright GHI Electronics, LLC 2021</copyright>
+    <copyright>Copyright GHI Electronics, LLC 2022</copyright>
     <tags>TinyCLR TinyCLROS J1939</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="2.1.0" />            
-      <dependency id="GHIElectronics.TinyCLR.Devices.Can" version="2.1.0" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="2.1.0" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="2.2.0-preview2" />            
+      <dependency id="GHIElectronics.TinyCLR.Devices.Can" version="2.2.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="2.2.0-preview2" />
     </dependencies>
   </metadata>
   <files>
