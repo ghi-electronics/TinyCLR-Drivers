@@ -32,8 +32,7 @@ namespace GHIElectronics.TinyCLR.Drivers.XModem {
         }
 
         public void Reset() {
-            this.nextPacketNumber = 1;
-            this.crc.Reset();
+            this.nextPacketNumber = 1;            
         }
                 
         public byte[] ReceivePacket(bool sendAck) {
@@ -77,8 +76,6 @@ namespace GHIElectronics.TinyCLR.Drivers.XModem {
 
             receivedCRC = (ushort)((byte)this.stream.ReadByte() << 8);
             receivedCRC |= (ushort)((byte)this.stream.ReadByte() << 0);
-
-            this.crc.Reset();
 
             if (receivedCRC != this.crc.ComputeHash(this.buffer, 0, this.buffer.Length)) {
                 this.Abort();
