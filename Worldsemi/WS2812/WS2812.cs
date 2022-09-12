@@ -26,6 +26,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
             set => this.resetPulse = value.Ticks;
         }
 
+        public bool SwapRGB { get; set; } = false;
+
         public WS2812Controller(GpioPin dataPin, uint numLeds, DataFormat bpp) {
             this.gpioPin = dataPin;
             this.numLeds = numLeds;
@@ -42,6 +44,12 @@ namespace GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812 {
         }
 
         public void SetColor(int index, byte red, byte green, byte blue) {
+            if (this.SwapRGB) {
+                var tmp = red;
+                red = blue;
+                blue = tmp;
+            }
+
             if (this.bpp == DataFormat.rgb888) {
                 this.data[index * 3 + 0] = green;
                 this.data[index * 3 + 1] = red;
