@@ -22,6 +22,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655.dll" target="lib\net48" />
   </files>
 </package>

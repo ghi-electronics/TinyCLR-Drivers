@@ -21,6 +21,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.ShijiLighting.APA102C.dll" target="lib\net48" />
   </files>
 </package>
