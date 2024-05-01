@@ -157,12 +157,29 @@ namespace GHIElectronics.TinyCLR.Drivers.BasicGraphics {
         }
         public void DrawTinyString(string text, uint color, int x, int y) => this.DrawTinyString(text, color, x, y, false);
         public void DrawTinyString(string text, uint color, int x, int y, bool clear) {
-            for (var i = 0; i < text.Length; i++) {
-                this.DrawTinyCharacter(text[i], color, x, y, clear);
-                x += 6;
-                if (clear) {
+            var originalX = x;
+            for (var i = 0; i < text.Length; i++)
+            {
+                if (text[i] >= 32)
+                {
+                    this.DrawTinyCharacter(text[i], color, x, y, clear);
+                    x += 6;
+                }
+                else
+                {
+                    if (text[i] == '\n')
+                    {
+                        y += 6;
+                        x = originalX;
+                    }
+                    if (text[i] == '\r')
+                        x = originalX;
+                }
+                if (clear)
+                {
                     // clear the space between chars
-                    for (var s = 0; s < 5; s++) {
+                    for (var s = 0; s < 5; s++)
+                    {
                         this.SetPixel(x - 1, y + s, 0);
                     }
                 }
