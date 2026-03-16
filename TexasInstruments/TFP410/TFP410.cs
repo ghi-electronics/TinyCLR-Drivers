@@ -132,7 +132,7 @@ namespace GHIElectronics.TinyCLR.Drivers.TexasInstruments.TFP410 {
                 case Resolution.HD720p:
                     controllerSetting.Width = 1280;
                     controllerSetting.Height = 720;
-                    controllerSetting.PixelClockRate = 60500000;
+                    controllerSetting.PixelClockRate = 74250000;//   60500000;
                     controllerSetting.HorizontalBackPorch = 176;
                     controllerSetting.HorizontalFrontPorch = 48;
                     controllerSetting.HorizontalSyncPulseWidth = 128;
