@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812</id>
-    <version>2.5.0.1000</version>
+    <version>3.0.0.1000-prerelease</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,13 +14,23 @@
     <copyright>Copyright GHI Electronics, LLC 2022</copyright>
     <tags>TinyCLR TinyCLROS Neopixel WS2812</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="2.5.0.1000" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="2.5.0.1000" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Signals" version="2.5.0.1000" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="2.5.0.1000" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.1000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="3.0.0.1000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Signals" version="3.0.0.1000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.1000-prerelease" />
     </dependencies>
   </metadata>
   <files>
+    <!-- lib/net48/ : TinyCLR-IMPL DLL (auto-referenced for compile). -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll" target="lib\net48" />
+
+    <!-- desktop-shim/ : no-op managed DLL swapped in by the .props at AfterBuild on Desktop. -->
+    <file src="..\WS2812.Desktop\bin\Debug\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll" target="desktop-shim" />
+
+    <!-- tinyclr/ : TinyCLR-IMPL DLL the IDE deploys to the device. -->
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll" target="tinyclr" />
+
+    <!-- Consumer-side props. -->
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.props" target="build\net48" />
   </files>
 </package>

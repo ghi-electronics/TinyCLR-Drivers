@@ -7,8 +7,8 @@
 
 using System;
 using System.Text;
-using GHIElectronics.TinyCLR.Cryptography;
-using GHIElectronics.TinyCLR.Networking.Net;
+using System.Net;
+using System.Security.Cryptography;
 
 namespace GHIElectronics.TinyCLR.Drivers.Azure.SAS
 {

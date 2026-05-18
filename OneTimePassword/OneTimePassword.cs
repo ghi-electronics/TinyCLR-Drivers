@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Text;
 using System.Threading;
-using GHIElectronics.TinyCLR.Cryptography;
+using System.Security.Cryptography;
 
 namespace GHIElectronics.TinyCLR.Drivers.OneTimePassword {
     public class OneTimePassword {
