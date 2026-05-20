@@ -90,6 +90,50 @@ namespace GHIElectronics.TinyCLR.Drivers.Azure.SAS
             return seconds.ToString();
         }
 
+        // RFC 4648 §4 Base64 alphabet. TinyCLR's Convert.ToBase64String
+        // defaults to a NETMF-era nonstandard alphabet ('!' / '*' instead
+        // of '+' / '/') and exposes a UseRFC4648Encoding toggle to switch
+        // to this one. Desktop BCL doesn't have that toggle — its
+        // Convert.ToBase64String is already RFC 4648. To keep this driver
+        // working under both runtimes (the dual-mode Desktop sibling must
+        // not bind to TinyCLR-only members or the JIT throws
+        // MissingMethodException), encode locally against this alphabet.
+        // Decode is alphabet-agnostic on both runtimes — TinyCLR's
+        // Convert.FromBase64String accepts both '!'/'*' and '+'/'/'.
+        private static readonly char[] s_base64Rfc4648 = new char[] {
+            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
+            'Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f',
+            'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
+            'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'
+        };
+
+        private static string ToBase64Rfc4648(byte[] input) {
+            var sb = new StringBuilder();
+            var i = 0;
+            while (i + 3 <= input.Length) {
+                int b0 = input[i++], b1 = input[i++], b2 = input[i++];
+                sb.Append(s_base64Rfc4648[b0 >> 2]);
+                sb.Append(s_base64Rfc4648[((b0 & 0x3) << 4) | (b1 >> 4)]);
+                sb.Append(s_base64Rfc4648[((b1 & 0xf) << 2) | (b2 >> 6)]);
+                sb.Append(s_base64Rfc4648[b2 & 0x3f]);
+            }
+            var rem = input.Length - i;
+            if (rem == 1) {
+                int b0 = input[i];
+                sb.Append(s_base64Rfc4648[b0 >> 2]);
+                sb.Append(s_base64Rfc4648[(b0 & 0x3) << 4]);
+                sb.Append("==");
+            }
+            else if (rem == 2) {
+                int b0 = input[i], b1 = input[i + 1];
+                sb.Append(s_base64Rfc4648[b0 >> 2]);
+                sb.Append(s_base64Rfc4648[((b0 & 0x3) << 4) | (b1 >> 4)]);
+                sb.Append(s_base64Rfc4648[(b1 & 0xf) << 2]);
+                sb.Append('=');
+            }
+            return sb.ToString();
+        }
+
         /// <summary>
         /// Sign the request string with a key.
         /// </summary>
@@ -98,16 +142,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Azure.SAS
         /// <returns>The signed request string.</returns>
         protected virtual string Sign(string requestString, string key) {
             var algorithm = new HMACSHA256(Convert.FromBase64String(key));
-
-            var useRFC4648EncodingTemp = Convert.UseRFC4648Encoding;
-
-            Convert.UseRFC4648Encoding = true;
-
-            var sign = Convert.ToBase64String(algorithm.ComputeHash(Encoding.UTF8.GetBytes(requestString)));
-
-            Convert.UseRFC4648Encoding = useRFC4648EncodingTemp; // restore what it was!
-
-            return sign;
+            var hash = algorithm.ComputeHash(Encoding.UTF8.GetBytes(requestString));
+            return ToBase64Rfc4648(hash);
         }
 
         private bool IsNullOrWhiteSpace(string s) {
