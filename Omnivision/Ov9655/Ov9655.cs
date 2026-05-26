@@ -263,8 +263,8 @@ namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655 {
 
         public enum Resolution {
             Vga = 0,
-            Qvga = 1,
-            Qqvga = 2
+            //Qvga = 1,
+            //Qqvga = 2
         }
 
     }
