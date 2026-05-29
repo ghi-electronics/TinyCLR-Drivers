@@ -81,14 +81,10 @@ namespace GHIElectronics.TinyCLR.Drivers.Omnivision.Ov9655 {
                     this.data = new byte[640 * 480 * 2];
                     this.SetVga();
                     break;
-
-                case Resolution.Qvga:
-                    //Todo
-                    break;
-
-                case Resolution.Qqvga:
-                    //Todo
-                    break;
+                // Qvga / Qqvga are not implemented — the enum members are
+                // commented out, and the cases were Todo stubs. Restore them
+                // here (and uncomment in the enum) when the SetQvga/SetQqvga
+                // register sequences are written.
             }
         }
 
