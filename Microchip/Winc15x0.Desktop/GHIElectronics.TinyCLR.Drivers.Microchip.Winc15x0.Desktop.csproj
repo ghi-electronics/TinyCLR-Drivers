@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="GHIElectronics.TinyCLR.Devices.Network">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Network.3.0.0.1000-prerelease\desktop-shim\GHIElectronics.TinyCLR.Devices.Network.dll</HintPath>
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Network.3.0.0.2000-prerelease\desktop-shim\GHIElectronics.TinyCLR.Devices.Network.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
