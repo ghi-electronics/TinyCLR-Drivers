@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Consumer-side props imported via the NuGet package mechanism. Mirrors the
+     Devices.* pattern: compile-time reference points at the TinyCLR-impl DLL,
+     then AfterBuild copies the right variant into bin\Debug:
+       * desktop-shim/X.dll  → bin\Debug\X.dll       (Desktop runtime)
+       * tinyclr/X.dll       → bin\Debug\pe\X.dll    (TinyCLR debugger deploys to device)
+-->
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_WS2812ShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll</_WS2812ShimSource>
+    <_WS2812ImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll</_WS2812ImplSource>
+  </PropertyGroup>
+  <Target Name="CopyWS2812DesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_WS2812ShimSource)')">
+    <Copy SourceFiles="$(_WS2812ShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyWS2812ImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_WS2812ImplSource)')">
+    <Copy SourceFiles="$(_WS2812ImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+</Project>

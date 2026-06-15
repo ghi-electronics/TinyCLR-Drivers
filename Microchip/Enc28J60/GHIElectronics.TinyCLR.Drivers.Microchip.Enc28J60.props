@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_Enc28J60ShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60.dll</_Enc28J60ShimSource>
+    <_Enc28J60ImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60.dll</_Enc28J60ImplSource>
+  </PropertyGroup>
+  <Target Name="CopyEnc28J60DesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_Enc28J60ShimSource)')">
+    <Copy SourceFiles="$(_Enc28J60ShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyEnc28J60ImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_Enc28J60ImplSource)')">
+    <Copy SourceFiles="$(_Enc28J60ImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+</Project>
