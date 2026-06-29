@@ -37,13 +37,13 @@
          no-op driver layer talks to other no-op libraries. The packages are
          restored into ..\..\packages\ by the main driver project's packages.config. -->
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Gpio.3.0.0.2000-prerelease\desktop-shim\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Gpio.3.0.0.3000-prerelease\desktop-shim\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Signals">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Signals.3.0.0.2000-prerelease\desktop-shim\GHIElectronics.TinyCLR.Devices.Signals.dll</HintPath>
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Devices.Signals.3.0.0.3000-prerelease\desktop-shim\GHIElectronics.TinyCLR.Devices.Signals.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Native">
-      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Native.3.0.0.2000-prerelease\desktop-shim\GHIElectronics.TinyCLR.Native.dll</HintPath>
+      <HintPath>..\..\packages\GHIElectronics.TinyCLR.Native.3.0.0.3000-prerelease\desktop-shim\GHIElectronics.TinyCLR.Native.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
