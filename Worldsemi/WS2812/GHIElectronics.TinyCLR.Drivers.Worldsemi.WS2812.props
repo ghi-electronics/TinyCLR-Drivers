@@ -7,7 +7,7 @@
 -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812">
+    <Reference Include="GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812" Condition="'$(NuGetProjectStyle)' != 'PackageReference'">
       <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll</HintPath>
       <Private>False</Private>
     </Reference>
