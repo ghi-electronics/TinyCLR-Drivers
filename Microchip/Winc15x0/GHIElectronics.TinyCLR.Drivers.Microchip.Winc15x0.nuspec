@@ -23,8 +23,6 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.dll" target="lib\net48" />
-    <file src="..\Winc15x0.Desktop\bin\Debug\GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.dll" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.props" target="build\net48" />
   </files>
 </package>

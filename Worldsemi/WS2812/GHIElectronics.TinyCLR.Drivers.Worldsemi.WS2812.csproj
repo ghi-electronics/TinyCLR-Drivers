@@ -47,12 +47,6 @@
        ..\WS2812.Desktop\bin\Debug. ReferenceOutputAssembly=False so the shim
        isn't a compile-time reference of this TinyCLR-impl assembly. -->
   <ItemGroup>
-    <ProjectReference Include="..\WS2812.Desktop\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.Desktop.csproj">
-      <Project>{A7B19182-3C4D-4E5F-91B2-C1D8E0F1A2B3}</Project>
-      <Name>GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=3.0.0.3000, Culture=neutral, processorArchitecture=MSIL">

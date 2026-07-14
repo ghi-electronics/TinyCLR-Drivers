@@ -44,12 +44,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Winc15x0.Desktop\GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.Desktop.csproj">
-      <Project>{C8D391A4-5E6F-4A7B-B3D4-E3F1A2B3C4D5}</Project>
-      <Name>GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=3.0.0.3000, Culture=neutral, processorArchitecture=MSIL">

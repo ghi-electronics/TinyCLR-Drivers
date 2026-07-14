@@ -14,12 +14,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_WS2812ShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll</_WS2812ShimSource>
-    <_WS2812ImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll</_WS2812ImplSource>
+    <_WS2812ImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll</_WS2812ImplSource>
   </PropertyGroup>
-  <Target Name="CopyWS2812DesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_WS2812ShimSource)')">
-    <Copy SourceFiles="$(_WS2812ShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyWS2812ImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_WS2812ImplSource)')">
     <Copy SourceFiles="$(_WS2812ImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

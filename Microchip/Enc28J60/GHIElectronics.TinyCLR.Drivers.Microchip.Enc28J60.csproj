@@ -43,12 +43,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Enc28J60.Desktop\GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60.Desktop.csproj">
-      <Project>{B7C28293-4D5E-4F6A-A2C3-D2E9F1A2B3C4}</Project>
-      <Name>GHIElectronics.TinyCLR.Drivers.Microchip.Enc28J60.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

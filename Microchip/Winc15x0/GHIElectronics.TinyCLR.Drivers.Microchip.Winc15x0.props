@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_Winc15x0ShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.dll</_Winc15x0ShimSource>
-    <_Winc15x0ImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.dll</_Winc15x0ImplSource>
+    <_Winc15x0ImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.dll</_Winc15x0ImplSource>
   </PropertyGroup>
-  <Target Name="CopyWinc15x0DesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_Winc15x0ShimSource)')">
-    <Copy SourceFiles="$(_Winc15x0ShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyWinc15x0ImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_Winc15x0ImplSource)')">
     <Copy SourceFiles="$(_Winc15x0ImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Drivers.Microchip.Winc15x0.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>
