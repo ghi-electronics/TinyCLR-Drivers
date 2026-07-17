@@ -1,17 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Consumer-side props imported via the NuGet package mechanism. Mirrors the
-     Devices.* pattern: compile-time reference points at the TinyCLR-impl DLL,
-     then AfterBuild copies the right variant into bin\Debug:
-       * desktop-shim/X.dll  → bin\Debug\X.dll       (Desktop runtime)
-       * tinyclr/X.dll       → bin\Debug\pe\X.dll    (TinyCLR debugger deploys to device)
--->
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Consumer-side props imported via the NuGet package mechanism. Mirrors the Devices.* pattern:
+     references come from lib\net48 directly (no injected <Reference> - that showed as a spurious
+     0.0.0.0 warning in Solution Explorer); the AfterBuild target only stages the impl DLL into
+     bin\Debug\pe\ so the TinyCLR debugger reads the metadata it MMP'd into the deployed .pe. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <_WS2812ImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Drivers.Worldsemi.WS2812.dll</_WS2812ImplSource>
