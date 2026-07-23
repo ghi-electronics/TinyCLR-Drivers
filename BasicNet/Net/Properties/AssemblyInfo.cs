@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2026")]
 [assembly: ComVisible(false)]
 [assembly: Guid("3A5FC994-1394-4820-89F3-6CEFA8D5DB39")]
-[assembly: AssemblyVersion("3.0.1.1000")]
-[assembly: AssemblyFileVersion("3.0.1.1000")]
-[assembly: AssemblyInformationalVersion("3.0.1.1000-prerelease")]
+[assembly: AssemblyVersion("3.0.1.2000")]
+[assembly: AssemblyFileVersion("3.0.1.2000")]
+[assembly: AssemblyInformationalVersion("3.0.1.2000-prerelease")]
 
