@@ -85,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Driv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.Epson.S1D13700", "Epson\S1D13700\GHIElectronics.TinyCLR.Drivers.Epson.S1D13700.csproj", "{7C4F2E10-3B8A-49D6-A1E2-5F0C9D7B6A41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drivers.SinoWealth.SH110x", "SinoWealth\SH110x\GHIElectronics.TinyCLR.Drivers.SinoWealth.SH110x.csproj", "{CE8A499E-7779-4D91-AEA6-9D334C139BA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -255,6 +257,10 @@ Global
 		{7C4F2E10-3B8A-49D6-A1E2-5F0C9D7B6A41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C4F2E10-3B8A-49D6-A1E2-5F0C9D7B6A41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C4F2E10-3B8A-49D6-A1E2-5F0C9D7B6A41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE8A499E-7779-4D91-AEA6-9D334C139BA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE8A499E-7779-4D91-AEA6-9D334C139BA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE8A499E-7779-4D91-AEA6-9D334C139BA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE8A499E-7779-4D91-AEA6-9D334C139BA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
