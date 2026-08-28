@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>GHIElectronics.TinyCLR.Drivers.SinoWealth.SH110x</id>
+    <version>3.0.1.6000</version>
+    <authors>GHI Electronics, LLC</authors>
+    <owners>GHI Electronics, LLC</owners>
+    <projectUrl>https://ghielectronics.com/</projectUrl>
+    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
+    <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>SinoWealth SH1106 and SH1107 OLED display driver for TinyCLR OS.</description>
+    <copyright>Copyright GHI Electronics, LLC 2026</copyright>
+    <tags>TinyCLR TinyCLROS SH110x SH1106 SH1107</tags>
+    <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.1.6000" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="3.0.1.6000" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.I2c" version="3.0.1.6000" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drivers.SinoWealth.SH110x.dll" target="lib\net48" />
+  </files>
+</package>
